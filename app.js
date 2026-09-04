@@ -6,7 +6,10 @@ const FAST_PHASE_DURATION = 5 * 60 * 1000;
 const FAST_INTERVAL = 30 * 1000;
 const NORMAL_INTERVAL = 120 * 1000;
 
-const defaults = { type: "all", state: "all", category: "all", status: "all", adult: false, priority: false, sort: "demand", search: "" };
+const defaults = { type: "all", state: "all", category: "all", status: "all", adult: false, priority: false, sort: "recent", search: "" };
+const validSorts = new Set(["recent", "oldest", "demand"]);
+const categoryLabels = ["Nova extensão", "Bug", "Mudança de domínio", "Fonte morta", "Sugestão"];
+const statusLabels = ["Em análise", "Aceito", "Em desenvolvimento", "Aguardando informações", "Concluído", "Recusado"];
 const filters = { ...defaults };
 let allIssues = [];
 let generatedAt = null;
@@ -28,6 +31,11 @@ const elements = {
 function labelNames(issue) { return (issue.labels || []).map((label) => typeof label === "string" ? label : label.name).filter(Boolean); }
 function issueType(issue) { const labels = labelNames(issue); return labels.includes("Manga") ? "manga" : labels.includes("Anime") ? "anime" : ""; }
 function formatDate(value) { return value ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium" }).format(new Date(value)) : "—"; }
+function normalized(value) { return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
+function labelFromParam(value, labels) {
+  const aliases = { new: "Nova extensão", extension: "Nova extensão", bug: "Bug", domain: "Mudança de domínio", dead: "Fonte morta", feature: "Sugestão", suggestion: "Sugestão" };
+  return aliases[normalized(value)] || labels.find((label) => normalized(label) === normalized(value)) || labels.find((label) => normalized(label).includes(normalized(value))) || "all";
+}
 
 function normalizeIssue(issue) {
   return {
@@ -59,7 +67,12 @@ function applyFields() {
 function loadFromUrl() {
   Object.assign(filters, defaults);
   const params = new URLSearchParams(location.search);
-  ["type", "state", "category", "status", "sort", "search"].forEach((key) => { if (params.has(key)) filters[key] = params.get(key); });
+  if (["manga", "anime", "all"].includes(params.get("type"))) filters.type = params.get("type");
+  if (["open", "closed", "all"].includes(params.get("state"))) filters.state = params.get("state");
+  if (params.has("category")) filters.category = labelFromParam(params.get("category"), categoryLabels);
+  if (params.has("status")) filters.status = labelFromParam(params.get("status"), statusLabels);
+  if (validSorts.has(params.get("sort"))) filters.sort = params.get("sort");
+  if (params.has("search")) filters.search = params.get("search");
   filters.adult = params.get("adult") === "true";
   filters.priority = params.get("priority") === "true";
   applyFields();
@@ -76,18 +89,25 @@ function filteredIssues() {
       (!filters.adult || labels.includes("+18")) && (!filters.priority || labels.includes("Prioridade"));
   }).sort((a, b) => {
     if (filters.sort === "demand") return (b.reactions?.["+1"] || 0) - (a.reactions?.["+1"] || 0) || new Date(b.updated_at) - new Date(a.updated_at);
-    if (filters.sort === "recent") return new Date(b.created_at) - new Date(a.created_at);
-    if (filters.sort === "updated") return new Date(b.updated_at) - new Date(a.updated_at);
-    return new Date(a.created_at) - new Date(b.created_at);
+    if (filters.sort === "recent") return new Date(b.updated_at) - new Date(a.updated_at);
+    return new Date(a.updated_at) - new Date(b.updated_at);
   });
 }
 
 function renderStats() {
   const has = (issue, label) => labelNames(issue).includes(label);
-  document.querySelector("#stat-open").textContent = allIssues.filter((issue) => issue.state === "open").length;
-  document.querySelector("#stat-new").textContent = allIssues.filter((issue) => has(issue, "Nova extensão")).length;
-  document.querySelector("#stat-bugs").textContent = allIssues.filter((issue) => has(issue, "Bug")).length;
-  document.querySelector("#stat-development").textContent = allIssues.filter((issue) => has(issue, "Em desenvolvimento")).length;
+  const counters = {
+    total: allIssues.length, open: allIssues.filter((issue) => issue.state === "open").length, closed: allIssues.filter((issue) => issue.state === "closed").length,
+    manga: allIssues.filter((issue) => has(issue, "Manga")).length, anime: allIssues.filter((issue) => has(issue, "Anime")).length,
+    new: allIssues.filter((issue) => has(issue, "Nova extensão")).length, bugs: allIssues.filter((issue) => has(issue, "Bug")).length,
+    domain: allIssues.filter((issue) => has(issue, "Mudança de domínio")).length, dead: allIssues.filter((issue) => has(issue, "Fonte morta")).length,
+    feature: allIssues.filter((issue) => has(issue, "Sugestão")).length, analysis: allIssues.filter((issue) => has(issue, "Em análise")).length,
+    accepted: allIssues.filter((issue) => has(issue, "Aceito")).length, development: allIssues.filter((issue) => has(issue, "Em desenvolvimento")).length,
+    waiting: allIssues.filter((issue) => has(issue, "Aguardando informações")).length, completed: allIssues.filter((issue) => has(issue, "Concluído")).length,
+    rejected: allIssues.filter((issue) => has(issue, "Recusado")).length, adult: allIssues.filter((issue) => has(issue, "+18")).length,
+    priority: allIssues.filter((issue) => has(issue, "Prioridade")).length,
+  };
+  Object.entries(counters).forEach(([name, value]) => { document.querySelector(`[data-stat="${name}"]`).textContent = value; });
 }
 
 function renderTickets() {
@@ -99,8 +119,8 @@ function renderTickets() {
     const labels = labelNames(issue);
     const votes = issue.reactions?.["+1"] || 0;
     const type = issueType(issue) === "manga" ? "Mangá" : "Anime";
-    const category = ["Nova extensão", "Bug", "Mudança de domínio", "Fonte morta", "Sugestão"].find((name) => labels.includes(name));
-    const status = ["Em análise", "Aceito", "Em desenvolvimento", "Aguardando informações", "Concluído", "Recusado"].find((name) => labels.includes(name));
+    const category = categoryLabels.find((name) => labels.includes(name));
+    const status = statusLabels.find((name) => labels.includes(name));
     const main = template.querySelector(".ticket-main");
     main.href = issue.html_url;
     template.querySelector(".vote").href = issue.html_url;
