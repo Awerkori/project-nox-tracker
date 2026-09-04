@@ -40,7 +40,9 @@ def main() -> None:
         item["reactions"] = {"total_count": reactions.get("total_count", 0), "+1": reactions.get("+1", 0)}
         compact.append(item)
 
-    payload = {"generated_at": datetime.now(UTC).isoformat(), "repository": REPOSITORY, "issues": compact}
+    previous = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
+    generated_at = previous.get("generated_at") if previous.get("issues") == compact else datetime.now(UTC).isoformat()
+    payload = {"generated_at": generated_at, "repository": REPOSITORY, "issues": compact}
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
