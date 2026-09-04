@@ -1,0 +1,29 @@
+name: Atualizar dados do tracker
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [issues-updated]
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gerar JSON dos Issues oficiais
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/update_issues.py
+      - name: Publicar dados alterados
+        run: |
+          if git diff --quiet -- data/issues.json; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/issues.json
+          git commit -m "chore: update tracker data"
+          git push

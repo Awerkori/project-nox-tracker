@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Acompanhe pedidos, correções e demanda por extensões de Mangá e Anime do Project Nox." />
+    <meta property="og:title" content="Project Nox Tracker" />
+    <meta property="og:description" content="Acompanhe pedidos, correções e demanda por extensões de Mangá e Anime do Project Nox." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#101022" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Project Nox Tracker</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Project Nox Tracker, página inicial"><span>N</span> Project Nox Tracker</a>
+      <nav aria-label="Links principais">
+        <a class="text-link" href="https://github.com/Awerkori/project-nox-requests/issues" target="_blank" rel="noreferrer">Ver no GitHub</a>
+        <a class="button primary" href="https://github.com/Awerkori/project-nox-requests/issues/new/choose" target="_blank" rel="noreferrer">+ Abrir ticket</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">ACOMPANHAMENTO OFICIAL</p>
+        <h1 id="page-title">Project Nox Tracker</h1>
+        <p>Pedidos, correções e acompanhamento das extensões do Project Nox.</p>
+        <p class="notice">Os votos ajudam a medir a demanda, mas não garantem prioridade de desenvolvimento.</p>
+      </section>
+
+      <section class="stats" aria-label="Resumo dos tickets">
+        <article><strong id="stat-open">—</strong><span>Abertos</span></article>
+        <article><strong id="stat-new">—</strong><span>Novas extensões</span></article>
+        <article><strong id="stat-bugs">—</strong><span>Bugs</span></article>
+        <article><strong id="stat-development">—</strong><span>Em desenvolvimento</span></article>
+      </section>
+
+      <section class="controls" aria-label="Filtros de tickets">
+        <div class="search-row">
+          <label for="search">Pesquisar pelo título ou extensão</label>
+          <input id="search" type="search" placeholder="Ex.: MangaDex BR" autocomplete="off" />
+          <label for="sort">Ordenar por</label>
+          <select id="sort">
+            <option value="demand">Mais pedidos</option>
+            <option value="recent">Mais recentes</option>
+            <option value="updated">Atualizados recentemente</option>
+            <option value="oldest">Mais antigos</option>
+          </select>
+        </div>
+        <div class="filter-grid">
+          <label>Tipo<select id="type"><option value="all">Todos</option><option value="manga">Mangá</option><option value="anime">Anime</option></select></label>
+          <label>Estado<select id="state"><option value="open">Abertos</option><option value="closed">Fechados</option><option value="all">Todos</option></select></label>
+          <label>Categoria<select id="category"><option value="all">Todas</option><option>Nova extensão</option><option>Bug</option><option>Mudança de domínio</option><option>Fonte morta</option><option>Sugestão</option></select></label>
+          <label>Status<select id="status"><option value="all">Todos</option><option>Em análise</option><option>Aceito</option><option>Em desenvolvimento</option><option>Aguardando informações</option><option>Concluído</option><option>Recusado</option></select></label>
+          <label class="toggle"><input id="adult" type="checkbox" /> <span>Somente +18</span></label>
+          <label class="toggle"><input id="priority" type="checkbox" /> <span>Somente prioridade</span></label>
+        </div>
+      </section>
+
+      <p id="updated" class="updated" aria-live="polite"></p>
+      <section id="tickets" class="tickets" aria-live="polite" aria-label="Lista de tickets"></section>
+    </main>
+
+    <template id="ticket-template">
+      <article class="ticket-card">
+        <a class="ticket-main" target="_blank" rel="noreferrer">
+          <div class="ticket-top"><span class="demand"></span><span class="state"></span></div>
+          <h2></h2>
+          <div class="badges"></div>
+          <p class="date"></p>
+        </a>
+        <a class="vote button secondary" target="_blank" rel="noreferrer">👍 Votar no GitHub</a>
+      </article>
+    </template>
+    <script src="app.js" defer></script>
+  </body>
+</html>
