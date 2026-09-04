@@ -3,7 +3,7 @@ const CACHE_KEY = "project-nox-live-issues";
 const CACHE_TIME_KEY = "project-nox-live-issues-time";
 const CACHE_TTL = 2 * 60 * 1000;
 
-const defaults = { type: "all", state: "open", category: "all", status: "all", adult: false, priority: false, sort: "demand", search: "" };
+const defaults = { type: "all", state: "all", category: "all", status: "all", adult: false, priority: false, sort: "demand", search: "" };
 const filters = { ...defaults };
 let allIssues = [];
 let generatedAt = null;
