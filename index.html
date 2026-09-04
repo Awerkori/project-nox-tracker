@@ -17,7 +17,7 @@
       <a class="brand" href="./" aria-label="Project Nox Tracker, página inicial"><span>N</span> Project Nox Tracker</a>
       <nav aria-label="Links principais">
         <a class="text-link" href="https://github.com/Awerkori/project-nox-requests/issues" target="_blank" rel="noreferrer">Ver no GitHub</a>
-        <a class="button primary" href="https://github.com/Awerkori/project-nox-requests/issues/new/choose" target="_blank" rel="noreferrer">+ Abrir ticket</a>
+        <button class="button primary" id="open-ticket" type="button">+ Abrir ticket</button>
       </nav>
     </header>
 
@@ -38,27 +38,25 @@
 
       <section class="controls" aria-label="Filtros de tickets">
         <div class="search-row">
-          <label for="search">Pesquisar pelo título ou extensão</label>
-          <input id="search" type="search" placeholder="Ex.: MangaDex BR" autocomplete="off" />
-          <label for="sort">Ordenar por</label>
-          <select id="sort">
-            <option value="demand">Mais pedidos</option>
-            <option value="recent">Mais recentes</option>
-            <option value="updated">Atualizados recentemente</option>
-            <option value="oldest">Mais antigos</option>
-          </select>
+          <label class="control-field search-field" for="search"><span>Pesquisar pelo título ou extensão</span><input id="search" type="search" placeholder="Ex.: MangaDex BR" autocomplete="off" /></label>
+          <label class="control-field sort-field" for="sort"><span>Ordenar por</span><select id="sort">
+            <option value="demand">Mais pedidos</option><option value="recent">Mais recentes</option><option value="updated">Atualizados recentemente</option><option value="oldest">Mais antigos</option>
+          </select></label>
         </div>
         <div class="filter-grid">
           <label>Tipo<select id="type"><option value="all">Todos</option><option value="manga">Mangá</option><option value="anime">Anime</option></select></label>
           <label>Estado<select id="state"><option value="open">Abertos</option><option value="closed">Fechados</option><option value="all">Todos</option></select></label>
           <label>Categoria<select id="category"><option value="all">Todas</option><option>Nova extensão</option><option>Bug</option><option>Mudança de domínio</option><option>Fonte morta</option><option>Sugestão</option></select></label>
           <label>Status<select id="status"><option value="all">Todos</option><option>Em análise</option><option>Aceito</option><option>Em desenvolvimento</option><option>Aguardando informações</option><option>Concluído</option><option>Recusado</option></select></label>
-          <label class="toggle"><input id="adult" type="checkbox" /> <span>Somente +18</span></label>
-          <label class="toggle"><input id="priority" type="checkbox" /> <span>Somente prioridade</span></label>
+        </div>
+        <div class="extra-filters" role="group" aria-labelledby="extra-filters-label">
+          <span id="extra-filters-label">Filtros adicionais</span>
+          <label class="toggle"><input id="adult" type="checkbox" autocomplete="off" /> <span>Somente +18</span></label>
+          <label class="toggle"><input id="priority" type="checkbox" autocomplete="off" /> <span>Somente prioridade</span></label>
         </div>
       </section>
 
-      <p id="updated" class="updated" aria-live="polite"></p>
+      <div class="data-status"><p id="updated" class="updated" aria-live="polite"></p><button id="refresh-data" class="refresh-button" type="button">↻ Atualizar</button></div>
       <section id="tickets" class="tickets" aria-live="polite" aria-label="Lista de tickets"></section>
     </main>
 
@@ -73,6 +71,21 @@
         <a class="vote button secondary" target="_blank" rel="noreferrer">👍 Votar no GitHub</a>
       </article>
     </template>
+    <div id="ticket-modal" class="modal" hidden>
+      <div class="modal-backdrop" data-close-modal></div>
+      <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="ticket-modal-title" aria-describedby="ticket-modal-description" tabindex="-1">
+        <button id="close-ticket" class="modal-close" type="button" aria-label="Fechar janela">×</button>
+        <p class="eyebrow">PROJECT NOX</p><h2 id="ticket-modal-title">Abrir ticket</h2>
+        <p id="ticket-modal-description">Escolha o tipo de solicitação. O formulário será aberto no GitHub em uma nova aba.</p>
+        <div class="template-links">
+          <a href="https://github.com/Awerkori/project-nox-requests/issues/new?template=01_request_extension.yml" target="_blank" rel="noreferrer">🌐 <span>Pedir nova extensão</span></a>
+          <a href="https://github.com/Awerkori/project-nox-requests/issues/new?template=02_report_broken.yml" target="_blank" rel="noreferrer">🐛 <span>Reportar extensão quebrada</span></a>
+          <a href="https://github.com/Awerkori/project-nox-requests/issues/new?template=03_report_url_change.yml" target="_blank" rel="noreferrer">🔗 <span>Informar mudança de domínio</span></a>
+          <a href="https://github.com/Awerkori/project-nox-requests/issues/new?template=04_report_dead_source.yml" target="_blank" rel="noreferrer">💀 <span>Informar fonte/site morto</span></a>
+          <a href="https://github.com/Awerkori/project-nox-requests/issues/new?template=05_request_feature.yml" target="_blank" rel="noreferrer">✨ <span>Sugerir melhoria</span></a>
+        </div>
+      </section>
+    </div>
     <script src="app.js" defer></script>
   </body>
 </html>
