@@ -6,7 +6,7 @@ const FAST_PHASE_DURATION = 5 * 60 * 1000;
 const FAST_INTERVAL = 30 * 1000;
 const NORMAL_INTERVAL = 120 * 1000;
 
-const defaults = { type: "all", state: "all", category: "all", status: "all", adult: false, priority: false, sort: "recent", search: "" };
+const defaults = { type: "all", state: "all", category: "all", status: "all", adult: false, sort: "recent", search: "" };
 const validSorts = new Set(["recent", "oldest", "demand"]);
 const categoryLabels = ["Nova extensão", "Bug", "Mudança de domínio", "Fonte morta", "Sugestão"];
 const statusLabels = ["Em análise", "Aceito", "Em desenvolvimento", "Aguardando informações", "Concluído", "Recusado"];
@@ -23,7 +23,7 @@ const openedAt = Date.now();
 const elements = {
   search: document.querySelector("#search"), sort: document.querySelector("#sort"), type: document.querySelector("#type"),
   state: document.querySelector("#state"), category: document.querySelector("#category"), status: document.querySelector("#status"),
-  adult: document.querySelector("#adult"), priority: document.querySelector("#priority"), tickets: document.querySelector("#tickets"),
+  adult: document.querySelector("#adult"), tickets: document.querySelector("#tickets"),
   updated: document.querySelector("#updated"), refresh: document.querySelector("#refresh-data"), modal: document.querySelector("#ticket-modal"),
   openTicket: document.querySelector("#open-ticket"), closeTicket: document.querySelector("#close-ticket"), dialog: document.querySelector(".modal-dialog"),
 };
@@ -61,7 +61,6 @@ function applyFields() {
   elements.search.value = filters.search;
   ["sort", "type", "state", "category", "status"].forEach((key) => { elements[key].value = filters[key]; });
   elements.adult.checked = filters.adult === true;
-  elements.priority.checked = filters.priority === true;
 }
 
 function loadFromUrl() {
@@ -74,7 +73,6 @@ function loadFromUrl() {
   if (validSorts.has(params.get("sort"))) filters.sort = params.get("sort");
   if (params.has("search")) filters.search = params.get("search");
   filters.adult = params.get("adult") === "true";
-  filters.priority = params.get("priority") === "true";
   applyFields();
   renderTickets();
 }
@@ -86,7 +84,7 @@ function filteredIssues() {
     return (!search || issue.title.toLocaleLowerCase("pt-BR").includes(search)) &&
       (filters.type === "all" || issueType(issue) === filters.type) && (filters.state === "all" || issue.state === filters.state) &&
       (filters.category === "all" || labels.includes(filters.category)) && (filters.status === "all" || labels.includes(filters.status)) &&
-      (!filters.adult || labels.includes("+18")) && (!filters.priority || labels.includes("Prioridade"));
+      (!filters.adult || labels.includes("+18"));
   }).sort((a, b) => {
     if (filters.sort === "demand") return (b.reactions?.["+1"] || 0) - (a.reactions?.["+1"] || 0) || new Date(b.updated_at) - new Date(a.updated_at);
     if (filters.sort === "recent") return new Date(b.updated_at) - new Date(a.updated_at);
@@ -97,15 +95,9 @@ function filteredIssues() {
 function renderStats() {
   const has = (issue, label) => labelNames(issue).includes(label);
   const counters = {
-    total: allIssues.length, open: allIssues.filter((issue) => issue.state === "open").length, closed: allIssues.filter((issue) => issue.state === "closed").length,
-    manga: allIssues.filter((issue) => has(issue, "Manga")).length, anime: allIssues.filter((issue) => has(issue, "Anime")).length,
-    new: allIssues.filter((issue) => has(issue, "Nova extensão")).length, bugs: allIssues.filter((issue) => has(issue, "Bug")).length,
-    domain: allIssues.filter((issue) => has(issue, "Mudança de domínio")).length, dead: allIssues.filter((issue) => has(issue, "Fonte morta")).length,
-    feature: allIssues.filter((issue) => has(issue, "Sugestão")).length, analysis: allIssues.filter((issue) => has(issue, "Em análise")).length,
-    accepted: allIssues.filter((issue) => has(issue, "Aceito")).length, development: allIssues.filter((issue) => has(issue, "Em desenvolvimento")).length,
-    waiting: allIssues.filter((issue) => has(issue, "Aguardando informações")).length, completed: allIssues.filter((issue) => has(issue, "Concluído")).length,
-    rejected: allIssues.filter((issue) => has(issue, "Recusado")).length, adult: allIssues.filter((issue) => has(issue, "+18")).length,
-    priority: allIssues.filter((issue) => has(issue, "Prioridade")).length,
+    total: allIssues.length, manga: allIssues.filter((issue) => has(issue, "Manga")).length, anime: allIssues.filter((issue) => has(issue, "Anime")).length,
+    open: allIssues.filter((issue) => issue.state === "open").length, closed: allIssues.filter((issue) => issue.state === "closed").length,
+    completed: allIssues.filter((issue) => has(issue, "Concluído")).length,
   };
   Object.entries(counters).forEach(([name, value]) => { document.querySelector(`[data-stat="${name}"]`).textContent = value; });
 }
@@ -128,7 +120,8 @@ function renderTickets() {
     template.querySelector(".demand").textContent = `${votes >= 10 ? "🔥 " : ""}${votes} 👍`;
     template.querySelector(".state").textContent = issue.state === "open" ? "Aberto" : "Fechado";
     template.querySelector(".date").textContent = `Atualizado em ${formatDate(issue.updated_at)}`;
-    template.querySelector(".badges").innerHTML = [type, category, status].filter(Boolean).map((name) => `<span class="badge">${name}</span>`).join("");
+    const markers = ["+18", "Prioridade"].filter((name) => labels.includes(name));
+    template.querySelector(".badges").innerHTML = [type, category, status, ...markers].filter(Boolean).map((name) => `<span class="badge">${name}</span>`).join("");
     elements.tickets.append(template);
   });
 }
@@ -231,7 +224,7 @@ function trapFocus(event) {
 
 function bindFilters() {
   ["search", "sort", "type", "state", "category", "status"].forEach((key) => elements[key].addEventListener("input", () => { filters[key] = elements[key].value; updateUrl(); renderTickets(); }));
-  ["adult", "priority"].forEach((key) => elements[key].addEventListener("change", () => { filters[key] = elements[key].checked; updateUrl(); renderTickets(); }));
+  elements.adult.addEventListener("change", () => { filters.adult = elements.adult.checked; updateUrl(); renderTickets(); });
 }
 
 async function init() {

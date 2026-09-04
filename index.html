@@ -34,17 +34,14 @@
         <p class="eyebrow">ACOMPANHAMENTO OFICIAL</p>
         <h1 id="page-title">Project Nox Tracker</h1>
         <p>Pedidos, correções e acompanhamento das extensões do Project Nox.</p>
-        <p class="notice">Os votos ajudam a medir a demanda, mas não garantem prioridade de desenvolvimento.</p>
       </section>
 
       <section class="stats-panel" aria-label="Visão geral dos tickets">
-        <div class="stat-group"><h2>Resumo</h2><div class="stats"><article><strong data-stat="total">—</strong><span>Total</span></article><article><strong data-stat="open">—</strong><span>Abertos</span></article><article><strong data-stat="closed">—</strong><span>Fechados</span></article></div></div>
-        <div class="stat-group"><h2>Tipo</h2><div class="stats"><article><strong data-stat="manga">—</strong><span>Manga</span></article><article><strong data-stat="anime">—</strong><span>Anime</span></article></div></div>
-        <div class="stat-group"><h2>Categorias</h2><div class="stats"><article><strong data-stat="new">—</strong><span>Nova extensão</span></article><article><strong data-stat="bugs">—</strong><span>Bugs</span></article><article><strong data-stat="domain">—</strong><span>Mudança de domínio</span></article><article><strong data-stat="dead">—</strong><span>Fonte morta</span></article><article><strong data-stat="feature">—</strong><span>Sugestões</span></article></div></div>
-        <div class="stat-group"><h2>Status</h2><div class="stats"><article><strong data-stat="analysis">—</strong><span>Em análise</span></article><article><strong data-stat="accepted">—</strong><span>Aceitos</span></article><article><strong data-stat="development">—</strong><span>Em desenvolvimento</span></article><article><strong data-stat="waiting">—</strong><span>Aguardando informações</span></article><article><strong data-stat="completed">—</strong><span>Concluídos</span></article><article><strong data-stat="rejected">—</strong><span>Recusados</span></article></div></div>
-        <div class="stat-group stat-group-secondary"><h2>Marcadores</h2><div class="stats"><article><strong data-stat="adult">—</strong><span>+18</span></article><article><strong data-stat="priority">—</strong><span>Prioridade</span></article></div></div>
+        <h2 class="section-title">Resumo</h2>
+        <div class="stats"><article><strong data-stat="total">0</strong><span>Total</span></article><article><strong data-stat="manga">0</strong><span>Manga</span></article><article><strong data-stat="anime">0</strong><span>Anime</span></article><article><strong data-stat="open">0</strong><span>Abertos</span></article><article><strong data-stat="closed">0</strong><span>Fechados</span></article><article><strong data-stat="completed">0</strong><span>Concluídos</span></article></div>
       </section>
 
+      <h2 class="section-title">Filtros</h2>
       <section class="controls" aria-label="Filtros de tickets">
         <div class="search-row">
           <label class="control-field search-field" for="search"><span>Pesquisar pelo título ou extensão</span><input id="search" type="search" placeholder="Ex.: MangaDex BR" autocomplete="off" /></label>
@@ -61,10 +58,11 @@
         <div class="extra-filters" role="group" aria-labelledby="extra-filters-label">
           <span id="extra-filters-label">Filtros adicionais</span>
           <label class="toggle"><input id="adult" type="checkbox" autocomplete="off" /> <span>Somente +18</span></label>
-          <label class="toggle"><input id="priority" type="checkbox" autocomplete="off" /> <span>Somente prioridade</span></label>
         </div>
       </section>
 
+      <p class="notice">👍 Os tickets mais curtidos recebem maior prioridade no desenvolvimento. Curta os pedidos que você mais quer ver atendidos.</p>
+      <h2 class="section-title">Tickets</h2>
       <div class="data-status"><p id="updated" class="updated" aria-live="polite"></p><button id="refresh-data" class="refresh-button" type="button">↻ Atualizar</button></div>
       <section id="tickets" class="tickets" aria-live="polite" aria-label="Lista de tickets"></section>
     </main>
