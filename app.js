@@ -112,7 +112,12 @@ function renderTickets() {
     const status = statusLabels.find((name) => labels.includes(name));
     const main = template.querySelector(".ticket-main");
     main.href = issue.html_url;
-    template.querySelector(".vote").href = issue.html_url;
+    const vote = template.querySelector(".vote");
+    const viewIssue = template.querySelector(".view-issue");
+    vote.href = issue.html_url;
+    vote.setAttribute("aria-label", `Votar no GitHub no ticket #${issue.number}`);
+    viewIssue.href = issue.html_url;
+    viewIssue.setAttribute("aria-label", `Ver ticket #${issue.number} no GitHub`);
     template.querySelector("h2").textContent = `#${issue.number} ${issue.title}`;
     template.querySelector(".demand").textContent = `${votes >= 10 ? "🔥 " : ""}${votes} 👍`;
     template.querySelector(".state").textContent = issue.state === "open" ? "Aberto" : "Fechado";
