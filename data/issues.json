@@ -1,7 +1,91 @@
 {
-  "generated_at": "2026-09-04T17:20:34.847711+00:00",
+  "generated_at": "2026-09-04T22:12:44.499958+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 7,
+      "title": "[Nova extensão]: Animes HD",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/7",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-04T21:25:08Z",
+      "updated_at": "2026-09-04T21:25:15Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Jhoorodre"
+      }
+    },
+    {
+      "number": 6,
+      "title": "[Nova extensão]: Aniture-PT",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/6",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-04T21:24:02Z",
+      "updated_at": "2026-09-04T21:24:10Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Jhoorodre"
+      }
+    },
+    {
+      "number": 3,
+      "title": "[Nova extensão]: Animex HD",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/3",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-04T20:57:18Z",
+      "updated_at": "2026-09-04T20:57:27Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Jhoorodre"
+      }
+    },
     {
       "number": 2,
       "title": "[Sugestão]: Teste tracker",
