@@ -6,7 +6,7 @@ const FAST_PHASE_DURATION = 5 * 60 * 1000;
 const FAST_INTERVAL = 30 * 1000;
 const NORMAL_INTERVAL = 120 * 1000;
 
-const defaults = { type: "all", state: "all", category: "all", status: "all", adult: false, sort: "recent", search: "" };
+const defaults = { type: "all", state: "all", category: "all", status: "all", sort: "recent", search: "" };
 const validSorts = new Set(["recent", "oldest", "demand"]);
 const categoryLabels = ["Nova extensão", "Bug", "Mudança de domínio", "Fonte morta", "Sugestão"];
 const statusLabels = ["Em análise", "Aceito", "Em desenvolvimento", "Aguardando informações", "Concluído", "Recusado"];
@@ -23,7 +23,7 @@ const openedAt = Date.now();
 const elements = {
   search: document.querySelector("#search"), sort: document.querySelector("#sort"), type: document.querySelector("#type"),
   state: document.querySelector("#state"), category: document.querySelector("#category"), status: document.querySelector("#status"),
-  adult: document.querySelector("#adult"), tickets: document.querySelector("#tickets"),
+  tickets: document.querySelector("#tickets"),
   updated: document.querySelector("#updated"), refresh: document.querySelector("#refresh-data"), modal: document.querySelector("#ticket-modal"),
   openTicket: document.querySelector("#open-ticket"), closeTicket: document.querySelector("#close-ticket"), dialog: document.querySelector(".modal-dialog"),
 };
@@ -60,7 +60,6 @@ function updateUrl() {
 function applyFields() {
   elements.search.value = filters.search;
   ["sort", "type", "state", "category", "status"].forEach((key) => { elements[key].value = filters[key]; });
-  elements.adult.checked = filters.adult === true;
 }
 
 function loadFromUrl() {
@@ -72,7 +71,6 @@ function loadFromUrl() {
   if (params.has("status")) filters.status = labelFromParam(params.get("status"), statusLabels);
   if (validSorts.has(params.get("sort"))) filters.sort = params.get("sort");
   if (params.has("search")) filters.search = params.get("search");
-  filters.adult = params.get("adult") === "true";
   applyFields();
   renderTickets();
 }
@@ -83,8 +81,7 @@ function filteredIssues() {
     const labels = labelNames(issue);
     return (!search || issue.title.toLocaleLowerCase("pt-BR").includes(search)) &&
       (filters.type === "all" || issueType(issue) === filters.type) && (filters.state === "all" || issue.state === filters.state) &&
-      (filters.category === "all" || labels.includes(filters.category)) && (filters.status === "all" || labels.includes(filters.status)) &&
-      (!filters.adult || labels.includes("+18"));
+      (filters.category === "all" || labels.includes(filters.category)) && (filters.status === "all" || labels.includes(filters.status));
   }).sort((a, b) => {
     if (filters.sort === "demand") return (b.reactions?.["+1"] || 0) - (a.reactions?.["+1"] || 0) || new Date(b.updated_at) - new Date(a.updated_at);
     if (filters.sort === "recent") return new Date(b.updated_at) - new Date(a.updated_at);
@@ -224,7 +221,6 @@ function trapFocus(event) {
 
 function bindFilters() {
   ["search", "sort", "type", "state", "category", "status"].forEach((key) => elements[key].addEventListener("input", () => { filters[key] = elements[key].value; updateUrl(); renderTickets(); }));
-  elements.adult.addEventListener("change", () => { filters.adult = elements.adult.checked; updateUrl(); renderTickets(); });
 }
 
 async function init() {
