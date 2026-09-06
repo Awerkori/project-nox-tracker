@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-09-04T22:12:44.499958+00:00",
+  "generated_at": "2026-09-06T05:10:56.843057+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 8,
+      "title": "[Nova extensão]: Ink",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/8",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-06T03:43:06Z",
+      "updated_at": "2026-09-06T03:43:16Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "golimar001"
+      }
+    },
     {
       "number": 7,
       "title": "[Nova extensão]: Animes HD",
