@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-09-06T05:10:56.843057+00:00",
+  "generated_at": "2026-09-07T00:05:30.729729+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 8,
       "title": "[Nova extensão]: Ink",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/8",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-06T03:43:06Z",
-      "updated_at": "2026-09-06T03:43:16Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-06T22:38:04Z",
+      "closed_at": "2026-09-06T22:38:04Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Manga",
