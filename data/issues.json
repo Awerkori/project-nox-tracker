@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-09-07T09:40:07.177235+00:00",
+  "generated_at": "2026-09-07T15:16:58.842892+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 10,
+      "title": "[Nova extensão]: AnimeZ",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/10",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-07T15:08:23Z",
+      "updated_at": "2026-09-07T15:08:32Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
     {
       "number": 9,
       "title": "[Bug]: erro ao carregar as páginas e a sinopse",
