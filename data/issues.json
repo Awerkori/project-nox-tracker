@@ -1,7 +1,91 @@
 {
-  "generated_at": "2026-09-07T15:16:58.842892+00:00",
+  "generated_at": "2026-09-07T19:15:06.972352+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 13,
+      "title": "[Mudança de domínio]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/13",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-07T15:28:26Z",
+      "updated_at": "2026-09-07T15:29:09Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Mudança de domínio",
+          "color": "FBCA04"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
+    {
+      "number": 12,
+      "title": "[Bug]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/12",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-07T15:23:12Z",
+      "updated_at": "2026-09-07T15:23:20Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
+    {
+      "number": 11,
+      "title": "[Nova extensão]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/11",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-07T15:17:20Z",
+      "updated_at": "2026-09-07T15:17:31Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
     {
       "number": 10,
       "title": "[Nova extensão]: AnimeZ",
