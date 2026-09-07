@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-09-07T00:05:30.729729+00:00",
+  "generated_at": "2026-09-07T09:40:07.177235+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 9,
+      "title": "[Bug]: erro ao carregar as páginas e a sinopse",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/9",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-07T07:23:46Z",
+      "updated_at": "2026-09-07T07:23:55Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Lobinho450o"
+      }
+    },
     {
       "number": 8,
       "title": "[Nova extensão]: Ink",
