@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T04:56:35.225475+00:00",
+  "generated_at": "2026-09-08T09:28:59.882646+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -132,34 +132,6 @@
         {
           "name": "Anime",
           "color": "5319E7"
-        }
-      ],
-      "reactions": {
-        "total_count": 0,
-        "+1": 0
-      },
-      "author": {
-        "login": "RaiKay01"
-      }
-    },
-    {
-      "number": 11,
-      "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/11",
-      "state": "open",
-      "state_reason": null,
-      "created_at": "2026-09-07T15:17:20Z",
-      "updated_at": "2026-09-07T15:17:31Z",
-      "closed_at": null,
-      "comments": 0,
-      "labels": [
-        {
-          "name": "Manga",
-          "color": "1D76DB"
-        },
-        {
-          "name": "Nova extensão",
-          "color": "0E8A16"
         }
       ],
       "reactions": {
