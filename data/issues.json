@@ -1,7 +1,91 @@
 {
-  "generated_at": "2026-09-07T19:15:06.972352+00:00",
+  "generated_at": "2026-09-08T04:56:35.225475+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 16,
+      "title": "[Bug]: as imagens obras dessa extensão n estão aparecendo",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/16",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-08T02:37:36Z",
+      "updated_at": "2026-09-08T02:37:45Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Flyscorpionbr22"
+      }
+    },
+    {
+      "number": 15,
+      "title": "[Bug]: Não aparece as paginas das obras dessa extensão",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/15",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-08T02:33:09Z",
+      "updated_at": "2026-09-08T02:33:53Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Flyscorpionbr22"
+      }
+    },
+    {
+      "number": 14,
+      "title": "[Bug]: As paginas n estão aparcendo ",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/14",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-08T02:06:06Z",
+      "updated_at": "2026-09-08T02:10:28Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Flyscorpionbr"
+      }
+    },
     {
       "number": 13,
       "title": "[Mudança de domínio]:",
