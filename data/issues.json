@@ -1,7 +1,63 @@
 {
-  "generated_at": "2026-09-08T09:28:59.882646+00:00",
+  "generated_at": "2026-09-08T13:48:45.299605+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 18,
+      "title": "[Nova extensão]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/18",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-08T11:41:18Z",
+      "updated_at": "2026-09-08T11:41:26Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
+    {
+      "number": 17,
+      "title": "[Nova extensão]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/17",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-08T11:38:07Z",
+      "updated_at": "2026-09-08T11:38:17Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
     {
       "number": 16,
       "title": "[Bug]: as imagens obras dessa extensão n estão aparecendo",
@@ -118,12 +174,12 @@
       "number": 12,
       "title": "[Bug]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/12",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-07T15:23:12Z",
-      "updated_at": "2026-09-07T15:23:20Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-08T10:10:53Z",
+      "closed_at": "2026-09-08T10:10:40Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -132,6 +188,10 @@
         {
           "name": "Anime",
           "color": "5319E7"
+        },
+        {
+          "name": "Aguardando informações",
+          "color": "FEF2C0"
         }
       ],
       "reactions": {
