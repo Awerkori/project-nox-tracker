@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-09-10T05:18:03.132553+00:00",
+  "generated_at": "2026-09-10T09:51:30.009555+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 18,
       "title": "[Nova extensão]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/18",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-08T11:41:18Z",
-      "updated_at": "2026-09-08T11:41:26Z",
-      "closed_at": null,
+      "updated_at": "2026-09-10T09:37:28Z",
+      "closed_at": "2026-09-10T09:37:28Z",
       "comments": 0,
       "labels": [
         {
@@ -20,6 +20,10 @@
         {
           "name": "Nova extensão",
           "color": "0E8A16"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -34,11 +38,11 @@
       "number": 17,
       "title": "[Nova extensão]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/17",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-08T11:38:07Z",
-      "updated_at": "2026-09-08T11:38:17Z",
-      "closed_at": null,
+      "updated_at": "2026-09-10T09:37:36Z",
+      "closed_at": "2026-09-10T09:37:36Z",
       "comments": 0,
       "labels": [
         {
@@ -48,6 +52,10 @@
         {
           "name": "Nova extensão",
           "color": "0E8A16"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -146,11 +154,11 @@
       "number": 13,
       "title": "[Mudança de domínio]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/13",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-07T15:28:26Z",
-      "updated_at": "2026-09-07T15:29:09Z",
-      "closed_at": null,
+      "updated_at": "2026-09-10T09:37:44Z",
+      "closed_at": "2026-09-10T09:37:44Z",
       "comments": 0,
       "labels": [
         {
@@ -160,6 +168,10 @@
         {
           "name": "Mudança de domínio",
           "color": "FBCA04"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -262,11 +274,11 @@
       "number": 7,
       "title": "[Nova extensão]: Animes HD",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/7",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-04T21:25:08Z",
-      "updated_at": "2026-09-04T21:25:15Z",
-      "closed_at": null,
+      "updated_at": "2026-09-10T09:37:17Z",
+      "closed_at": "2026-09-10T09:37:17Z",
       "comments": 0,
       "labels": [
         {
@@ -276,6 +288,10 @@
         {
           "name": "Nova extensão",
           "color": "0E8A16"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -290,11 +306,11 @@
       "number": 6,
       "title": "[Nova extensão]: Aniture-PT",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/6",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-04T21:24:02Z",
-      "updated_at": "2026-09-04T21:24:10Z",
-      "closed_at": null,
+      "updated_at": "2026-09-10T09:36:56Z",
+      "closed_at": "2026-09-10T09:36:56Z",
       "comments": 0,
       "labels": [
         {
@@ -304,6 +320,10 @@
         {
           "name": "Nova extensão",
           "color": "0E8A16"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -318,11 +338,11 @@
       "number": 3,
       "title": "[Nova extensão]: Animex HD",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/3",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-04T20:57:18Z",
-      "updated_at": "2026-09-04T20:57:27Z",
-      "closed_at": null,
+      "updated_at": "2026-09-10T09:36:40Z",
+      "closed_at": "2026-09-10T09:36:40Z",
       "comments": 0,
       "labels": [
         {
@@ -332,34 +352,6 @@
         {
           "name": "Nova extensão",
           "color": "0E8A16"
-        }
-      ],
-      "reactions": {
-        "total_count": 0,
-        "+1": 0
-      },
-      "author": {
-        "login": "Jhoorodre"
-      }
-    },
-    {
-      "number": 2,
-      "title": "[Sugestão]: Teste tracker",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/2",
-      "state": "closed",
-      "state_reason": "completed",
-      "created_at": "2026-09-04T15:01:43Z",
-      "updated_at": "2026-09-04T15:10:50Z",
-      "closed_at": "2026-09-04T15:10:33Z",
-      "comments": 0,
-      "labels": [
-        {
-          "name": "Manga",
-          "color": "1D76DB"
-        },
-        {
-          "name": "Sugestão",
-          "color": "7057FF"
         },
         {
           "name": "Concluído",
@@ -371,7 +363,7 @@
         "+1": 0
       },
       "author": {
-        "login": "Awerkori"
+        "login": "Jhoorodre"
       }
     },
     {
