@@ -1,7 +1,63 @@
 {
-  "generated_at": "2026-09-11T00:29:01.512323+00:00",
+  "generated_at": "2026-09-12T00:23:06.366003+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 25,
+      "title": "[Bug]: Erro de Nenhuma página encontrada XXX YAOI",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/25",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-11T23:57:16Z",
+      "updated_at": "2026-09-11T23:57:25Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "luanarbritto-commits"
+      }
+    },
+    {
+      "number": 24,
+      "title": "[Bug]: Erro ao tentar abrir algum capítulo",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/24",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-11T23:00:49Z",
+      "updated_at": "2026-09-11T23:00:59Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "mateuss8402"
+      }
+    },
     {
       "number": 18,
       "title": "[Nova extensão]:",
