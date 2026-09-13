@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-09-13T21:45:37.332226+00:00",
+  "generated_at": "2026-09-13T23:39:24.413550+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 30,
+      "title": "[Bug]: Erro NullPointerException na Scan XXX YAOI",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/30",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-13T22:53:21Z",
+      "updated_at": "2026-09-13T22:53:30Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "luanarbritto-commits"
+      }
+    },
     {
       "number": 29,
       "title": "Gostaria que adicionassem essa nova extensão que surgiu no português brasileiro",
