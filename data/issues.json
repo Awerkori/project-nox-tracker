@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T01:42:06.941839+00:00",
+  "generated_at": "2026-09-14T19:17:37.925383+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -7,11 +7,11 @@
       "title": "[Bug]: Erro NullPointerException na Scan XXX YAOI",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/30",
       "state": "open",
-      "state_reason": null,
+      "state_reason": "reopened",
       "created_at": "2026-09-13T22:53:21Z",
-      "updated_at": "2026-09-13T23:55:45Z",
+      "updated_at": "2026-09-14T16:38:04Z",
       "closed_at": null,
-      "comments": 1,
+      "comments": 2,
       "labels": [
         {
           "name": "Bug",
@@ -20,6 +20,10 @@
         {
           "name": "Manga",
           "color": "1D76DB"
+        },
+        {
+          "name": "Aguardando informações",
+          "color": "FEF2C0"
         }
       ],
       "reactions": {
@@ -429,9 +433,9 @@
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-07T07:23:46Z",
-      "updated_at": "2026-09-13T21:06:55Z",
+      "updated_at": "2026-09-14T14:09:18Z",
       "closed_at": "2026-09-13T21:06:55Z",
-      "comments": 4,
+      "comments": 5,
       "labels": [
         {
           "name": "Bug",
