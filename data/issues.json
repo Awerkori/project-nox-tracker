@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-09-14T19:17:37.925383+00:00",
+  "generated_at": "2026-09-14T22:35:34.083410+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 30,
       "title": "[Bug]: Erro NullPointerException na Scan XXX YAOI",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/30",
-      "state": "open",
-      "state_reason": "reopened",
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-13T22:53:21Z",
-      "updated_at": "2026-09-14T16:38:04Z",
-      "closed_at": null,
+      "updated_at": "2026-09-14T22:28:28Z",
+      "closed_at": "2026-09-14T22:28:20Z",
       "comments": 2,
       "labels": [
         {
@@ -22,8 +22,8 @@
           "color": "1D76DB"
         },
         {
-          "name": "Aguardando informações",
-          "color": "FEF2C0"
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
