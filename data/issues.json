@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T10:40:07.386358+00:00",
+  "generated_at": "2026-09-15T22:11:24.403261+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -9,9 +9,9 @@
       "state": "open",
       "state_reason": null,
       "created_at": "2026-09-15T06:35:24Z",
-      "updated_at": "2026-09-15T06:35:34Z",
+      "updated_at": "2026-09-15T20:47:26Z",
       "closed_at": null,
-      "comments": 0,
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -20,6 +20,14 @@
         {
           "name": "Manga",
           "color": "1D76DB"
+        },
+        {
+          "name": "Em desenvolvimento",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Prioridade",
+          "color": "E99695"
         }
       ],
       "reactions": {
