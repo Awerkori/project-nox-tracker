@@ -1,17 +1,105 @@
 {
-  "generated_at": "2026-09-16T14:35:25.237561+00:00",
+  "generated_at": "2026-09-16T21:33:10.464878+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 34,
+      "title": "[Bug]: Point Zero Toons, Nenhum resultado encontrado",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/34",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-16T19:16:04Z",
+      "updated_at": "2026-09-16T21:30:26Z",
+      "closed_at": "2026-09-16T21:30:26Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
+    {
+      "number": 33,
+      "title": "[Fonte morta]: Ghost Scan, Nenhum resultado encontrado",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/33",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-16T19:11:18Z",
+      "updated_at": "2026-09-16T20:48:28Z",
+      "closed_at": "2026-09-16T20:48:23Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Fonte morta",
+          "color": "6A737D"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
+    {
+      "number": 32,
+      "title": "[Bug]: HTTP 500, verifique o site na WebView no CorujaToon",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/32",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-16T19:07:48Z",
+      "updated_at": "2026-09-16T21:29:53Z",
+      "closed_at": "2026-09-16T21:29:53Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
     {
       "number": 31,
       "title": "[Bug]:  Erro não carregamento das imagens no XXX YAOI",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/31",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-15T06:35:24Z",
-      "updated_at": "2026-09-15T20:47:26Z",
-      "closed_at": null,
-      "comments": 1,
+      "updated_at": "2026-09-16T21:31:10Z",
+      "closed_at": "2026-09-16T21:31:01Z",
+      "comments": 2,
       "labels": [
         {
           "name": "Bug",
@@ -22,12 +110,8 @@
           "color": "1D76DB"
         },
         {
-          "name": "Em desenvolvimento",
-          "color": "1D76DB"
-        },
-        {
-          "name": "Prioridade",
-          "color": "E99695"
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
