@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-09-18T05:57:24.795394+00:00",
+  "generated_at": "2026-09-19T14:00:53.276422+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 36,
+      "title": "[Nova extensão]: Extensão KariKari",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/36",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-19T12:12:50Z",
+      "updated_at": "2026-09-19T12:13:00Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "rafarecife"
+      }
+    },
     {
       "number": 35,
       "title": "[Bug]: Erro 404 na extensão do Hanami Heaven",
