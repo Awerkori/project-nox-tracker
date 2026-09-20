@@ -1,7 +1,91 @@
 {
-  "generated_at": "2026-09-20T06:56:13.160515+00:00",
+  "generated_at": "2026-09-20T18:45:54.446101+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 39,
+      "title": "[Bug]: AcervoEremita. Entra, mas quando abre o capítulo, aparece um erro.",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/39",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-20T17:52:29Z",
+      "updated_at": "2026-09-20T17:52:36Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
+    {
+      "number": 38,
+      "title": "[Bug]: Erro Java.io.IOException: private hosts not resolved",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/38",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-20T17:48:30Z",
+      "updated_at": "2026-09-20T17:48:38Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "lyras11"
+      }
+    },
+    {
+      "number": 37,
+      "title": "[Bug]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/37",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-20T16:36:28Z",
+      "updated_at": "2026-09-20T16:36:36Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "leandromesquitabarbosa-cmd"
+      }
+    },
     {
       "number": 36,
       "title": "[Nova extensão]: Extensão KariKari",
