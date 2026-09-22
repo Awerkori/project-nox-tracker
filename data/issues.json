@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T18:41:18.179563+00:00",
+  "generated_at": "2026-09-22T00:54:35.490176+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -9,9 +9,9 @@
       "state": "open",
       "state_reason": null,
       "created_at": "2026-09-21T17:00:44Z",
-      "updated_at": "2026-09-21T17:00:54Z",
+      "updated_at": "2026-09-21T23:37:16Z",
       "closed_at": null,
-      "comments": 0,
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -20,6 +20,10 @@
         {
           "name": "Manga",
           "color": "1D76DB"
+        },
+        {
+          "name": "Aguardando informações",
+          "color": "FEF2C0"
         }
       ],
       "reactions": {
@@ -34,12 +38,12 @@
       "number": 40,
       "title": "Geass comics",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/40",
-      "state": "open",
-      "state_reason": "reopened",
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-21T01:06:43Z",
-      "updated_at": "2026-09-21T16:50:54Z",
-      "closed_at": null,
-      "comments": 2,
+      "updated_at": "2026-09-21T23:34:20Z",
+      "closed_at": "2026-09-21T23:34:20Z",
+      "comments": 3,
       "labels": [
         {
           "name": "Bug",
@@ -50,8 +54,8 @@
           "color": "1D76DB"
         },
         {
-          "name": "Aguardando informações",
-          "color": "FEF2C0"
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
