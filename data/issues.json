@@ -1,7 +1,91 @@
 {
-  "generated_at": "2026-09-22T00:54:35.490176+00:00",
+  "generated_at": "2026-09-22T05:54:28.177996+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 44,
+      "title": "[Sugestão]: redetoons",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/44",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-22T02:29:25Z",
+      "updated_at": "2026-09-22T02:29:46Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Sugestão",
+          "color": "7057FF"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "0luccas0"
+      }
+    },
+    {
+      "number": 43,
+      "title": "[Bug]: anime fire",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/43",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-22T02:25:44Z",
+      "updated_at": "2026-09-22T02:25:54Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "0luccas0"
+      }
+    },
+    {
+      "number": 42,
+      "title": "[Bug]: erro HTTP 502",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/42",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-22T02:21:45Z",
+      "updated_at": "2026-09-22T02:21:56Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "0luccas0"
+      }
+    },
     {
       "number": 41,
       "title": "OneReader",
