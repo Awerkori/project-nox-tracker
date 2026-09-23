@@ -1,16 +1,140 @@
 {
-  "generated_at": "2026-09-23T18:40:07.435522+00:00",
+  "generated_at": "2026-09-23T21:48:11.578719+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 49,
+      "title": "[Nova extensão]: Extensão Ragnarok Scanlation",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/49",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-23T20:04:59Z",
+      "updated_at": "2026-09-23T20:35:34Z",
+      "closed_at": "2026-09-23T20:35:31Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "rafarecife"
+      }
+    },
+    {
+      "number": 48,
+      "title": "[Bug]: HTTP 522, verifique o site na WebView, Manga Online RED",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/48",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-23T19:04:37Z",
+      "updated_at": "2026-09-23T19:18:57Z",
+      "closed_at": "2026-09-23T19:18:57Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
+    {
+      "number": 47,
+      "title": "[Bug]: HTTP 522, verifique o site na WebView, FlowerManga.net",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/47",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-23T18:55:32Z",
+      "updated_at": "2026-09-23T19:19:33Z",
+      "closed_at": "2026-09-23T19:19:26Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
+    {
+      "number": 46,
+      "title": "[Bug]: HTTP 522, verifique o site na WebView Cerise Scan",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/46",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-23T18:52:31Z",
+      "updated_at": "2026-09-23T19:18:44Z",
+      "closed_at": "2026-09-23T19:18:37Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
     {
       "number": 45,
       "title": "[Mudança de domínio]: Fenix Project não abre, WebView funciona",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/45",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-23T18:38:48Z",
-      "updated_at": "2026-09-23T18:38:57Z",
-      "closed_at": null,
+      "updated_at": "2026-09-23T20:22:15Z",
+      "closed_at": "2026-09-23T20:22:15Z",
       "comments": 0,
       "labels": [
         {
