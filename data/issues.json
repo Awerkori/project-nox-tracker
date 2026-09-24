@@ -1,7 +1,63 @@
 {
-  "generated_at": "2026-09-24T14:23:25.501910+00:00",
+  "generated_at": "2026-09-24T18:32:25.062951+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 53,
+      "title": "[Bug]: OneReader",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/53",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-24T17:17:17Z",
+      "updated_at": "2026-09-24T17:17:25Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "otto09-cmd"
+      }
+    },
+    {
+      "number": 52,
+      "title": "[Bug]: Taimu Mangas",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/52",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-24T17:07:33Z",
+      "updated_at": "2026-09-24T17:08:02Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "otto09-cmd"
+      }
+    },
     {
       "number": 51,
       "title": "[Bug]: Kitsune Yako",
