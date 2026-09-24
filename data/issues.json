@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T18:32:25.062951+00:00",
+  "generated_at": "2026-09-24T21:45:04.632868+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -34,12 +34,12 @@
       "number": 52,
       "title": "[Bug]: Taimu Mangas",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/52",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-24T17:07:33Z",
-      "updated_at": "2026-09-24T17:08:02Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-24T18:37:03Z",
+      "closed_at": "2026-09-24T18:36:59Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -48,6 +48,10 @@
         {
           "name": "Manga",
           "color": "1D76DB"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
