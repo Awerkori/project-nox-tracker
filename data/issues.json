@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-09-25T00:03:38.441492+00:00",
+  "generated_at": "2026-09-25T04:49:49.289736+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
-      "number": 54,
-      "title": "[Mudança de domínio]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/54",
+      "number": 56,
+      "title": "[Mudança de domínio]: AniTube",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/56",
       "state": "open",
       "state_reason": null,
-      "created_at": "2026-09-24T23:55:54Z",
-      "updated_at": "2026-09-24T23:56:03Z",
+      "created_at": "2026-09-25T02:16:07Z",
+      "updated_at": "2026-09-25T02:16:15Z",
       "closed_at": null,
       "comments": 0,
       "labels": [
@@ -27,19 +27,19 @@
         "+1": 0
       },
       "author": {
-        "login": "RaiKay01"
+        "login": "0luccas0"
       }
     },
     {
-      "number": 53,
-      "title": "[Bug]: OneReader",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/53",
-      "state": "open",
-      "state_reason": null,
-      "created_at": "2026-09-24T17:17:17Z",
-      "updated_at": "2026-09-24T17:17:25Z",
-      "closed_at": null,
-      "comments": 0,
+      "number": 55,
+      "title": "[Bug]: TaimuMangas, Não foi possível resolver apiv2.taimumangas.com: NXDOMAIN",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/55",
+      "state": "closed",
+      "state_reason": "duplicate",
+      "created_at": "2026-09-25T01:15:22Z",
+      "updated_at": "2026-09-25T01:28:37Z",
+      "closed_at": "2026-09-25T01:28:37Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -48,6 +48,70 @@
         {
           "name": "Manga",
           "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
+    {
+      "number": 54,
+      "title": "[Mudança de domínio]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/54",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-24T23:55:54Z",
+      "updated_at": "2026-09-25T01:05:42Z",
+      "closed_at": "2026-09-25T01:05:37Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Mudança de domínio",
+          "color": "FBCA04"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
+    {
+      "number": 53,
+      "title": "[Bug]: OneReader",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/53",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-24T17:17:17Z",
+      "updated_at": "2026-09-25T01:31:00Z",
+      "closed_at": "2026-09-25T01:29:07Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -94,12 +158,12 @@
       "number": 51,
       "title": "[Bug]: Kitsune Yako",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/51",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-24T11:25:32Z",
-      "updated_at": "2026-09-24T11:28:39Z",
-      "closed_at": null,
-      "comments": 1,
+      "updated_at": "2026-09-25T01:30:53Z",
+      "closed_at": "2026-09-25T01:29:32Z",
+      "comments": 2,
       "labels": [
         {
           "name": "Bug",
@@ -108,6 +172,10 @@
         {
           "name": "Manga",
           "color": "1D76DB"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -122,12 +190,12 @@
       "number": 50,
       "title": "[Bug]: Erro Leitor mudou XXX YAOI",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/50",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-23T23:52:56Z",
-      "updated_at": "2026-09-23T23:53:05Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-25T01:30:38Z",
+      "closed_at": "2026-09-25T01:29:44Z",
+      "comments": 2,
       "labels": [
         {
           "name": "Bug",
@@ -136,6 +204,10 @@
         {
           "name": "Manga",
           "color": "1D76DB"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -494,12 +566,12 @@
       "number": 38,
       "title": "[Bug]: Erro Java.io.IOException: private hosts not resolved",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/38",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-20T17:48:30Z",
-      "updated_at": "2026-09-20T17:48:38Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-25T03:21:35Z",
+      "closed_at": "2026-09-25T01:30:08Z",
+      "comments": 4,
       "labels": [
         {
           "name": "Bug",
