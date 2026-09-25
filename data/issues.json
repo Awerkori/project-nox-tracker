@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-09-25T04:49:49.289736+00:00",
+  "generated_at": "2026-09-25T09:53:27.469662+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 56,
       "title": "[Mudança de domínio]: AniTube",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/56",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-25T02:16:07Z",
-      "updated_at": "2026-09-25T02:16:15Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-25T05:11:03Z",
+      "closed_at": "2026-09-25T05:10:15Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Anime",
@@ -20,6 +20,10 @@
         {
           "name": "Mudança de domínio",
           "color": "FBCA04"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
