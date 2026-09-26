@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-09-25T19:12:43.458588+00:00",
+  "generated_at": "2026-09-26T00:47:17.373460+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 57,
+      "title": "[Nova extensão]: Central novel",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/57",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-09-25T23:50:37Z",
+      "updated_at": "2026-09-26T00:43:36Z",
+      "closed_at": "2026-09-26T00:43:29Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        },
+        {
+          "name": "Recusado",
+          "color": "B60205"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "LUCASGYNBR"
+      }
+    },
     {
       "number": 56,
       "title": "[Mudança de domínio]: AniTube",
