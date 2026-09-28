@@ -1,7 +1,63 @@
 {
-  "generated_at": "2026-09-27T20:26:36.627525+00:00",
+  "generated_at": "2026-09-28T01:46:54.242165+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 68,
+      "title": "[Bug]: mangaball mudou a interface",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/68",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-28T01:19:06Z",
+      "updated_at": "2026-09-28T01:20:14Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "LUCASGYNBR"
+      }
+    },
+    {
+      "number": 67,
+      "title": "[Bug]: Maid Scan, HTTP 404, verifique o site na WebView",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/67",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-28T00:34:41Z",
+      "updated_at": "2026-09-28T00:34:49Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Kah-M"
+      }
+    },
     {
       "number": 66,
       "title": "[Mudança de domínio]:",
