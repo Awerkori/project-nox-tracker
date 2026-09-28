@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-09-28T01:46:54.242165+00:00",
+  "generated_at": "2026-09-28T07:45:47.452459+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 69,
+      "title": "N esta dando para ler nessa extensão",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/69",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-28T02:57:28Z",
+      "updated_at": "2026-09-28T02:57:36Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Flyscorpionbr22"
+      }
+    },
     {
       "number": 68,
       "title": "[Bug]: mangaball mudou a interface",
