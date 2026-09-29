@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-09-28T21:56:07.641191+00:00",
+  "generated_at": "2026-09-29T07:31:29.537815+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 69,
       "title": "N esta dando para ler nessa extensão",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/69",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-28T02:57:28Z",
-      "updated_at": "2026-09-28T02:57:36Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-29T06:40:25Z",
+      "closed_at": "2026-09-29T06:40:24Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -34,12 +34,12 @@
       "number": 68,
       "title": "[Bug]: mangaball mudou a interface",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/68",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-28T01:19:06Z",
-      "updated_at": "2026-09-28T01:20:14Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-29T05:17:13Z",
+      "closed_at": "2026-09-29T05:17:13Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -62,12 +62,12 @@
       "number": 67,
       "title": "[Bug]: Maid Scan, HTTP 404, verifique o site na WebView",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/67",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-28T00:34:41Z",
-      "updated_at": "2026-09-28T00:34:49Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-29T05:30:05Z",
+      "closed_at": "2026-09-29T05:30:05Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -146,12 +146,12 @@
       "number": 64,
       "title": "[Bug]: Erro Java.io.IOException: private hosts not resolved",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/64",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-27T02:27:02Z",
-      "updated_at": "2026-09-27T02:27:12Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-29T06:40:13Z",
+      "closed_at": "2026-09-29T06:40:13Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -174,12 +174,12 @@
       "number": 63,
       "title": "[Bug]: Little Tyrant",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/63",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-09-26T19:51:47Z",
-      "updated_at": "2026-09-26T19:51:56Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-09-29T05:16:01Z",
+      "closed_at": "2026-09-29T05:15:57Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -188,6 +188,10 @@
         {
           "name": "Manga",
           "color": "1D76DB"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
