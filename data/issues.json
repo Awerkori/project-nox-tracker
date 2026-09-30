@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-09-30T15:15:14.189871+00:00",
+  "generated_at": "2026-09-30T20:07:06.287027+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 75,
+      "title": "[Bug]: OneReader",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/75",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-09-30T17:41:58Z",
+      "updated_at": "2026-09-30T17:42:07Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "otto09-cmd"
+      }
+    },
     {
       "number": 74,
       "title": "[Bug]: não esta abrindo os videos",
