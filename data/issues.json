@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-02T13:40:57.170591+00:00",
+  "generated_at": "2026-10-02T18:42:48.289409+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 78,
+      "title": "[Bug]: Nexus Toons não está funcionando no Tadami",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/78",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-10-02T15:26:47Z",
+      "updated_at": "2026-10-02T17:57:38Z",
+      "closed_at": "2026-10-02T17:23:05Z",
+      "comments": 2,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "D4ryl11"
+      }
+    },
     {
       "number": 77,
       "title": "[Mudança de domínio]: site mudou de dominio",
@@ -37,9 +65,9 @@
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-30T22:55:48Z",
-      "updated_at": "2026-10-01T16:15:46Z",
+      "updated_at": "2026-10-02T15:24:23Z",
       "closed_at": "2026-09-30T23:13:39Z",
-      "comments": 3,
+      "comments": 4,
       "labels": [
         {
           "name": "Bug",
