@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-10-05T18:36:09.787627+00:00",
+  "generated_at": "2026-10-06T06:34:59.752615+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 80,
       "title": "[Bug]: Maid Scan",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/80",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-05T17:10:42Z",
-      "updated_at": "2026-10-05T17:10:50Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-06T01:14:19Z",
+      "closed_at": "2026-10-06T01:14:19Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
