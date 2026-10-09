@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-08T00:55:05.427832+00:00",
+  "generated_at": "2026-10-09T06:22:44.952092+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 82,
+      "title": "[Bug]: Lycan Toons",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/82",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-09T00:36:56Z",
+      "updated_at": "2026-10-09T00:37:04Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "otto09-cmd"
+      }
+    },
     {
       "number": 81,
       "title": "[Bug]: não atualizando o recente",
