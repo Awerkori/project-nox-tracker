@@ -1,17 +1,45 @@
 {
-  "generated_at": "2026-10-10T14:47:26.047717+00:00",
+  "generated_at": "2026-10-10T18:57:51.787543+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 88,
+      "title": "[Bug]: OneReader",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/88",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-10T16:54:06Z",
+      "updated_at": "2026-10-10T16:54:14Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "otto09-cmd"
+      }
+    },
     {
       "number": 87,
       "title": "[Nova extensão]: phantasie translate",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/87",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-10T11:26:04Z",
-      "updated_at": "2026-10-10T11:26:12Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-10T15:02:46Z",
+      "closed_at": "2026-10-10T15:02:46Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Manga",
