@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T02:20:30.512811+00:00",
+  "generated_at": "2026-10-10T08:42:47.760584+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -20,70 +20,6 @@
         {
           "name": "Nova extensão",
           "color": "0E8A16"
-        }
-      ],
-      "reactions": {
-        "total_count": 0,
-        "+1": 0
-      },
-      "author": {
-        "login": "RaiKay01"
-      }
-    },
-    {
-      "number": 85,
-      "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/85",
-      "state": "closed",
-      "state_reason": "completed",
-      "created_at": "2026-10-10T00:50:23Z",
-      "updated_at": "2026-10-10T01:00:08Z",
-      "closed_at": "2026-10-10T01:00:08Z",
-      "comments": 0,
-      "labels": [
-        {
-          "name": "Anime",
-          "color": "5319E7"
-        },
-        {
-          "name": "Nova extensão",
-          "color": "0E8A16"
-        },
-        {
-          "name": "Recusado",
-          "color": "B60205"
-        }
-      ],
-      "reactions": {
-        "total_count": 0,
-        "+1": 0
-      },
-      "author": {
-        "login": "RaiKay01"
-      }
-    },
-    {
-      "number": 84,
-      "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/84",
-      "state": "closed",
-      "state_reason": "completed",
-      "created_at": "2026-10-09T23:53:20Z",
-      "updated_at": "2026-10-10T01:00:29Z",
-      "closed_at": "2026-10-10T01:00:29Z",
-      "comments": 0,
-      "labels": [
-        {
-          "name": "Anime",
-          "color": "5319E7"
-        },
-        {
-          "name": "Nova extensão",
-          "color": "0E8A16"
-        },
-        {
-          "name": "Recusado",
-          "color": "B60205"
         }
       ],
       "reactions": {
@@ -126,12 +62,12 @@
       "number": 82,
       "title": "[Bug]: Lycan Toons",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/82",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-09T00:36:56Z",
-      "updated_at": "2026-10-09T00:37:04Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-10T05:58:20Z",
+      "closed_at": "2026-10-10T05:58:13Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -204,38 +140,6 @@
       },
       "author": {
         "login": "otto09-cmd"
-      }
-    },
-    {
-      "number": 79,
-      "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/79",
-      "state": "closed",
-      "state_reason": "completed",
-      "created_at": "2026-10-05T06:45:50Z",
-      "updated_at": "2026-10-10T01:00:46Z",
-      "closed_at": "2026-10-10T01:00:46Z",
-      "comments": 0,
-      "labels": [
-        {
-          "name": "Manga",
-          "color": "1D76DB"
-        },
-        {
-          "name": "Nova extensão",
-          "color": "0E8A16"
-        },
-        {
-          "name": "Recusado",
-          "color": "B60205"
-        }
-      ],
-      "reactions": {
-        "total_count": 0,
-        "+1": 0
-      },
-      "author": {
-        "login": "RaiKay01"
       }
     },
     {
