@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-10T08:42:47.760584+00:00",
+  "generated_at": "2026-10-10T14:47:26.047717+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 87,
+      "title": "[Nova extensão]: phantasie translate",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/87",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-10T11:26:04Z",
+      "updated_at": "2026-10-10T11:26:12Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "vijordao09"
+      }
+    },
     {
       "number": 86,
       "title": "[Nova extensão]:",
