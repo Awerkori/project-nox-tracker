@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-10-11T01:08:20.325545+00:00",
+  "generated_at": "2026-10-11T07:11:26.032620+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 92,
       "title": "[Bug]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/92",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-11T00:27:52Z",
-      "updated_at": "2026-10-11T00:28:00Z",
-      "closed_at": null,
+      "updated_at": "2026-10-11T05:35:40Z",
+      "closed_at": "2026-10-11T05:35:40Z",
       "comments": 0,
       "labels": [
         {
@@ -20,6 +20,10 @@
         {
           "name": "Anime",
           "color": "5319E7"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -34,12 +38,12 @@
       "number": 91,
       "title": "[Bug]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/91",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-11T00:19:07Z",
-      "updated_at": "2026-10-11T00:19:14Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-11T05:00:27Z",
+      "closed_at": "2026-10-11T05:00:27Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -62,11 +66,11 @@
       "number": 90,
       "title": "[Bug]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/90",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-11T00:10:41Z",
-      "updated_at": "2026-10-11T00:10:49Z",
-      "closed_at": null,
+      "updated_at": "2026-10-11T04:54:37Z",
+      "closed_at": "2026-10-11T04:54:37Z",
       "comments": 0,
       "labels": [
         {
@@ -90,12 +94,12 @@
       "number": 89,
       "title": "[Bug]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/89",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-11T00:04:31Z",
-      "updated_at": "2026-10-11T00:04:39Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-11T03:26:08Z",
+      "closed_at": "2026-10-11T03:26:04Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
@@ -104,6 +108,10 @@
         {
           "name": "Anime",
           "color": "5319E7"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -118,12 +126,12 @@
       "number": 88,
       "title": "[Bug]: OneReader",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/88",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-10T16:54:06Z",
-      "updated_at": "2026-10-10T16:54:14Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-11T02:06:02Z",
+      "closed_at": "2026-10-11T02:05:54Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
