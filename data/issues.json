@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-11T07:11:26.032620+00:00",
+  "generated_at": "2026-10-11T22:34:20.643683+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 93,
+      "title": "[Nova extensão]: supermanga",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/93",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-11T21:36:35Z",
+      "updated_at": "2026-10-11T21:36:43Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "LUCASGYNBR"
+      }
+    },
     {
       "number": 92,
       "title": "[Bug]:",
