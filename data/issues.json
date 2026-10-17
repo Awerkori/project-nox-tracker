@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-16T22:30:27.907751+00:00",
+  "generated_at": "2026-10-17T05:03:05.564520+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 100,
+      "title": "[Nova extensão]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/100",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-17T04:44:40Z",
+      "updated_at": "2026-10-17T04:44:48Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
     {
       "number": 99,
       "title": "[Bug]: Erro pink rosa scan",
