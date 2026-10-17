@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-17T05:03:05.564520+00:00",
+  "generated_at": "2026-10-17T20:57:45.472050+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 101,
+      "title": "[Bug]: KuroMangas sem funcionar o login",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/101",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-17T19:29:35Z",
+      "updated_at": "2026-10-17T19:29:43Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "DarkGuibrine"
+      }
+    },
     {
       "number": 100,
       "title": "[Nova extensão]:",
@@ -9,7 +37,7 @@
       "state": "open",
       "state_reason": null,
       "created_at": "2026-10-17T04:44:40Z",
-      "updated_at": "2026-10-17T04:44:48Z",
+      "updated_at": "2026-10-17T20:40:39Z",
       "closed_at": null,
       "comments": 0,
       "labels": [
@@ -20,6 +48,10 @@
         {
           "name": "Nova extensão",
           "color": "0E8A16"
+        },
+        {
+          "name": "Recusado",
+          "color": "B60205"
         }
       ],
       "reactions": {
