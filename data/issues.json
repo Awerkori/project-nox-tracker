@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-10-18T16:55:43.006115+00:00",
+  "generated_at": "2026-10-18T21:37:00.771957+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 102,
       "title": "[Nova extensão]:",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/102",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-18T13:47:25Z",
-      "updated_at": "2026-10-18T13:47:33Z",
-      "closed_at": null,
+      "updated_at": "2026-10-18T20:52:07Z",
+      "closed_at": "2026-10-18T20:52:07Z",
       "comments": 0,
       "labels": [
         {
