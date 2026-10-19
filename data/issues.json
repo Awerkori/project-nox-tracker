@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-18T21:37:00.771957+00:00",
+  "generated_at": "2026-10-19T06:56:30.885307+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 103,
+      "title": "[Mudança de domínio]:",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/103",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-10-19T03:14:15Z",
+      "updated_at": "2026-10-19T03:19:23Z",
+      "closed_at": "2026-10-19T03:19:23Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        },
+        {
+          "name": "Mudança de domínio",
+          "color": "FBCA04"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "RaiKay01"
+      }
+    },
     {
       "number": 102,
       "title": "[Nova extensão]:",
