@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-19T20:08:53.306266+00:00",
+  "generated_at": "2026-10-20T02:07:30.512132+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 105,
+      "title": "[Bug]: KuroMangas não está funcionando no Tadami",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/105",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-20T01:52:09Z",
+      "updated_at": "2026-10-20T01:52:17Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "D4ryl11"
+      }
+    },
     {
       "number": 104,
       "title": "[Bug]: Lycan Toons",
