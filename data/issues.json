@@ -1,7 +1,63 @@
 {
-  "generated_at": "2026-10-20T02:07:30.512132+00:00",
+  "generated_at": "2026-10-21T21:36:07.277540+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 107,
+      "title": "[Bug]: RedeToons não funciona (erro 403)",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/107",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-21T21:00:35Z",
+      "updated_at": "2026-10-21T21:01:41Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Argosax3165"
+      }
+    },
+    {
+      "number": 106,
+      "title": "[Bug]: Os episódios não aparecem",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/106",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-21T19:06:59Z",
+      "updated_at": "2026-10-21T19:07:09Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Anime",
+          "color": "5319E7"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "mateuss8402"
+      }
+    },
     {
       "number": 105,
       "title": "[Bug]: KuroMangas não está funcionando no Tadami",
