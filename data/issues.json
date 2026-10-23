@@ -1,7 +1,63 @@
 {
-  "generated_at": "2026-10-23T15:22:29.670947+00:00",
+  "generated_at": "2026-10-23T19:25:21.618402+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 112,
+      "title": "[Nova extensão]: hikaricomics",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/112",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-23T18:16:44Z",
+      "updated_at": "2026-10-23T18:16:56Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "LUCASGYNBR"
+      }
+    },
+    {
+      "number": 111,
+      "title": "[Bug]: Little Tyrant",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/111",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-23T16:33:14Z",
+      "updated_at": "2026-10-23T16:33:24Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Bug",
+          "color": "D73A4A"
+        },
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "otto09-cmd"
+      }
+    },
     {
       "number": 110,
       "title": "[Nova extensão]: animy extensão de anime e manga",
