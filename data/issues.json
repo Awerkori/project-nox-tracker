@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-22T22:15:16.988108+00:00",
+  "generated_at": "2026-10-23T15:22:29.670947+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 110,
+      "title": "[Nova extensão]: animy extensão de anime e manga",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/110",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-23T11:29:37Z",
+      "updated_at": "2026-10-23T11:29:45Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "DarkGuibrine"
+      }
+    },
     {
       "number": 109,
       "title": "[Bug]: Sagrado Império da Britannia",
