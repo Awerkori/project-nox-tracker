@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-10-23T19:25:21.618402+00:00",
+  "generated_at": "2026-10-25T23:59:25.553209+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 113,
+      "title": "[Nova extensão]: Hentaiteca.net",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/113",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-25T23:15:28Z",
+      "updated_at": "2026-10-25T23:15:37Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SopraAaqui"
+      }
+    },
     {
       "number": 112,
       "title": "[Nova extensão]: hikaricomics",
