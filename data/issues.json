@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-10-27T05:40:50.938219+00:00",
+  "generated_at": "2026-10-27T11:01:30.593733+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 113,
       "title": "[Nova extensão]: Hentaiteca.net",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/113",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-25T23:15:28Z",
-      "updated_at": "2026-10-25T23:15:37Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-27T06:50:15Z",
+      "closed_at": "2026-10-27T06:50:15Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Manga",
@@ -34,12 +34,12 @@
       "number": 112,
       "title": "[Nova extensão]: hikaricomics",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/112",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-23T18:16:44Z",
-      "updated_at": "2026-10-23T18:16:56Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-27T05:54:42Z",
+      "closed_at": "2026-10-27T05:54:36Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Manga",
@@ -48,6 +48,10 @@
         {
           "name": "Nova extensão",
           "color": "0E8A16"
+        },
+        {
+          "name": "Concluído",
+          "color": "006B75"
         }
       ],
       "reactions": {
@@ -174,12 +178,12 @@
       "number": 107,
       "title": "[Bug]: RedeToons não funciona (erro 403)",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/107",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-21T21:00:35Z",
-      "updated_at": "2026-10-21T21:01:41Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-27T08:43:06Z",
+      "closed_at": "2026-10-27T08:33:39Z",
+      "comments": 2,
       "labels": [
         {
           "name": "Bug",
@@ -202,12 +206,12 @@
       "number": 106,
       "title": "[Bug]: Os episódios não aparecem",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/106",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-21T19:06:59Z",
-      "updated_at": "2026-10-21T19:07:09Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-27T07:55:43Z",
+      "closed_at": "2026-10-27T07:55:42Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
