@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-25T23:59:25.553209+00:00",
+  "generated_at": "2026-10-27T00:43:13.561103+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -258,12 +258,12 @@
       "number": 104,
       "title": "[Bug]: Lycan Toons",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/104",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-19T17:18:08Z",
-      "updated_at": "2026-10-19T17:18:17Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-10-26T23:51:25Z",
+      "closed_at": "2026-10-26T23:51:24Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Bug",
