@@ -1,7 +1,203 @@
 {
-  "generated_at": "2026-10-27T11:01:30.593733+00:00",
+  "generated_at": "2026-10-27T16:28:33.556424+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 120,
+      "title": "[Nova extensão]: Sukimangas",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/120",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-27T14:37:13Z",
+      "updated_at": "2026-10-27T14:37:22Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SrCrono"
+      }
+    },
+    {
+      "number": 119,
+      "title": "[Nova extensão]: ManHQ",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/119",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-27T14:21:29Z",
+      "updated_at": "2026-10-27T14:21:40Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SrCrono"
+      }
+    },
+    {
+      "number": 118,
+      "title": "[Nova extensão]: Ler Mangá Online",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/118",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-27T14:19:05Z",
+      "updated_at": "2026-10-27T14:19:14Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SrCrono"
+      }
+    },
+    {
+      "number": 117,
+      "title": "[Nova extensão]: Mangalivre.lat",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/117",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-27T14:17:23Z",
+      "updated_at": "2026-10-27T14:17:32Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SrCrono"
+      }
+    },
+    {
+      "number": 116,
+      "title": "[Nova extensão]: Mangá Verde",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/116",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-27T14:14:16Z",
+      "updated_at": "2026-10-27T14:14:25Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SrCrono"
+      }
+    },
+    {
+      "number": 115,
+      "title": "[Nova extensão]: GoMangas",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/115",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-27T14:06:59Z",
+      "updated_at": "2026-10-27T14:07:09Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SrCrono"
+      }
+    },
+    {
+      "number": 114,
+      "title": "[Nova extensão]: NeoToons",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/114",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-27T14:04:38Z",
+      "updated_at": "2026-10-27T14:04:48Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Manga",
+          "color": "1D76DB"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "0E8A16"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SrCrono"
+      }
+    },
     {
       "number": 113,
       "title": "[Nova extensão]: Hentaiteca.net",
