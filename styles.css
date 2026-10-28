@@ -368,7 +368,7 @@ button, input, select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   height: 38px;
   min-height: 38px;
   max-height: 38px;
@@ -391,22 +391,42 @@ button, input, select {
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.nav-links .community-link svg,
-.nav-links .community-link img,
+.nav-links .community-link svg {
+  display: block;
+  flex-shrink: 0;
+  fill: #ffffff;
+  color: #ffffff;
+  transition: transform 0.2s ease, fill 0.2s ease, filter 0.2s ease;
+}
+
+.nav-links .community-link.discord-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-links .community-link.fluxer-link svg {
+  width: 18.5px;
+  height: 15.5px;
+}
+
 .nav-links .header-cta .btn-plus-icon {
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   flex-shrink: 0;
   display: block;
 }
 
 .nav-links .community-link span,
-.nav-links .header-cta span {
+.nav-links .header-cta .btn-text-full {
   display: inline-block;
   line-height: 1;
   font-size: 13.44px;
   height: 13.44px;
   vertical-align: middle;
+}
+
+.nav-links .header-cta .btn-text-short {
+  display: none;
 }
 
 .button.primary.header-cta {
@@ -447,10 +467,10 @@ button, input, select {
 }
 
 .community-link {
-  background: rgba(18, 20, 34, 0.7);
-  border-color: var(--border-card);
-  color: var(--text-secondary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  background: rgba(18, 20, 34, 0.75);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #f1f5f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .community-link:hover {
@@ -459,17 +479,25 @@ button, input, select {
 }
 
 .community-link.discord-link:hover {
-  border-color: rgba(88, 101, 242, 0.45);
-  background: rgba(88, 101, 242, 0.14);
-  color: #e0e7ff;
-  box-shadow: 0 2px 8px rgba(88, 101, 242, 0.15);
+  border-color: rgba(88, 101, 242, 0.55);
+  background: rgba(88, 101, 242, 0.2);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(88, 101, 242, 0.28);
+}
+
+.community-link.discord-link:hover svg {
+  fill: #ffffff;
 }
 
 .community-link.fluxer-link:hover {
-  border-color: rgba(168, 85, 247, 0.45);
-  background: rgba(168, 85, 247, 0.14);
-  color: #f3e8ff;
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.55);
+  background: rgba(168, 85, 247, 0.2);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.28);
+}
+
+.community-link.fluxer-link:hover svg {
+  fill: #ffffff;
 }
 
 .community-link:focus-visible {
@@ -1807,22 +1835,101 @@ main {
 }
 
 @media (max-width: 640px) {
-  .nav-links .community-link {
-    display: none !important;
+  .site-header {
+    padding: 8px 12px;
   }
+  .brand-symbol-wrap,
+  .header-symbol {
+    width: 34px;
+    height: 34px;
+  }
+  .brand-sub,
   .brand-badge {
     display: none !important;
   }
-  .button.primary.header-cta .btn-text-full {
+  .brand-project {
     display: none;
   }
+  .brand-nox {
+    font-size: 0.95rem;
+  }
+  .brand-tracker {
+    font-size: 0.95rem;
+  }
+  .nav-links {
+    gap: 6px;
+  }
+  .nav-links .community-link {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    padding: 0;
+    justify-content: center;
+  }
+  .nav-links .community-link.discord-link svg {
+    width: 19px;
+    height: 19px;
+  }
+  .nav-links .community-link.fluxer-link svg {
+    width: 17.5px;
+    height: 14.5px;
+  }
+  .button.primary.header-cta .btn-text-full {
+    display: none !important;
+  }
   .button.primary.header-cta .btn-text-short {
-    display: inline;
+    display: inline-block !important;
+    line-height: 1;
+    vertical-align: middle;
   }
   .button.primary.header-cta {
     height: 36px;
     min-height: 36px;
-    padding: 0 12px;
+    max-height: 36px;
+    padding: 0 10px;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .site-header {
+    padding: 8px 8px;
+  }
+  .brand-symbol-wrap,
+  .header-symbol {
+    width: 28px;
+    height: 28px;
+  }
+  .brand-tracker {
+    display: none;
+  }
+  .brand-nox {
+    font-size: 0.88rem;
+  }
+  .nav-links {
+    gap: 4px;
+  }
+  .nav-links .community-link {
+    width: 33px;
+    height: 33px;
+    min-height: 33px;
+    max-height: 33px;
+  }
+  .nav-links .community-link.discord-link svg {
+    width: 17px;
+    height: 17px;
+  }
+  .nav-links .community-link.fluxer-link svg {
+    width: 16px;
+    height: 13.5px;
+  }
+  .button.primary.header-cta {
+    height: 33px;
+    min-height: 33px;
+    max-height: 33px;
+    padding: 0 8px;
+    font-size: 12.5px;
   }
 }
 
