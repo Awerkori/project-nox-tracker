@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "name": "Project Nox Tracker Configuration",
+  "limits": {
+    "manga_new_extension": 25,
+    "anime_new_extension": 15,
+    "bug_reports": 50,
+    "max_active_requests_per_user": 3
+  },
+  "categories": {
+    "new_extension": {
+      "enabled": true,
+      "title": "Nova extensão",
+      "notice": "Pedidos de novas fontes são avaliados conforme popularidade e viabilidade técnica."
+    },
+    "bug": {
+      "enabled": true,
+      "title": "Reportar bug",
+      "notice": "Bugs têm prioridade de correção pela equipe de desenvolvimento."
+    },
+    "domain_change": {
+      "enabled": true,
+      "title": "Mudança de domínio",
+      "notice": "Mudanças de domínio são atualizadas rapidamente nas extensões oficiais."
+    },
+    "dead_source": {
+      "enabled": true,
+      "title": "Fonte morta",
+      "notice": "Fontes permanentemente inoperantes serão desativadas ou removidas."
+    },
+    "enhancement": {
+      "enabled": true,
+      "title": "Sugerir melhoria",
+      "notice": "Sugestões de melhorias de interface, leitor ou recursos."
+    }
+  },
+  "announcement": {
+    "active": false,
+    "type": "info",
+    "message": ""
+  }
+}

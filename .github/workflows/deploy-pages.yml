@@ -26,7 +26,7 @@ jobs:
       - name: Preparar arquivos estáticos
         run: |
           mkdir _site
-          cp index.html styles.css app.js _site/
+          cp index.html styles.css app.js particles.js favicon.ico _site/
           cp -R assets data _site/
       - uses: actions/upload-pages-artifact@v3
         with:
