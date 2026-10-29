@@ -1,6 +1,6 @@
 # Project Nox · Tracker
 
-Painel web interativo e público do **Project Nox** para acompanhar em tempo real o andamento de pedidos, status de correções e demanda por extensões de Mangá e Anime para **Mihon**, **Aniyomi** e ecossistema.
+Painel web interativo e público do **Project Nox** para acompanhar em tempo real o andamento de pedidos, status de correções e demanda por extensões de Mangá e Anime para **Mihon e forks** e **Aniyomi e forks**.
 
 ---
 
@@ -48,11 +48,18 @@ Abra `http://localhost:8000` no seu navegador.
 ## 🔗 Ecossistema Project Nox
 
 - 🎫 [**Project Nox · Central de Pedidos**](https://github.com/Awerkori/project-nox-requests) — Onde os tickets são criados e votados.
-- 📦 [**Project Nox · Extensões de Mangá**](https://github.com/Awerkori/manga-extensoes) — Distribuição de fontes de leitura para Mihon.
+- 📦 [**Project Nox · Extensões de Mangá**](https://github.com/Awerkori/manga-extensoes) — Distribuição de fontes de leitura para Mihon e forks.
 - 💻 [**Project Nox · Código-fonte das Extensões de Mangá**](https://github.com/Awerkori/manga-fonte-extensoes) — Código em Kotlin das extensões de mangá.
-- 🎬 [**Project Nox · Extensões de Anime**](https://github.com/Awerkori/anime-extensoes) — Catálogo de extensões de vídeo para Aniyomi.
+- 🎬 [**Project Nox · Extensões de Anime**](https://github.com/Awerkori/anime-extensoes) — Catálogo de extensões de vídeo para Aniyomi e forks.
 - 💻 [**Project Nox · Código-fonte das Extensões de Anime**](https://github.com/Awerkori/anime-fonte-extensoes) — Extractors e fontes de anime.
-- 🌐 [**Project Nox · Site**](https://manga.project-nox-awerkori.workers.dev) — Plataforma web oficial de leitura.
+- 🌐 [**Project Nox · Plataforma Web de Mangá**](https://github.com/Awerkori/project-nox-manga) — Plataforma web oficial de leitura.
+
+---
+
+## 🌟 Créditos
+
+- **Project Nox**: Concepção visual, pipeline de dados e interface estática interativa.
+- Comunidade participante da Central de Pedidos.
 
 ---
 
