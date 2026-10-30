@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-10-28T20:23:50.035803+00:00",
+  "generated_at": "2026-10-30T21:33:06.582834+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 121,
+      "title": "[Nova extensão]: ECHO SCANS/MANGA",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/121",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-10-30T17:27:50Z",
+      "updated_at": "2026-10-30T17:27:59Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "8b5cf6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Alex17273747576777"
+      }
+    },
     {
       "number": 120,
       "title": "[Nova extensão]: Sukimangas",
