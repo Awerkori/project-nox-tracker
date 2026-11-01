@@ -1,7 +1,43 @@
 {
-  "generated_at": "2026-10-31T20:52:14.926068+00:00",
+  "generated_at": "2026-11-01T04:48:20.412607+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 123,
+      "title": "[Nova extensão]: Secozzi",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/123",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-01T03:38:36Z",
+      "updated_at": "2026-11-01T03:38:47Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "8b5cf6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        },
+        {
+          "name": "Conteúdo +18",
+          "color": "db2777"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "F3niIxX"
+      }
+    },
     {
       "number": 122,
       "title": "[Nova extensão]: LectorHentai",
