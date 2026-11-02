@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-11-01T04:48:20.412607+00:00",
+  "generated_at": "2026-11-02T06:59:23.953824+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 124,
+      "title": "[Problema na extensão]: Little Tyrant",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/124",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-02T02:58:27Z",
+      "updated_at": "2026-11-02T02:58:37Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "otto09-cmd"
+      }
+    },
     {
       "number": 123,
       "title": "[Nova extensão]: Secozzi",
