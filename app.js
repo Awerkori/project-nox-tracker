@@ -64,14 +64,14 @@
     "cancelado": { key: "cancelled", label: "Cancelado", color: "slate" }
   };
 
-  // State & Filters (Default sort is strictly Mais recentes by updated_at DESC)
+  // State & Filters (Default state: ABERTOS; Default sort: MAIS RECENTES by created_at DESC)
   const defaults = {
     type: "all",
-    state: "all",
+    state: "open", // Default is strictly ABERTOS
     category: "all",
     status: "all",
     resolution: "all",
-    sort: "recent", // Default is strictly Mais recentes (updated_at DESC, tiebreaker number DESC)
+    sort: "recent", // Default is strictly Mais recentes (created_at DESC, tiebreaker number DESC)
     search: ""
   };
 
@@ -416,27 +416,38 @@
 
       return true;
     }).sort((a, b) => {
-      // 1. Mais novos (Número da Issue decrescente)
-      if (filters.sort === "newest") {
+      // 1. Mais recentes: data de criação decrescente (desempate por número decrescente) - PADRÃO
+      if (filters.sort === "recent" || filters.sort === "newest") {
+        const diffTime = (new Date(b.created_at || 0).getTime()) - (new Date(a.created_at || 0).getTime());
+        if (diffTime !== 0 && !isNaN(diffTime)) return diffTime;
         return Number(b.number) - Number(a.number);
       }
 
-      // 2. Mais antigos (Número da Issue crescente)
-      if (filters.sort === "oldest") {
-        return Number(a.number) - Number(b.number);
-      }
-
-      // 3. Mais votados (Curtidos com desempate por updated_at e number)
-      if (filters.sort === "demand") {
-        const diff = Number(b.upvotes) - Number(a.upvotes);
-        if (diff !== 0) return diff;
+      // 2. Atualizados recentemente: última atividade decrescente (desempate por número decrescente)
+      if (filters.sort === "updated") {
         const diffTime = (new Date(b.updated_at || 0).getTime()) - (new Date(a.updated_at || 0).getTime());
         if (diffTime !== 0 && !isNaN(diffTime)) return diffTime;
         return Number(b.number) - Number(a.number);
       }
 
-      // 4. PADRÃO GLOBAL: "recent" (Mais recentes: updated_at DESC, com desempate rigoroso por number DESC)
-      const diffTime = (new Date(b.updated_at || 0).getTime()) - (new Date(a.updated_at || 0).getTime());
+      // 3. Mais antigos: ordem cronológica crescente (desempate por número crescente)
+      if (filters.sort === "oldest") {
+        const diffTime = (new Date(a.created_at || 0).getTime()) - (new Date(b.created_at || 0).getTime());
+        if (diffTime !== 0 && !isNaN(diffTime)) return diffTime;
+        return Number(a.number) - Number(b.number);
+      }
+
+      // 4. Mais votados: quantidade real de reações positivas (desempate por criação e número)
+      if (filters.sort === "demand") {
+        const diff = Number(b.upvotes) - Number(a.upvotes);
+        if (diff !== 0) return diff;
+        const diffTime = (new Date(b.created_at || 0).getTime()) - (new Date(a.created_at || 0).getTime());
+        if (diffTime !== 0 && !isNaN(diffTime)) return diffTime;
+        return Number(b.number) - Number(a.number);
+      }
+
+      // Fallback: data de criação decrescente
+      const diffTime = (new Date(b.created_at || 0).getTime()) - (new Date(a.created_at || 0).getTime());
       if (diffTime !== 0 && !isNaN(diffTime)) return diffTime;
       return Number(b.number) - Number(a.number);
     });
@@ -528,9 +539,9 @@
             <svg class="meta-icon" viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             @${issue.author}
           </span>
-          <span class="meta-item meta-date">
+          <span class="meta-item meta-date" title="Criado em ${formatDate(issue.created_at)} • Atualizado em ${formatDate(issue.updated_at)}">
             <svg class="meta-icon" viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-            ${formatRelativeDate(issue.updated_at)}
+            ${formatRelativeDate(filters.sort === "updated" ? issue.updated_at : issue.created_at)}
           </span>
           ${issue.comments > 0 ? `<span class="meta-item meta-comments"><svg class="meta-icon" viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>${issue.comments}</span>` : ""}
         </div>
@@ -561,28 +572,28 @@
       chips.push({ label: `Busca: "${filters.search}"`, key: "search" });
     }
 
-    if (filters.type !== "all") {
+    if (filters.type !== defaults.type) {
       const typeLabels = { manga: "Mangá", anime: "Anime" };
       chips.push({ label: `Tipo: ${typeLabels[filters.type] || filters.type}`, key: "type" });
     }
 
-    if (filters.state !== "all") {
-      const stateLabels = { open: "🟢 Abertos", closed: "⚪ Fechados" };
+    if (filters.state !== defaults.state) {
+      const stateLabels = { all: "Todos os estados", closed: "⚪ Fechados", open: "🟢 Abertos" };
       chips.push({ label: `Estado: ${stateLabels[filters.state] || filters.state}`, key: "state" });
     }
 
-    if (filters.category !== "all") {
+    if (filters.category !== defaults.category) {
       const catLabels = {
         "new-extension": "Nova extensão",
-        "bug": "Bug",
+        "bug": "Problema na extensão",
         "domain": "Mudança de domínio",
-        "dead-source": "Fonte morta",
+        "dead-source": "Fonte indisponível",
         "enhancement": "Sugestão"
       };
       chips.push({ label: `Categoria: ${catLabels[filters.category] || filters.category}`, key: "category" });
     }
 
-    if (filters.status !== "all") {
+    if (filters.status !== defaults.status) {
       const statusLabels = {
         "triage": "Em análise",
         "accepted": "Aceito",
@@ -592,7 +603,7 @@
       chips.push({ label: `Status: ${statusLabels[filters.status] || filters.status}`, key: "status" });
     }
 
-    if (filters.resolution !== "all") {
+    if (filters.resolution !== defaults.resolution) {
       const resLabels = {
         "done": "Concluído",
         "declined": "Recusado",
@@ -603,11 +614,12 @@
       chips.push({ label: `Resolução: ${resLabels[filters.resolution] || filters.resolution}`, key: "resolution" });
     }
 
-    if (filters.sort !== "recent") {
+    if (filters.sort !== defaults.sort) {
       const sortLabels = {
-        "newest": "Mais novos (#)",
-        "oldest": "Mais antigos (#)",
-        "demand": "Mais votados (👍)"
+        "recent": "Mais recentes",
+        "updated": "Atualizados recentemente",
+        "demand": "Mais votados (👍)",
+        "oldest": "Mais antigos"
       };
       chips.push({ label: `Ordem: ${sortLabels[filters.sort] || filters.sort}`, key: "sort" });
     }
@@ -628,12 +640,18 @@
 
   // Render Tickets List
   function renderTickets() {
-    // Reconcile select element with active sort filter if sort is not explicit in URL
+    // Reconcile select element with active sort and state filters if not explicit in URL
     const params = new URLSearchParams(location.search);
     if (!params.has("sort")) {
-      filters.sort = "recent";
-      if (el.sort && el.sort.value !== "recent") {
-        el.sort.value = "recent";
+      filters.sort = defaults.sort;
+      if (el.sort && el.sort.value !== defaults.sort) {
+        el.sort.value = defaults.sort;
+      }
+    }
+    if (!params.has("state")) {
+      filters.state = defaults.state;
+      if (el.state && el.state.value !== defaults.state) {
+        el.state.value = defaults.state;
       }
     }
 
@@ -722,8 +740,9 @@
         filters.resolution = r;
       }
     }
-    if (["newest", "oldest", "recent", "demand"].includes(params.get("sort"))) {
-      filters.sort = params.get("sort");
+    if (["newest", "oldest", "recent", "updated", "demand"].includes(params.get("sort"))) {
+      const s = params.get("sort");
+      filters.sort = s === "newest" ? "recent" : s;
     }
     if (params.has("search")) {
       filters.search = params.get("search");
@@ -874,7 +893,9 @@
       card.addEventListener("click", () => {
         const statType = card.getAttribute("data-filter-stat");
         if (statType === "total") {
-          resetAllFilters();
+          filters.state = "all";
+          filters.resolution = "all";
+          filters.status = "all";
         } else if (statType === "open") {
           filters.state = "open";
           filters.resolution = "all";
@@ -957,38 +978,138 @@
     });
   }
 
+  const GITHUB_API_BASE = "https://api.github.com/repos/Awerkori/project-nox-requests/issues";
+
+  async function fetchLiveIssuesFromGitHub() {
+    const all = [];
+    let page = 1;
+    while (page <= 5) {
+      const res = await fetch(`${GITHUB_API_BASE}?state=all&per_page=100&page=${page}&sort=created&direction=desc`, {
+        headers: {
+          "Accept": "application/vnd.github+json"
+        }
+      });
+      if (!res.ok) {
+        if (res.status === 403 || res.status === 429) {
+          throw new Error("RATE_LIMITED");
+        }
+        throw new Error(`HTTP_${res.status}`);
+      }
+      const batch = await res.json();
+      if (!Array.isArray(batch) || batch.length === 0) break;
+      for (const item of batch) {
+        if (!item.pull_request) {
+          all.push(item);
+        }
+      }
+      if (batch.length < 100) break;
+      page++;
+    }
+    return all;
+  }
+
   // Load Issues Data
   async function loadData(forceLive = false) {
     let rawIssues = null;
+    let liveFetched = false;
+    let rateLimited = false;
 
-    try {
-      const res = await fetch(`${DATA_URL}?v=${Date.now()}`);
-      if (res.ok) {
-        const json = await res.json();
-        rawIssues = json.issues || [];
-        generatedAt = json.generated_at;
+    // 1. When forceLive is true, attempt to fetch directly from official GitHub API
+    if (forceLive) {
+      try {
+        const liveList = await fetchLiveIssuesFromGitHub();
+        if (Array.isArray(liveList) && liveList.length > 0) {
+          rawIssues = liveList;
+          generatedAt = new Date().toISOString();
+          liveFetched = true;
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
+            localStorage.setItem(`${CACHE_KEY}-time`, generatedAt);
+          } catch {
+            // ignore
+          }
+        }
+      } catch (err) {
+        if (err && err.message === "RATE_LIMITED") {
+          rateLimited = true;
+        }
+        console.warn("Live GitHub API query failed or rate-limited, falling back to static JSON:", err);
       }
-    } catch (err) {
-      console.warn("Could not load local issues.json:", err);
     }
 
+    // 2. Fetch static issues.json (with strict cache-busting)
+    if (!rawIssues) {
+      try {
+        const res = await fetch(`${DATA_URL}?_t=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Accept": "application/json",
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache"
+          }
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json.issues) && json.issues.length > 0) {
+            rawIssues = json.issues;
+            generatedAt = json.generated_at;
+            try {
+              localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
+              localStorage.setItem(`${CACHE_KEY}-time`, generatedAt);
+            } catch {
+              // ignore
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load local issues.json:", err);
+      }
+    }
+
+    // 3. Fallback to localStorage if network completely failed
+    let isOfflineFallback = false;
     if (!rawIssues || rawIssues.length === 0) {
       try {
         const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) rawIssues = JSON.parse(cached);
+        const cachedTime = localStorage.getItem(`${CACHE_KEY}-time`);
+        if (cached) {
+          rawIssues = JSON.parse(cached);
+          generatedAt = cachedTime || generatedAt;
+          isOfflineFallback = true;
+        }
       } catch {
         // ignore
       }
     }
 
+    // 4. Normalize and render
     if (rawIssues && rawIssues.length > 0) {
       allIssues = rawIssues.map(normalizeIssue);
       const stats = calculateStats(allIssues);
       renderStats(stats);
       renderTickets();
 
-      if (el.updated && generatedAt) {
-        el.updated.textContent = `Última sincronização: ${formatDate(generatedAt)} às ${new Date(generatedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
+      if (el.updated) {
+        const timeStr = generatedAt
+          ? new Date(generatedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+          : "";
+        const dateStr = generatedAt ? formatDate(generatedAt) : "";
+
+        if (liveFetched) {
+          el.updated.textContent = `Atualizado agora (GitHub ao vivo: ${timeStr})`;
+        } else if (isOfflineFallback) {
+          el.updated.textContent = `Modo offline (dados em cache de ${dateStr} ${timeStr})`;
+        } else if (forceLive && rateLimited) {
+          el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr} (API GitHub limitada)`;
+        } else if (forceLive) {
+          el.updated.textContent = `Snapshot mais recente: ${dateStr} às ${timeStr}`;
+        } else {
+          el.updated.textContent = `Última sincronização: ${dateStr} às ${timeStr}`;
+        }
+      }
+    } else {
+      if (el.updated) {
+        el.updated.textContent = "Falha ao carregar dados";
       }
     }
   }
@@ -996,7 +1117,7 @@
   // Load Config
   async function loadConfig() {
     try {
-      const res = await fetch(`${CONFIG_URL}?v=${Date.now()}`);
+      const res = await fetch(`${CONFIG_URL}?_t=${Date.now()}`);
       if (res.ok) {
         trackerConfig = await res.json();
       }
@@ -1005,12 +1126,18 @@
     }
   }
 
-  function enforceDefaultSortState() {
+  function enforceDefaultStates() {
     const params = new URLSearchParams(location.search);
     if (!params.has("sort")) {
-      filters.sort = "recent";
-      if (el.sort && el.sort.value !== "recent") {
-        el.sort.value = "recent";
+      filters.sort = defaults.sort;
+      if (el.sort && el.sort.value !== defaults.sort) {
+        el.sort.value = defaults.sort;
+      }
+    }
+    if (!params.has("state")) {
+      filters.state = defaults.state;
+      if (el.state && el.state.value !== defaults.state) {
+        el.state.value = defaults.state;
       }
     }
   }
@@ -1020,20 +1147,20 @@
     initElements();
     setupListeners();
     syncFromUrl();
-    enforceDefaultSortState();
+    enforceDefaultStates();
     await Promise.all([loadConfig(), loadData()]);
-    enforceDefaultSortState();
+    enforceDefaultStates();
   }
 
   // Handle pageshow (including Firefox bfcache and form restorations)
   window.addEventListener("pageshow", () => {
-    enforceDefaultSortState();
+    enforceDefaultStates();
     renderTickets();
   });
 
   // Handle window load event
   window.addEventListener("load", () => {
-    enforceDefaultSortState();
+    enforceDefaultStates();
   });
 
   if (document.readyState === "loading") {

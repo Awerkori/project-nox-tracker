@@ -3,6 +3,8 @@ name: Publicar no GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "data/issues.json"
   workflow_dispatch:
 
 permissions:

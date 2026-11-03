@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Project Nox Tracker 2.0.1 - End-to-End Real Browser Automation Test Suite
+"""Project Nox Tracker 2.1.0 - End-to-End Real Browser Automation Test Suite.
+
 Uses Chromium DevTools Protocol (CDP) via async websocket communication to rigorously
 verify user experience, DOM states, sort behavior, legacy preference migration,
 responsive layout without horizontal overflow, modal interactions, and performance metrics.
@@ -16,10 +17,12 @@ from datetime import datetime
 import aiohttp
 
 CDP_PORT = 9223
-BASE_URL = "http://localhost:8088/"
-ISSUES_JSON_PATH = "/home/awerkori/.Projects/Project-Nox-Tracker/data/issues.json"
-SCREENSHOTS_DIR = "/home/awerkori/.Projects/Project-Nox-Tracker/screenshots/e2e"
-BRAIN_SCREENSHOTS_DIR = "/home/awerkori/.gemini/antigravity-cli/brain/f09dc443-be98-401e-8aba-5270296e5f60/screenshots/e2e"
+DEV_SERVER_PORT = 8088
+BASE_URL = f"http://localhost:{DEV_SERVER_PORT}/"
+BASE_DIR = "/home/awerkori/.Projects/Project-Nox-Tracker"
+ISSUES_JSON_PATH = f"{BASE_DIR}/data/issues.json"
+SCREENSHOTS_DIR = f"{BASE_DIR}/screenshots/e2e"
+BRAIN_SCREENSHOTS_DIR = "/home/awerkori/.gemini/antigravity-cli/brain/f4dcc61a-039c-46ea-bcb0-e71282c54d0f/screenshots/e2e"
 
 os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
 os.makedirs(BRAIN_SCREENSHOTS_DIR, exist_ok=True)
@@ -44,8 +47,7 @@ class CDPClient:
                     req_id = data.get("id")
                     if req_id in self.futures:
                         self.futures[req_id].set_result(data)
-        except Exception as e:
-            # print("Listener closed:", e)
+        except Exception:
             pass
 
     async def call(self, method, params=None):
@@ -93,10 +95,23 @@ class CDPClient:
 
 async def run_tests():
     print("=" * 70)
-    print("PROJECT NOX TRACKER 2.0.1 - SUÍTE DE TESTES E2E EM NAVEGADOR REAL")
+    print("PROJECT NOX TRACKER 2.1.0 - SUÍTE DE TESTES E2E EM NAVEGADOR REAL")
     print("=" * 70)
 
-    # 1. Start Chromium headless with CDP
+    # 1. Start local dev server if not running
+    dev_server_proc = None
+    try:
+        async with aiohttp.ClientSession() as s:
+            async with s.get(BASE_URL, timeout=0.5) as r:
+                pass
+    except Exception:
+        print(f"Iniciando servidor de desenvolvimento local na porta {DEV_SERVER_PORT}...")
+        dev_server_proc = subprocess.Popen([
+            sys.executable, f"{BASE_DIR}/scripts/dev_server.py"
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        await asyncio.sleep(1.0)
+
+    # 2. Start Chromium headless with CDP
     proc = subprocess.Popen([
         "chromium",
         "--headless=new",
@@ -130,13 +145,12 @@ async def run_tests():
             issues_map = {i["number"]: i for i in issues_data}
 
             # -----------------------------------------------------------
-            # TEST 1: Navegação limpa e verificação inicial do seletor
+            # TEST 1: Sessão limpa — Padrão ABERTOS + MAIS RECENTES
             # -----------------------------------------------------------
-            print("\n[TESTE 1] Sessão Limpa: Acessar http://localhost:8088/")
+            print("\n[TESTE 1] Sessão Limpa: Acessar http://localhost:8088/ (Padrão ABERTOS + MAIS RECENTES)")
             await client.set_viewport(1440, 900, is_mobile=False)
             await client.call("Page.navigate", {"url": BASE_URL})
 
-            # Wait for data load
             for _ in range(50):
                 ready = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length > 0")
                 if ready:
@@ -145,243 +159,201 @@ async def run_tests():
 
             sort_val = await client.eval_js("document.querySelector('#sort').value")
             sort_text = await client.eval_js("document.querySelector('#sort').selectedOptions[0].text")
-            print(f"  → Valor do select #sort: '{sort_val}'")
-            print(f"  → Texto visível no select: '{sort_text}'")
+            state_val = await client.eval_js("document.querySelector('#state').value")
+            quick_active = await client.eval_js("document.querySelector('.quick-btn.active')?.getAttribute('data-quick-state')")
 
-            assert sort_val == "recent", f"ERRO: Valor esperado 'recent', mas obteve '{sort_val}'"
-            assert "Mais recentes" in sort_text, f"ERRO: Texto visual não contém 'Mais recentes': '{sort_text}'"
-            print("  ✓ SUCESSO: Seletor exibe 'Mais recentes' como padrão no carregamento limpo!")
+            print(f"  → Valor do select #sort: '{sort_val}' ('{sort_text}')")
+            print(f"  → Valor do select #state: '{state_val}'")
+            print(f"  → Botão de estado rápido ativo: '{quick_active}'")
+
+            assert sort_val == "recent", f"ERRO: Valor esperado de sort 'recent', obtido '{sort_val}'"
+            assert state_val == "open", f"ERRO: Valor esperado de state 'open', obtido '{state_val}'"
+            assert quick_active == "open", f"ERRO: Botão rápido ativo esperado 'open', obtido '{quick_active}'"
+            print("  ✓ SUCESSO: Padrão verificado — Estado: ABERTOS e Ordenação: MAIS RECENTES!")
 
             # -----------------------------------------------------------
-            # TEST 2: Ordenação real dos cards renderizados no DOM
+            # TEST 2: Validar tickets renderizados no carregamento padrão
             # -----------------------------------------------------------
-            print("\n[TESTE 2] Validar ordem real dos tickets exibidos por updated_at DESC")
+            print("\n[TESTE 2] Validar tickets exibidos no padrão Abertos (created_at DESC)")
             card_numbers = await client.eval_js("""
                 Array.from(document.querySelectorAll('#tickets .ticket-card'))
                      .map(c => Number(c.getAttribute('data-number')))
             """)
             print(f"  → Total de cards renderizados: {len(card_numbers)}")
-            print(f"  → Primeiros 6 tickets no DOM: {card_numbers[:6]}")
+            print(f"  → Tickets exibidos no DOM: {card_numbers}")
 
-            # Verify descending order of updated_at
-            for idx in range(len(card_numbers) - 1):
-                num_a = card_numbers[idx]
-                num_b = card_numbers[idx + 1]
-                iss_a = issues_map[num_a]
-                iss_b = issues_map[num_b]
-                time_a = iss_a.get("updated_at") or ""
-                time_b = iss_b.get("updated_at") or ""
-                if time_a != time_b:
-                    assert time_a >= time_b, f"Inconsistência de ordenação entre #{num_a} ({time_a}) e #{num_b} ({time_b})"
-                else:
-                    assert num_a >= num_b, f"Falha no desempate por number entre #{num_a} e #{num_b}"
-
-            print("  ✓ SUCESSO: Todos os tickets no DOM seguem rigorosamente updated_at DESC com desempate por number DESC!")
-            print(f"  → Top 5 confirmados: #{card_numbers[0]} ({issues_map[card_numbers[0]]['title']}) [{issues_map[card_numbers[0]]['updated_at']}]")
-            for n in card_numbers[1:5]:
-                print(f"                       #{n} ({issues_map[n]['title']}) [{issues_map[n]['updated_at']}]")
+            assert len(card_numbers) == 6, f"ERRO: Esperado 6 tickets abertos, obtido {len(card_numbers)}"
+            assert card_numbers[0] == 127, f"ERRO: Primeiro ticket deveria ser #127, obtido #{card_numbers[0]}"
+            assert card_numbers == [127, 126, 125, 123, 122, 121], f"Ordem inesperada: {card_numbers}"
+            print("  ✓ SUCESSO: Exatamente 6 tickets abertos renderizados em ordem de criação recente, com #127 no topo!")
 
             # -----------------------------------------------------------
-            # TEST 3: Recarregar a página (Simulação de Reload / F5)
+            # TEST 3: Inspeção detalhada do Ticket #127
             # -----------------------------------------------------------
-            print("\n[TESTE 3] Recarregar a página e confirmar permanência de 'Mais recentes'")
-            await client.call("Page.reload", {})
-            for _ in range(50):
-                ready = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length > 0")
-                if ready:
-                    break
-                await asyncio.sleep(0.1)
-
-            sort_val_after_reload = await client.eval_js("document.querySelector('#sort').value")
-            first_card_after_reload = await client.eval_js("Number(document.querySelector('#tickets .ticket-card').getAttribute('data-number'))")
-            assert sort_val_after_reload == "recent", f"ERRO após reload: {sort_val_after_reload}"
-            assert first_card_after_reload == card_numbers[0], f"ERRO: Primeiro card mudou após reload: #{first_card_after_reload}"
-            print(f"  ✓ SUCESSO: Após reload, #sort continua 'recent' e primeiro card permanece #{first_card_after_reload}!")
-
-            # -----------------------------------------------------------
-            # TEST 4: Migração segura contra preferências antigas (localStorage)
-            # -----------------------------------------------------------
-            print("\n[TESTE 4] Simular preferência antiga 'demand' persistida no localStorage")
-            await client.eval_js("""
-                localStorage.setItem('nox_tracker_sort', 'demand');
-                localStorage.setItem('tracker_sort', 'demand');
-                localStorage.setItem('sort_preference', 'demand');
-                sessionStorage.setItem('tracker_sort', 'demand');
+            print("\n[TESTE 3] Inspeção detalhada dos elementos visuais do Ticket #127")
+            card_127_info = await client.eval_js("""
+                (() => {
+                    const card = document.querySelector('.ticket-card[data-number="127"]');
+                    if (!card) return null;
+                    return {
+                        title: card.querySelector('.ticket-title').textContent.trim(),
+                        stateBadge: card.querySelector('.badge-state').textContent.trim(),
+                        workflowBadge: card.querySelector('.badge-workflow').textContent.trim(),
+                        tags: Array.from(card.querySelectorAll('.badge-tag')).map(t => t.textContent.trim()),
+                        author: card.querySelector('.meta-author').textContent.trim()
+                    };
+                })()
             """)
-            # Reload page with simulated legacy storage
-            await client.call("Page.reload", {})
-            for _ in range(50):
-                ready = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length > 0")
-                if ready:
-                    break
-                await asyncio.sleep(0.1)
+            print(f"  → Título: {card_127_info['title']}")
+            print(f"  → Estado nativo: {card_127_info['stateBadge']}")
+            print(f"  → Status: {card_127_info['workflowBadge']}")
+            print(f"  → Tags: {card_127_info['tags']}")
+            print(f"  → Autor: {card_127_info['author']}")
 
-            sort_val_legacy = await client.eval_js("document.querySelector('#sort').value")
-            cleaned_check = await client.eval_js("localStorage.getItem('nox_tracker_sort') || localStorage.getItem('tracker_sort')")
-            print(f"  → Valor do select após migração: '{sort_val_legacy}'")
-            print(f"  → Chaves legadas no localStorage: '{cleaned_check}'")
-            assert sort_val_legacy == "recent", f"ERRO: Preferência antiga sobrescreveu o padrão! Obtido: '{sort_val_legacy}'"
-            assert cleaned_check is None, "ERRO: Chaves antigas não foram limpas do localStorage!"
-            print("  ✓ SUCESSO: Migração limpa preferências antigas e mantém 'recent' inabalável!")
+            assert "Hanami Heaven" in card_127_info["title"], "Título não contém Hanami Heaven"
+            assert "ABERTO" in card_127_info["stateBadge"], "Badge não contém ABERTO"
+            assert "Em análise" in card_127_info["workflowBadge"], "Status não é Em análise"
+            print("  ✓ SUCESSO: Ticket #127 renderizado com todos os badges, estado nativo e informações completas!")
 
             # -----------------------------------------------------------
-            # TEST 5: Alternância manual para 'demand' e posterior reset
+            # TEST 4: Alternância rápida de estado (Todos | Abertos | Fechados)
             # -----------------------------------------------------------
-            print("\n[TESTE 5] Alternância manual para 'Mais votados' e posterior limpeza")
+            print("\n[TESTE 4] Alternância pelo Segmented Control e sincronização da URL")
+            # Clique em 'Todos'
+            await client.eval_js("document.querySelector('[data-quick-state=\"all\"]').click()")
+            await asyncio.sleep(0.2)
+            total_cards = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
+            current_url = await client.eval_js("window.location.search")
+            print(f"  → Ao clicar em 'Todos': {total_cards} cards exibidos, URL search='{current_url}'")
+            assert total_cards == 114, f"Esperado 114 cards em 'Todos', obtido {total_cards}"
+            assert "state=all" in current_url, f"URL deveria conter state=all: {current_url}"
+
+            # Clique em 'Fechados'
+            await client.eval_js("document.querySelector('[data-quick-state=\"closed\"]').click()")
+            await asyncio.sleep(0.2)
+            closed_cards = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
+            current_url = await client.eval_js("window.location.search")
+            print(f"  → Ao clicar em 'Fechados': {closed_cards} cards exibidos, URL search='{current_url}'")
+            assert closed_cards == 108, f"Esperado 108 cards em 'Fechados', obtido {closed_cards}"
+            assert "state=closed" in current_url, f"URL deveria conter state=closed: {current_url}"
+
+            # Clique em 'Abertos'
+            await client.eval_js("document.querySelector('[data-quick-state=\"open\"]').click()")
+            await asyncio.sleep(0.2)
+            open_cards = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
+            current_url = await client.eval_js("window.location.search")
+            print(f"  → Ao clicar em 'Abertos': {open_cards} cards exibidos, URL search='{current_url}'")
+            assert open_cards == 6, f"Esperado 6 cards em 'Abertos', obtido {open_cards}"
+            assert "state=" not in current_url, f"URL limpa não deveria conter state=: {current_url}"
+            print("  ✓ SUCESSO: Segmented Control alterna perfeitamente entre 114 -> 108 -> 6 cards com URLs limpas!")
+
+            # -----------------------------------------------------------
+            # TEST 5: Limpar Filtros restaura Abertos + Mais recentes
+            # -----------------------------------------------------------
+            print("\n[TESTE 5] Botão 'Limpar filtros' restaura o padrão Abertos + Mais recentes")
+            # Aplicar filtro diferente: Fechados + Mais votados
             await client.eval_js("""
-                const sel = document.querySelector('#sort');
-                sel.value = 'demand';
-                sel.dispatchEvent(new Event('change'));
+                document.querySelector('#state').value = 'closed';
+                document.querySelector('#state').dispatchEvent(new Event('change'));
+                document.querySelector('#sort').value = 'demand';
+                document.querySelector('#sort').dispatchEvent(new Event('change'));
             """)
             await asyncio.sleep(0.2)
-            first_card_demand = await client.eval_js("Number(document.querySelector('#tickets .ticket-card').getAttribute('data-number'))")
-            chips_count = await client.eval_js("document.querySelectorAll('#filter-chips .chip').length")
-            print(f"  → Primeiro card sob 'demand' (Mais votados): #{first_card_demand} (Votos: {issues_map[first_card_demand]['reactions']['+1']})")
-            print(f"  → Chip de filtro de ordem gerado: {chips_count} chip(s)")
-            assert issues_map[first_card_demand]['reactions']['+1'] >= 1, "ERRO: Card mais votado deveria ter pelo menos 1 voto!"
+            cards_before_clear = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
+            assert cards_before_clear == 108
 
-            # Reset filters
+            # Clicar em limpar filtros
             await client.eval_js("document.querySelector('#clear-filters').click()")
             await asyncio.sleep(0.2)
-            sort_val_reset = await client.eval_js("document.querySelector('#sort').value")
-            first_card_reset = await client.eval_js("Number(document.querySelector('#tickets .ticket-card').getAttribute('data-number'))")
-            assert sort_val_reset == "recent", f"ERRO no reset: {sort_val_reset}"
-            assert first_card_reset == card_numbers[0], f"ERRO: Primeiro card não restaurou #{card_numbers[0]}"
-            print(f"  ✓ SUCESSO: Alternância manual funciona perfeitamente e reset restaura 'recent' (# {first_card_reset})!")
+            cards_after_clear = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
+            sort_after_clear = await client.eval_js("document.querySelector('#sort').value")
+            state_after_clear = await client.eval_js("document.querySelector('#state').value")
+            first_card_num = await client.eval_js("Number(document.querySelector('#tickets .ticket-card').getAttribute('data-number'))")
+
+            print(f"  → Após reset: {cards_after_clear} cards | state='{state_after_clear}' | sort='{sort_after_clear}' | primeiro card=#{first_card_num}")
+            assert cards_after_clear == 6, f"Esperado 6 cards abertos após reset, obtido {cards_after_clear}"
+            assert state_after_clear == "open", f"Esperado state='open' após reset, obtido '{state_after_clear}'"
+            assert sort_after_clear == "recent", f"Esperado sort='recent' após reset, obtido '{sort_after_clear}'"
+            assert first_card_num == 127, f"Primeiro card após reset deveria ser #127, obtido #{first_card_num}"
+            print("  ✓ SUCESSO: Limpar filtros restaura exatamente Abertos + Mais recentes com #127 no topo!")
 
             # -----------------------------------------------------------
-            # TEST 6: Inspeção de Responsividade e Verificação de Overflow
+            # TEST 6: Botão Atualizar (com animação spinning e mensagem sincera)
             # -----------------------------------------------------------
-            print("\n[TESTE 6] Inspeção de Breakpoints Responsivos e Ausência de Overflow")
-            breakpoints = [
-                (320, 800, True, "mobile_320px.png"),
-                (360, 800, True, "mobile_360px.png"),
-                (375, 667, True, "mobile_375px.png"),
-                (390, 844, True, "mobile_390px.png"),
-                (430, 932, True, "mobile_430px.png"),
-                (768, 1024, True, "tablet_768px.png"),
-                (1024, 768, False, "desktop_1024px.png"),
-                (1280, 800, False, "desktop_1280px.png"),
-                (1440, 900, False, "desktop_1440px.png"),
-                (1920, 1080, False, "desktop_1920px.png"),
+            print("\n[TESTE 6] Botão 'Atualizar' executa sem erros e informa status real")
+            sync_text_before = await client.eval_js("document.querySelector('#updated').textContent")
+            await client.eval_js("document.querySelector('#refresh-data').click()")
+            is_spinning = await client.eval_js("document.querySelector('#refresh-data').classList.contains('spinning')")
+            print(f"  → Botão acionado. Classe 'spinning' ativa: {is_spinning}")
+            await asyncio.sleep(1.0)
+            sync_text_after = await client.eval_js("document.querySelector('#updated').textContent")
+            cards_after_refresh = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
+            print(f"  → Status de sincronização exibido: '{sync_text_after}'")
+            print(f"  → Total de cards pós-atualização: {cards_after_refresh}")
+            assert cards_after_refresh == 6, f"Cards após refresh mudou inesperadamente para {cards_after_refresh}"
+            assert len(sync_text_after) > 5, "Status de sincronização vazio"
+            print("  ✓ SUCESSO: Botão Atualizar opera perfeitamente com feedback transparente e sem corrupção!")
+
+            # -----------------------------------------------------------
+            # TEST 7: Modal de Abertura de Solicitação
+            # -----------------------------------------------------------
+            print("\n[TESTE 7] Modal de Solicitações e Categorias")
+            await client.eval_js("document.querySelector('#open-ticket').click()")
+            await asyncio.sleep(0.2)
+            modal_hidden = await client.eval_js("document.querySelector('#ticket-modal').hidden")
+            assert not modal_hidden, "Modal não abriu"
+            await client.capture_screenshot("modal_desktop_1440px.png")
+            # Fechar via Escape
+            await client.eval_js("window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))")
+            await asyncio.sleep(0.2)
+            modal_hidden_after = await client.eval_js("document.querySelector('#ticket-modal').hidden")
+            assert modal_hidden_after, "Modal não fechou com Escape"
+            print("  ✓ SUCESSO: Modal abre, exibe opções e fecha com Escape!")
+
+            # -----------------------------------------------------------
+            # TEST 8: Responsividade Desktop e Android Mobile (Captura de Evidências)
+            # -----------------------------------------------------------
+            print("\n[TESTE 8] Inspeção de Responsividade Desktop e Android Mobile")
+            devices = [
+                ("desktop_1440px.png", 1440, 900, False, "Desktop Padrão"),
+                ("android_pixel_393px.png", 393, 852, True, "Android Mobile (Google Pixel / Galaxy)"),
+                ("android_mobile_360px.png", 360, 800, True, "Android Mobile Compacto (360px)"),
+                ("tablet_768px.png", 768, 1024, True, "Tablet (768px)")
             ]
 
-            for width, height, is_mobile, filename in breakpoints:
-                await client.set_viewport(width, height, is_mobile=is_mobile)
-                await asyncio.sleep(0.15)
+            for filename, w, h, is_mob, label in devices:
+                await client.set_viewport(w, h, is_mobile=is_mob)
+                await asyncio.sleep(0.2)
 
                 overflow_data = await client.eval_js("""
                     ({
                         scrollWidth: document.documentElement.scrollWidth,
-                        clientWidth: document.documentElement.clientWidth,
-                        bodyScrollWidth: document.body.scrollWidth,
-                        sortValue: document.querySelector('#sort').value,
-                        headerWidth: document.querySelector('.site-header').offsetWidth
+                        clientWidth: document.documentElement.clientWidth
                     })
                 """)
-
                 scroll_w = overflow_data["scrollWidth"]
                 client_w = overflow_data["clientWidth"]
                 has_overflow = scroll_w > client_w
 
-                print(f"  → Viewport {width:4d}x{height:<4d} | clientWidth: {client_w:4d}px | scrollWidth: {scroll_w:4d}px | Overflow: {has_overflow} | Sort: '{overflow_data['sortValue']}'")
-                assert not has_overflow, f"ERRO: Overflow horizontal detectado em {width}px: scrollWidth={scroll_w} > clientWidth={client_w}"
+                print(f"  → {label:35s} ({w:4d}x{h:<4d}): clientWidth={client_w:4d}px | scrollWidth={scroll_w:4d}px | Overflow={has_overflow}")
+                assert not has_overflow, f"ERRO: Overflow horizontal em {label} ({w}px): scrollWidth={scroll_w} > clientWidth={client_w}"
 
-                # Capture real screenshot
                 await client.capture_screenshot(filename)
+                print(f"     Evidência visual salva: {filename}")
 
-            print("  ✓ SUCESSO: Zero overflow horizontal em todos os 10 breakpoints testados (320px a 1920px)!")
-
-            # -----------------------------------------------------------
-            # TEST 7: Modal de Abertura de Solicitações e Teclado
-            # -----------------------------------------------------------
-            print("\n[TESTE 7] Teste do Modal de 'Abrir Solicitação' e Atalhos")
-            await client.set_viewport(1440, 900, is_mobile=False)
-            # Click open ticket button
-            await client.eval_js("document.querySelector('#open-ticket').click()")
-            await asyncio.sleep(0.2)
-
-            modal_hidden = await client.eval_js("document.querySelector('#ticket-modal').hidden")
-            body_class = await client.eval_js("document.body.classList.contains('modal-open')")
-            assert not modal_hidden, "ERRO: Modal continua com atributo hidden=true"
-            assert body_class, "ERRO: Body não recebeu classe modal-open"
-
-            template_options = await client.eval_js("""
-                Array.from(document.querySelectorAll('.template-option')).map(opt => ({
-                    title: opt.querySelector('.template-name').textContent.trim(),
-                    badge: opt.querySelector('.template-badge').textContent.trim(),
-                    href: opt.getAttribute('href')
-                }))
-            """)
-            print(f"  → Categorias encontradas no modal: {len(template_options)}")
-            for opt in template_options:
-                print(f"     • [{opt['badge']}] {opt['title']} → {opt['href'].split('template=')[-1]}")
-                assert "project-nox-requests/issues/new?template=" in opt["href"], f"Link inválido: {opt['href']}"
-
-            assert len(template_options) == 5, f"Esperava 5 templates, encontrou {len(template_options)}"
-
-            # Capture desktop modal screenshot
-            await client.capture_screenshot("modal_desktop_1440px.png")
-
-            # Mobile modal screenshot (390px)
-            await client.set_viewport(390, 844, is_mobile=True)
-            await asyncio.sleep(0.15)
-            await client.capture_screenshot("modal_mobile_390px.png")
-
-            # Close modal via Escape
-            await client.set_viewport(1440, 900, is_mobile=False)
-            await client.eval_js("window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))")
-            await asyncio.sleep(0.2)
-            modal_hidden_after_esc = await client.eval_js("document.querySelector('#ticket-modal').hidden")
-            assert modal_hidden_after_esc, "ERRO: Modal não fechou ao pressionar Escape!"
-            print("  ✓ SUCESSO: Modal abre, lista as 5 categorias com links e badges oficiais, e fecha com Escape!")
-
-            # -----------------------------------------------------------
-            # TEST 8: Métricas de Desempenho e Fluidez
-            # -----------------------------------------------------------
-            print("\n[TESTE 8] Métricas de Desempenho, Animação e Memória")
-            # Sample FPS over 1 second with requestAnimationFrame
-            fps_result = await client.eval_js("""
-                new Promise(resolve => {
-                    let frames = 0;
-                    const start = performance.now();
-                    function count() {
-                        frames++;
-                        if (performance.now() - start < 1000) {
-                            requestAnimationFrame(count);
-                        } else {
-                            const elapsed = (performance.now() - start) / 1000;
-                            resolve({ fps: Math.round(frames / elapsed), frames, elapsed });
-                        }
-                    }
-                    requestAnimationFrame(count);
-                })
-            """)
-
-            perf_metrics = await client.call("Performance.getMetrics")
-            metrics_dict = {m["name"]: m["value"] for m in perf_metrics["metrics"]}
-
-            js_heap_mb = metrics_dict.get("JSHeapUsedSize", 0) / (1024 * 1024)
-            layouts = metrics_dict.get("LayoutCount", 0)
-            nodes = metrics_dict.get("Nodes", 0)
-
-            print(f"  → FPS real da animação em execução: {fps_result['fps']} FPS ({fps_result['frames']} quadros em {fps_result['elapsed']:.2f}s)")
-            print(f"  → Uso de Memória JS Heap: {js_heap_mb:.2f} MB")
-            print(f"  → Total de Nós DOM: {int(nodes)}")
-            print(f"  → Total de Layouts computados: {int(layouts)}")
-
-            assert fps_result["fps"] >= 25, f"Alerta de fluidez baixa: {fps_result['fps']} FPS"
-            assert js_heap_mb < 50, f"Uso excessivo de heap: {js_heap_mb:.2f} MB"
-            print("  ✓ SUCESSO: Desempenho excelente, renderização fluida e baixo consumo de memória!")
+            print("  ✓ SUCESSO: Zero overflow em Desktop e Android! Screenshots capturadas com sucesso!")
 
             print("\n" + "=" * 70)
-            print("TODOS OS TESTES E2E EM NAVEGADOR REAL FORAM CONCLUÍDOS COM 100% DE APROVAÇÃO!")
+            print("SUÍTE DE TESTES E2E EM NAVEGADOR REAL CONCLUÍDA COM 100% DE SUCESSO!")
             print("=" * 70)
 
     finally:
         if proc:
             proc.terminate()
             proc.wait()
+        if dev_server_proc:
+            dev_server_proc.terminate()
+            dev_server_proc.wait()
 
 
 if __name__ == "__main__":

@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="styles.css?v=2.0.2" />
+    <link rel="stylesheet" href="styles.css?v=2.1.0" />
     <title>Project Nox Tracker — Acompanhamento Oficial</title>
   </head>
   <body>
@@ -164,11 +164,11 @@
             <div class="quick-filter-row">
               <span class="quick-filter-label">Estado nativo:</span>
               <div class="quick-segmented-control" role="group" aria-label="Filtrar por estado">
-                <button class="quick-btn active" data-quick-state="all" type="button">
+                <button class="quick-btn" data-quick-state="all" type="button">
                   <span>Todos</span>
                   <span class="quick-badge" data-quick-count="total">0</span>
                 </button>
-                <button class="quick-btn" data-quick-state="open" type="button">
+                <button class="quick-btn active" data-quick-state="open" type="button">
                   <span class="quick-dot open-dot"></span>
                   <span>Abertos</span>
                   <span class="quick-badge" data-quick-count="open">0</span>
@@ -198,10 +198,10 @@
               <div class="control-field sort-field-col">
                 <label class="field-label" for="sort">Critério de ordenação</label>
                 <select id="sort" class="custom-select" autocomplete="off">
-                  <option value="recent" selected>🕐 Mais recentes (Padrão)</option>
-                  <option value="newest"># Mais novos (Nº da Issue decrescente)</option>
-                  <option value="oldest"># Mais antigos (Nº da Issue crescente)</option>
+                  <option value="recent" selected>✨ Mais recentes (Criação recente — Padrão)</option>
+                  <option value="updated">🕐 Atualizados recentemente (Última atividade)</option>
                   <option value="demand">👍 Mais votados (Curtidos)</option>
+                  <option value="oldest">📅 Mais antigos (Nº da Issue crescente)</option>
                 </select>
               </div>
             </div>
@@ -220,9 +220,9 @@
               <div class="control-field">
                 <label class="field-label" for="state">Estado</label>
                 <select id="state" class="custom-select" autocomplete="off">
-                  <option value="all" selected>Todos os estados</option>
-                  <option value="open">🟢 Abertos</option>
+                  <option value="open" selected>🟢 Abertos (Padrão)</option>
                   <option value="closed">⚪ Fechados</option>
+                  <option value="all">Todos os estados</option>
                 </select>
               </div>
 
@@ -408,7 +408,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="particles.js?v=2.0.2" defer></script>
-    <script src="app.js?v=2.0.2" defer></script>
+    <script src="particles.js?v=2.1.0" defer></script>
+    <script src="app.js?v=2.1.0" defer></script>
   </body>
 </html>

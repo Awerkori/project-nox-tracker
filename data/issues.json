@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-11-03T12:16:39.273316+00:00",
+  "generated_at": "2026-11-03T21:55:56.737648+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 127,
+      "title": "[Problema na extensão]: Hanami Heaven — HTTP 400",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/127",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-03T20:55:50Z",
+      "updated_at": "2026-11-03T20:56:03Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "MaxAlter79"
+      }
+    },
     {
       "number": 126,
       "title": "[Nova extensão]: Saímo tv",
