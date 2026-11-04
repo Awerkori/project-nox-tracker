@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-11-04T06:31:25.738150+00:00",
+  "generated_at": "2026-11-04T14:50:23.594725+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 129,
+      "title": "[Problema na extensão]: Mediocre Toons — carregamento infinito mesmo com VIP",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/129",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-04T14:08:11Z",
+      "updated_at": "2026-11-04T14:08:24Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "Caiquehack"
+      }
+    },
     {
       "number": 128,
       "title": "[Problema na extensão]: Redetoons — Extensão com problema",
