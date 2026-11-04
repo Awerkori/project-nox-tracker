@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-11-03T21:55:56.737648+00:00",
+  "generated_at": "2026-11-04T06:31:25.738150+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 128,
+      "title": "[Problema na extensão]: Redetoons — Extensão com problema",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/128",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-04T00:30:32Z",
+      "updated_at": "2026-11-04T00:30:43Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "monarcalorde169-beep"
+      }
+    },
     {
       "number": 127,
       "title": "[Problema na extensão]: Hanami Heaven — HTTP 400",
