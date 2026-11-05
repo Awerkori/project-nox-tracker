@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-11-04T14:50:23.594725+00:00",
+  "generated_at": "2026-11-05T16:33:51.297420+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 130,
+      "title": "[Mudança de domínio]: Fleur Blanche",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/130",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-05T13:40:51Z",
+      "updated_at": "2026-11-05T13:41:01Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Mudança de domínio",
+          "color": "06b6d4"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "jjaekyung897-coder"
+      }
+    },
     {
       "number": 129,
       "title": "[Problema na extensão]: Mediocre Toons — carregamento infinito mesmo com VIP",
