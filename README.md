@@ -63,7 +63,7 @@ Abra `http://localhost:8000` no seu navegador.
 
 ---
 
-## ⚖️ Licença
+## ⚖️ Licença e Copyright
 
 Este projeto é software livre licenciado sob os termos da **GNU Affero General Public License versão 3.0** (`AGPL-3.0-only`). Consulte o arquivo [LICENSE](LICENSE) para obter o texto integral inalterado da licença e o arquivo [NOTICE](NOTICE) para informações detalhadas de autoria, termos de marca e governança.
 
