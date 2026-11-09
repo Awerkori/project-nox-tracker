@@ -1,7 +1,171 @@
 {
-  "generated_at": "2026-11-09T11:00:35.221300+00:00",
+  "generated_at": "2026-11-09T21:23:56.828392+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 140,
+      "title": "[Nova extensão]: WatchAnimeHentai",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/140",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-09T20:13:21Z",
+      "updated_at": "2026-11-09T20:13:33Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "8b5cf6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        },
+        {
+          "name": "Conteúdo +18",
+          "color": "db2777"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "mikhg397-cmyk"
+      }
+    },
+    {
+      "number": 139,
+      "title": "[Problema na extensão]: Animeplayer",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/139",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-09T20:05:24Z",
+      "updated_at": "2026-11-09T20:05:34Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "mikhg397-cmyk"
+      }
+    },
+    {
+      "number": 138,
+      "title": "[Mudança de domínio]: CineVEO",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/138",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-09T19:56:44Z",
+      "updated_at": "2026-11-09T19:56:54Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Mudança de domínio",
+          "color": "06b6d4"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "mikhg397-cmyk"
+      }
+    },
+    {
+      "number": 137,
+      "title": "[Mudança de domínio]: RedeToons",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/137",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-09T19:53:46Z",
+      "updated_at": "2026-11-09T19:53:57Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Mudança de domínio",
+          "color": "06b6d4"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "mikhg397-cmyk"
+      }
+    },
+    {
+      "number": 135,
+      "title": "[Nova extensão]: Reino Manga",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/135",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-09T14:16:31Z",
+      "updated_at": "2026-11-09T14:17:17Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "8b5cf6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "SrCrono"
+      }
+    },
     {
       "number": 134,
       "title": "[Problema na extensão]: Monte tai — Problema na extensão monte tai: lentidão nos dowloads de capitulos",
@@ -59,8 +223,8 @@
         }
       ],
       "reactions": {
-        "total_count": 0,
-        "+1": 0
+        "total_count": 1,
+        "+1": 1
       },
       "author": {
         "login": "SrCrono"
@@ -433,7 +597,7 @@
       "state": "open",
       "state_reason": null,
       "created_at": "2026-10-30T17:27:50Z",
-      "updated_at": "2026-10-30T17:27:59Z",
+      "updated_at": "2026-11-09T18:12:19Z",
       "closed_at": null,
       "comments": 0,
       "labels": [
