@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 Project Nox Contributors & Awerkori
+
 /**
  * Project Nox Tracker 2.0 - Core Application Logic
  *
