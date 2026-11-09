@@ -2,24 +2,24 @@ Project Nox · Tracker (Dashboard Público de Demandas)
 Copyright (C) 2026 Project Nox Contributors & Awerkori
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, version 3 of the License (GPL-3.0-only).
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, version 3 of the License (AGPL-3.0-only).
 
-SPDX-License-Identifier: GPL-3.0-only
+SPDX-License-Identifier: AGPL-3.0-only
 
 ================================================================================
-1. ESCLARECIMENTO SOBRE LICENCIAMENTO (GPL-3.0 vs. AGPL-3.0)
+1. ESCLARECIMENTO SOBRE LICENCIAMENTO (GNU AGPLv3)
 ================================================================================
-Este repositório está oficialmente licenciado sob a GNU General Public
-License versão 3.0 (GPL-3.0-only).
+Este repositório está oficialmente licenciado sob a GNU Affero General Public
+License versão 3.0 (AGPL-3.0-only).
 
-Sinalização expressa de escopo copyleft:
-A GNU GPL versão 3.0 não contém a cláusula de interação remota presente na
-Seção 13 da GNU Affero General Public License (AGPL-3.0). Os arquivos estáticos
-(HTML/CSS/JS) compilados e hospedados no GitHub Pages são entregues diretamente
-aos navegadores dos usuários, estando sob a proteção e direitos da GPLv3.
-A escolha da GPL 3.0 assegura transparência integral ao software livre,
-preservando as quatro liberdades essenciais de redistribuição e estudo.
+Cláusula de Interação Remota de Rede (Seção 13):
+Em cumprimento aos termos da GNU Affero General Public License versão 3.0,
+qualquer operador ou desenvolvedor que execute esta aplicação em servidores ou
+redes de computadores acessíveis remotamente fica obrigado a disponibilizar de
+forma proeminente a todos os usuários remotos a oportunidade de obter o
+Código-Fonte Correspondente (Corresponding Source) da versão em execução, sem
+cobrança e através de meio habitual de disponibilização de software em rede.
 
 ================================================================================
 2. COMPONENTES E ATRIBUIÇÕES DE TERCEIROS
@@ -29,10 +29,11 @@ A interface e pipelines utilizam componentes leves de código aberto e web stand
 - GitHub Actions Runtime: GitHub, Inc.
 
 ================================================================================
-3. RESERVA DE MARCA E IDENTIDADE VISUAL
+3. PROTEÇÃO DE IDENTIDADE E MARCA (AGPLv3 Seção 7(e))
 ================================================================================
-A concessão da licença de código-fonte aberto GPL 3.0 aplica-se exclusivamente
-aos direitos autorais de software. NENHUM direito sobre marcas registradas,
-logotipos oficiais ou identidade do "Project Nox" ou de "Awerkori" é concedido
-por esta licença. É estritamente vedada a utilização desses elementos para
-alegar endosso ou status oficial.
+A concessão da licença de código aberto AGPLv3 aplica-se exclusivamente aos
+direitos autorais de software. Os nomes "Project Nox" e "Awerkori", bem como
+logotipos oficiais e identidade visual distintiva, identificam a procedência e
+origem do projeto. Em consonância com a Seção 7(e) da GNU AGPLv3, esta licença
+NÃO confere autorização para o uso de tais sinais distintivos para insinuar
+endosso, homologação ou representação oficial sem consentimento prévio por escrito.
