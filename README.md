@@ -65,4 +65,23 @@ Abra `http://localhost:8000` no seu navegador.
 
 ## ⚖️ Licença
 
-Distribuído sob licença aberta para visualização pública e acompanhamento comunitário do Project Nox.
+Este projeto é software livre licenciado sob os termos da **GNU General Public License versão 3.0** (`GPL-3.0-only`). Consulte o arquivo [LICENSE](LICENSE) para obter o texto integral inalterado da licença e o arquivo [NOTICE](NOTICE) para informações detalhadas de autoria, termos de marca e governança.
+
+```
+Copyright (C) 2026 Project Nox Contributors & Awerkori
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+```
+
+### 📌 Nota sobre GPL-3.0 e AGPL-3.0
+O Project Nox adota oficialmente a licença **GNU GPL versão 3.0**. Diferentemente da licença GNU AGPLv3, a GPLv3 não contém a cláusula de interação remota por rede (Seção 13 da AGPL). 
+
+### 🛡️ Autenticidade e Marca
+A concessão da licença GPL 3.0 refere-se estritamente aos direitos autorais do software. Ela **não concede** autorização ou licença para uso de marcas, logotipos oficiais ou da denominação "Project Nox" para insinuar homologação, endosso ou representação oficial do projeto.
