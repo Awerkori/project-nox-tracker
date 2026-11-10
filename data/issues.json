@@ -1,7 +1,115 @@
 {
-  "generated_at": "2026-11-09T21:23:56.828392+00:00",
+  "generated_at": "2026-11-10T03:42:52.030409+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 143,
+      "title": "[Nova extensão]: hentaihaven",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/143",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-10T03:22:49Z",
+      "updated_at": "2026-11-10T03:28:00Z",
+      "closed_at": null,
+      "comments": 2,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "8b5cf6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        },
+        {
+          "name": "Conteúdo +18",
+          "color": "db2777"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "uncensoredisekai"
+      }
+    },
+    {
+      "number": 142,
+      "title": "[Nova extensão]: watchanimehentai",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/142",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-11-10T02:13:26Z",
+      "updated_at": "2026-11-10T02:16:17Z",
+      "closed_at": "2026-11-10T02:16:17Z",
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "8b5cf6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        },
+        {
+          "name": "Conteúdo +18",
+          "color": "db2777"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "uncensoredisekai"
+      }
+    },
+    {
+      "number": 141,
+      "title": "[Nova extensão]: hentaihaven",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/141",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-10T02:08:15Z",
+      "updated_at": "2026-11-10T02:08:24Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "8b5cf6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        },
+        {
+          "name": "Conteúdo +18",
+          "color": "db2777"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "uncensoredisekai"
+      }
+    },
     {
       "number": 140,
       "title": "[Nova extensão]: WatchAnimeHentai",
@@ -31,8 +139,8 @@
         }
       ],
       "reactions": {
-        "total_count": 0,
-        "+1": 0
+        "total_count": 1,
+        "+1": 1
       },
       "author": {
         "login": "mikhg397-cmyk"
@@ -333,9 +441,9 @@
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-04T14:08:11Z",
-      "updated_at": "2026-11-04T14:08:24Z",
+      "updated_at": "2026-11-10T03:11:15Z",
       "closed_at": null,
-      "comments": 0,
+      "comments": 1,
       "labels": [
         {
           "name": "Problema na extensão",
@@ -394,11 +502,11 @@
       "number": 127,
       "title": "[Problema na extensão]: Hanami Heaven — HTTP 400",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/127",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "duplicate",
       "created_at": "2026-11-03T20:55:50Z",
-      "updated_at": "2026-11-03T20:56:03Z",
-      "closed_at": null,
+      "updated_at": "2026-11-10T03:24:27Z",
+      "closed_at": "2026-11-10T03:24:22Z",
       "comments": 0,
       "labels": [
         {
@@ -412,6 +520,10 @@
         {
           "name": "Em análise",
           "color": "eab308"
+        },
+        {
+          "name": "Concluído",
+          "color": "10b981"
         }
       ],
       "reactions": {
@@ -555,51 +667,15 @@
       }
     },
     {
-      "number": 122,
-      "title": "[Nova extensão]: LectorHentai",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/122",
-      "state": "open",
-      "state_reason": null,
-      "created_at": "2026-10-31T19:09:11Z",
-      "updated_at": "2026-10-31T19:09:21Z",
-      "closed_at": null,
-      "comments": 0,
-      "labels": [
-        {
-          "name": "Mangá",
-          "color": "3b82f6"
-        },
-        {
-          "name": "Nova extensão",
-          "color": "8b5cf6"
-        },
-        {
-          "name": "Em análise",
-          "color": "eab308"
-        },
-        {
-          "name": "Conteúdo +18",
-          "color": "db2777"
-        }
-      ],
-      "reactions": {
-        "total_count": 0,
-        "+1": 0
-      },
-      "author": {
-        "login": "anehemias6-star"
-      }
-    },
-    {
       "number": 121,
       "title": "[Nova extensão]: ECHO SCANS/MANGA",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/121",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-10-30T17:27:50Z",
-      "updated_at": "2026-11-09T18:12:19Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-11-10T03:06:29Z",
+      "closed_at": "2026-11-10T03:06:26Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Mangá",
@@ -612,6 +688,10 @@
         {
           "name": "Em análise",
           "color": "eab308"
+        },
+        {
+          "name": "Concluído",
+          "color": "10b981"
         }
       ],
       "reactions": {
