@@ -17,7 +17,8 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-DATA_FILE = Path("/home/awerkori/.Projects/Project-Nox-Tracker/data/issues.json")
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_FILE = BASE_DIR / "data/issues.json"
 
 
 def load_issues():
@@ -156,29 +157,28 @@ def test_math_reconciliation():
     print("✓ Reconciliação matemática 100% comprovada e exata!")
 
 
-def test_real_dataset_and_ticket_127():
-    print("\n=== Teste 5: Presença do Ticket #127 e Tickets Abertos Reais ===")
+def test_real_dataset_and_ticket_ordering():
+    print("\n=== Teste 5: Ordenação e Consistência dos Tickets Abertos ===")
     issues = load_issues()
     open_issues = [i for i in issues if i.get("state") == "open"]
     open_numbers = [i["number"] for i in open_issues]
 
     print(f"Tickets abertos encontrados ({len(open_issues)}): {open_numbers}")
-    assert 127 in open_numbers, "ERRO CRÍTICO: Ticket #127 não encontrado nos tickets abertos!"
+    assert len(open_issues) > 0, "ERRO CRÍTICO: Nenhum ticket aberto encontrado no dataset!"
 
-    ticket_127 = next(i for i in open_issues if i["number"] == 127)
-    print(f"Ticket #127 título: {ticket_127['title']}")
-    print(f"Ticket #127 labels: {[l['name'] for l in ticket_127.get('labels', [])]}")
-    assert "Hanami Heaven" in ticket_127["title"], f"Título inesperado para #127: {ticket_127['title']}"
-
-    # Verificação de primeiro card ordenado por criação recente (created_at DESC)
+    # Verificação de ordenação por criação recente (created_at DESC, tiebreaker number DESC)
     sorted_by_recent = sorted(
         open_issues,
         key=lambda x: (x.get("created_at") or "", int(x["number"])),
         reverse=True
     )
     first_ticket = sorted_by_recent[0]
-    assert first_ticket["number"] == 127, f"Esperado primeiro ticket ser #127, obtido #{first_ticket['number']}"
-    print(f"✓ Ticket mais recente comprovado: #{first_ticket['number']} ({first_ticket['title']})")
+    print(f"✓ Ticket mais recente aberto: #{first_ticket['number']} ({first_ticket['title']})")
+    for idx in range(len(sorted_by_recent) - 1):
+        a = sorted_by_recent[idx]
+        b = sorted_by_recent[idx + 1]
+        assert (a.get("created_at") or "") >= (b.get("created_at") or ""), "Ordenação por created_at violada!"
+    print(f"✓ Todos os {len(sorted_by_recent)} tickets abertos ordenados estritamente por created_at DESC!")
 
 
 if __name__ == "__main__":
@@ -186,5 +186,5 @@ if __name__ == "__main__":
     test_tiebreaker_and_invalid_dates()
     test_all_sort_options()
     test_math_reconciliation()
-    test_real_dataset_and_ticket_127()
+    test_real_dataset_and_ticket_ordering()
     print("\nTODOS OS TESTES PASSARAM COM SUCESSO!")

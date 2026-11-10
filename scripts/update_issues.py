@@ -102,6 +102,18 @@ def main() -> None:
     if not issues:
         raise ValueError("Nenhuma Issue válida foi obtida da API do GitHub! Abortando para evitar perda de dados.")
 
+    # Deduplicação determinística para prevenir registros duplicados oriundos de deslocamento de página na API
+    seen_numbers = set()
+    deduped_issues = []
+    for issue in issues:
+        num = issue.get("number")
+        if num and num not in seen_numbers:
+            seen_numbers.add(num)
+            deduped_issues.append(issue)
+        elif num in seen_numbers:
+            print(f"Aviso: Issue #{num} duplicada detectada na paginação e desconsiderada.")
+    issues = deduped_issues
+
     compact = []
     for issue in issues:
         item = {field: issue.get(field) for field in FIELDS}

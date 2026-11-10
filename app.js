@@ -215,51 +215,66 @@
       }
     }
 
-    // 3. Detect Workflow Status (for open or in-progress issues)
-    let status = null;
-    let statusLabel = null;
-    let statusColor = null;
-    for (const label of lowerLabels) {
-      if (STATUS_MAP[label]) {
-        status = STATUS_MAP[label].key;
-        statusLabel = STATUS_MAP[label].label;
-        statusColor = STATUS_MAP[label].color;
-        break;
-      }
-    }
-
-    // 4. Detect Resolution (for closed issues)
-    let resolution = null;
-    let resolutionLabel = null;
-    let resolutionColor = null;
-    let resolutionSource = "label";
-
-    for (const label of lowerLabels) {
-      if (RESOLUTION_MAP[label]) {
-        resolution = RESOLUTION_MAP[label].key;
-        resolutionLabel = RESOLUTION_MAP[label].label;
-        resolutionColor = RESOLUTION_MAP[label].color;
-        break;
-      }
-    }
-
+    // Native state is authoritative: labels NEVER override native state
     const isOpen = raw.state === "open";
     const isClosed = raw.state === "closed";
     const stateReason = raw.state_reason || null;
 
-    // Derived resolution for closed issues without explicit resolution label:
-    // Check if closed with GitHub native state_reason === "duplicate" (e.g. Issues #55, #61, #65)
-    if (isClosed && !resolution) {
-      if (stateReason === "duplicate" || lowerLabels.includes("duplicado")) {
-        resolution = "duplicate";
-        resolutionLabel = "Duplicado (GitHub)";
-        resolutionColor = "orange";
-        resolutionSource = "github_reason";
-      } else {
-        resolution = "unclassified";
-        resolutionLabel = "Sem classificação";
-        resolutionColor = "slate";
-        resolutionSource = "derived";
+    let status = null;
+    let statusLabel = null;
+    let statusColor = null;
+
+    let resolution = null;
+    let resolutionLabel = null;
+    let resolutionColor = null;
+    let resolutionSource = null;
+
+    if (isOpen) {
+      // 3. Workflow Status applies ONLY to open issues
+      for (const label of lowerLabels) {
+        if (STATUS_MAP[label]) {
+          status = STATUS_MAP[label].key;
+          statusLabel = STATUS_MAP[label].label;
+          statusColor = STATUS_MAP[label].color;
+          break;
+        }
+      }
+      // Open issues are NEVER marked with resolution, even if a stale resolution label remains
+      resolution = null;
+      resolutionLabel = null;
+      resolutionColor = null;
+      resolutionSource = null;
+    } else {
+      // 4. Closed issues: Workflow status does NOT apply to closed issues
+      status = null;
+      statusLabel = null;
+      statusColor = null;
+
+      // Detect resolution from labels
+      for (const label of lowerLabels) {
+        if (RESOLUTION_MAP[label]) {
+          resolution = RESOLUTION_MAP[label].key;
+          resolutionLabel = RESOLUTION_MAP[label].label;
+          resolutionColor = RESOLUTION_MAP[label].color;
+          resolutionSource = "label";
+          break;
+        }
+      }
+
+      // If closed without explicit resolution label:
+      if (!resolution) {
+        if (stateReason === "duplicate" || lowerLabels.includes("duplicado")) {
+          resolution = "duplicate";
+          resolutionLabel = "Duplicado";
+          resolutionColor = "orange";
+          resolutionSource = "github_reason";
+        } else {
+          // Closed without resolution label MUST NOT be classified as "Concluído"
+          resolution = "unclassified";
+          resolutionLabel = "Sem classificação";
+          resolutionColor = "slate";
+          resolutionSource = "derived";
+        }
       }
     }
 
@@ -355,26 +370,73 @@
     };
   }
 
-  function renderStats(stats) {
-    if (el.statTotal) el.statTotal.textContent = stats.total;
-    if (el.statOpen) el.statOpen.textContent = stats.open;
-    if (el.statClosed) el.statClosed.textContent = stats.closed;
-    if (el.statInProgress) el.statInProgress.textContent = stats.inProgress;
-    if (el.statDone) el.statDone.textContent = stats.done;
-    if (el.statDeclined) el.statDeclined.textContent = stats.declined;
+  function updateActiveCardHighlight() {
+    // Type pills active state
+    const mangaBtn = document.querySelector('[data-filter-stat="manga"]');
+    const animeBtn = document.querySelector('[data-filter-stat="anime"]');
+    if (mangaBtn) {
+      if (filters.type === "manga") mangaBtn.classList.add("active");
+      else mangaBtn.classList.remove("active");
+    }
+    if (animeBtn) {
+      if (filters.type === "anime") animeBtn.classList.add("active");
+      else animeBtn.classList.remove("active");
+    }
 
-    if (el.statDuplicate) el.statDuplicate.textContent = stats.duplicate;
-    if (el.statUnclassified) el.statUnclassified.textContent = stats.unclassified;
-    if (el.statManga) el.statManga.textContent = stats.manga;
-    if (el.statAnime) el.statAnime.textContent = stats.anime;
+    // Stat cards active state
+    const allStatCards = document.querySelectorAll(".stat-card[data-filter-stat], .type-pill-button.pill-subtle[data-filter-stat]");
+    allStatCards.forEach(c => c.classList.remove("active"));
+
+    if (filters.status === "in-progress") {
+      document.querySelector('.stat-card[data-filter-stat="in-progress"]')?.classList.add("active");
+    } else if (filters.resolution === "done") {
+      document.querySelector('.stat-card[data-filter-stat="done"]')?.classList.add("active");
+    } else if (filters.resolution === "declined") {
+      document.querySelector('.stat-card[data-filter-stat="declined"]')?.classList.add("active");
+    } else if (filters.resolution === "duplicate") {
+      document.querySelector('[data-filter-stat="duplicate"]')?.classList.add("active");
+    } else if (filters.resolution === "unclassified") {
+      document.querySelector('[data-filter-stat="unclassified"]')?.classList.add("active");
+    } else if (filters.state === "open") {
+      document.querySelector('.stat-card[data-filter-stat="open"]')?.classList.add("active");
+    } else if (filters.state === "closed") {
+      document.querySelector('.stat-card[data-filter-stat="closed"]')?.classList.add("active");
+    } else if (filters.state === "all" && filters.resolution === "all" && filters.status === "all") {
+      document.querySelector('.stat-card[data-filter-stat="total"]')?.classList.add("active");
+    }
+  }
+
+  function renderStats(stats) {
+    // 1. Always keep global counts on the type switch pills
+    const globalStats = calculateStats(allIssues);
+    if (el.statManga) el.statManga.textContent = globalStats.manga;
+    if (el.statAnime) el.statAnime.textContent = globalStats.anime;
+
+    // 2. Scoped statistics matching the selected domain/type
+    const scopedIssues = filters.type !== "all"
+      ? allIssues.filter(i => i.type === filters.type)
+      : allIssues;
+    const currentStats = stats || calculateStats(scopedIssues);
+
+    if (el.statTotal) el.statTotal.textContent = currentStats.total;
+    if (el.statOpen) el.statOpen.textContent = currentStats.open;
+    if (el.statClosed) el.statClosed.textContent = currentStats.closed;
+    if (el.statInProgress) el.statInProgress.textContent = currentStats.inProgress;
+    if (el.statDone) el.statDone.textContent = currentStats.done;
+    if (el.statDeclined) el.statDeclined.textContent = currentStats.declined;
+
+    if (el.statDuplicate) el.statDuplicate.textContent = currentStats.duplicate;
+    if (el.statUnclassified) el.statUnclassified.textContent = currentStats.unclassified;
 
     // Update counts on quick segmented control buttons
     const qTotal = document.querySelector('[data-quick-count="total"]');
     const qOpen = document.querySelector('[data-quick-count="open"]');
     const qClosed = document.querySelector('[data-quick-count="closed"]');
-    if (qTotal) qTotal.textContent = stats.total;
-    if (qOpen) qOpen.textContent = stats.open;
-    if (qClosed) qClosed.textContent = stats.closed;
+    if (qTotal) qTotal.textContent = currentStats.total;
+    if (qOpen) qOpen.textContent = currentStats.open;
+    if (qClosed) qClosed.textContent = currentStats.closed;
+
+    updateActiveCardHighlight();
   }
 
   // Filter and Sort Issues
@@ -395,8 +457,9 @@
       // 2. Type filter (manga / anime)
       if (filters.type !== "all" && issue.type !== filters.type) return false;
 
-      // 3. State filter (open / closed)
-      if (filters.state !== "all" && issue.state !== filters.state) return false;
+      // 3. State filter (open / closed) - Authoritative native check
+      if (filters.state === "open" && !issue.isOpen) return false;
+      if (filters.state === "closed" && !issue.isClosed) return false;
 
       // 4. Category / Kind filter
       if (filters.category !== "all") {
@@ -662,10 +725,13 @@
     const count = filtered.length;
 
     if (el.ticketCount) {
-      el.ticketCount.textContent = `${count} ${count === 1 ? "ticket exibido" : "tickets exibidos"} (de ${allIssues.length})`;
+      const scopeLabel = filters.type === "manga" ? " em Mangás" : filters.type === "anime" ? " em Animes" : "";
+      const totalInScope = filters.type !== "all" ? allIssues.filter(i => i.type === filters.type).length : allIssues.length;
+      el.ticketCount.textContent = `${count} ${count === 1 ? "ticket exibido" : "tickets exibidos"} (de ${totalInScope}${scopeLabel})`;
     }
 
     renderFilterChips();
+    renderStats();
 
     // Update Quick Segmented State Buttons active state
     if (el.quickStateButtons) {
@@ -985,6 +1051,7 @@
 
   async function fetchLiveIssuesFromGitHub() {
     const all = [];
+    const seen = new Set();
     let page = 1;
     while (page <= 5) {
       const res = await fetch(`${GITHUB_API_BASE}?state=all&per_page=100&page=${page}&sort=created&direction=desc`, {
@@ -1001,7 +1068,8 @@
       const batch = await res.json();
       if (!Array.isArray(batch) || batch.length === 0) break;
       for (const item of batch) {
-        if (!item.pull_request) {
+        if (!item.pull_request && !seen.has(item.number)) {
+          seen.add(item.number);
           all.push(item);
         }
       }
@@ -1014,8 +1082,7 @@
   // Load Issues Data
   async function loadData(forceLive = false) {
     let rawIssues = null;
-    let liveFetched = false;
-    let rateLimited = false;
+    let dataSource = "published"; // "live", "published", "rate_limited", "published_after_live_error", "offline"
 
     // 1. When forceLive is true, attempt to fetch directly from official GitHub API
     if (forceLive) {
@@ -1024,7 +1091,7 @@
         if (Array.isArray(liveList) && liveList.length > 0) {
           rawIssues = liveList;
           generatedAt = new Date().toISOString();
-          liveFetched = true;
+          dataSource = "live";
           try {
             localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
             localStorage.setItem(`${CACHE_KEY}-time`, generatedAt);
@@ -1033,9 +1100,8 @@
           }
         }
       } catch (err) {
-        if (err && err.message === "RATE_LIMITED") {
-          rateLimited = true;
-        }
+        const isRateLimit = err && err.message === "RATE_LIMITED";
+        dataSource = isRateLimit ? "rate_limited" : "published_after_live_error";
         console.warn("Live GitHub API query failed or rate-limited, falling back to static JSON:", err);
       }
     }
@@ -1070,7 +1136,6 @@
     }
 
     // 3. Fallback to localStorage if network completely failed
-    let isOfflineFallback = false;
     if (!rawIssues || rawIssues.length === 0) {
       try {
         const cached = localStorage.getItem(CACHE_KEY);
@@ -1078,7 +1143,7 @@
         if (cached) {
           rawIssues = JSON.parse(cached);
           generatedAt = cachedTime || generatedAt;
-          isOfflineFallback = true;
+          dataSource = "offline";
         }
       } catch {
         // ignore
@@ -1088,8 +1153,6 @@
     // 4. Normalize and render
     if (rawIssues && rawIssues.length > 0) {
       allIssues = rawIssues.map(normalizeIssue);
-      const stats = calculateStats(allIssues);
-      renderStats(stats);
       renderTickets();
 
       if (el.updated) {
@@ -1098,14 +1161,16 @@
           : "";
         const dateStr = generatedAt ? formatDate(generatedAt) : "";
 
-        if (liveFetched) {
-          el.updated.textContent = `Atualizado agora (GitHub ao vivo: ${timeStr})`;
-        } else if (isOfflineFallback) {
+        if (dataSource === "live") {
+          el.updated.textContent = `Atualizado agora via API do GitHub (${timeStr})`;
+        } else if (dataSource === "offline") {
           el.updated.textContent = `Modo offline (dados em cache de ${dateStr} ${timeStr})`;
-        } else if (forceLive && rateLimited) {
+        } else if (dataSource === "rate_limited") {
           el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr} (API GitHub limitada)`;
+        } else if (dataSource === "published_after_live_error") {
+          el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr} (falha na API ao vivo)`;
         } else if (forceLive) {
-          el.updated.textContent = `Snapshot mais recente: ${dateStr} às ${timeStr}`;
+          el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr}`;
         } else {
           el.updated.textContent = `Última sincronização: ${dateStr} às ${timeStr}`;
         }
