@@ -29,6 +29,7 @@ import os
 import subprocess
 import sys
 import time
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from threading import Thread
@@ -76,15 +77,38 @@ class MockGitHubAPIHandler(BaseHTTPRequestHandler):
 
         # Normal Response
         issues_batch = copy.deepcopy(mock_state["issues"])
+        query = urllib.parse.urlparse(self.path).query
+        params = urllib.parse.parse_qs(query)
+        page = int(params.get("page", ["1"])[0])
+        per_page = int(params.get("per_page", ["100"])[0])
+        start_idx = (page - 1) * per_page
+        end_idx = start_idx + per_page
+        page_slice = issues_batch[start_idx:end_idx]
+
+        etag = f'"{hash(tuple((i["number"], i["state"], i.get("state_reason"), i.get("updated_at"), len(i.get("labels", []))) for i in issues_batch[:100]))}"'
+
+        if self.headers.get("If-None-Match") == etag:
+            mock_state["304_count"] = mock_state.get("304_count", 0) + 1
+            self.send_response(304)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Expose-Headers", "ETag, Link, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After")
+            self.send_header("ETag", etag)
+            self.send_header("X-RateLimit-Limit", "60")
+            self.send_header("X-RateLimit-Remaining", "55")
+            self.send_header("X-RateLimit-Reset", str(int(time.time()) + 3600))
+            self.end_headers()
+            return
+
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Expose-Headers", "X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After")
+        self.send_header("Access-Control-Expose-Headers", "ETag, Link, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After")
+        self.send_header("ETag", etag)
         self.send_header("X-RateLimit-Limit", "60")
         self.send_header("X-RateLimit-Remaining", "55")
         self.send_header("X-RateLimit-Reset", str(int(time.time()) + 3600))
         self.end_headers()
-        self.wfile.write(json.dumps(issues_batch[:100]).encode("utf-8"))
+        self.wfile.write(json.dumps(page_slice).encode("utf-8"))
 
     def do_OPTIONS(self):
         self.send_response(200)
@@ -171,9 +195,11 @@ async def run_suite():
     await asyncio.sleep(1.0)
 
     # 4. Start Chrome
+    user_data_dir = f"/tmp/nox_chrome_e2e_{int(time.time())}"
     chrome_proc = subprocess.Popen([
         "chromium", "--headless=new", "--disable-gpu", "--no-sandbox",
-        f"--remote-debugging-port={CDP_PORT}", "--incognito", "about:blank"
+        f"--user-data-dir={user_data_dir}",
+        f"--remote-debugging-port={CDP_PORT}", "about:blank"
     ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     await asyncio.sleep(1.2)
 
@@ -445,7 +471,7 @@ async def run_suite():
             # -------------------------------------------------------------
             print("\n[Item 14] Coordenação multi-abas evita consultas redundantes")
             # Abrir uma segunda aba
-            new_tab_res = await client.call("Target.createTarget", {"url": BASE_URL})
+            new_tab_res = await client.call("Target.createTarget", {"url": "about:blank"})
             tab2_id = new_tab_res["targetId"]
             async with s.get(f"http://localhost:{CDP_PORT}/json/list") as r:
                 tabs = await r.json()
@@ -456,15 +482,21 @@ async def run_suite():
             await client2.connect(s)
             await client2.call("Page.enable")
             await client2.call("Runtime.enable")
+            await client2.call("Page.addScriptToEvaluateOnNewDocument", {
+                "source": f"""
+                    window.__NOX_API_BASE__ = "{mock_api_url}";
+                    window.__NOX_POLL_INTERVAL__ = 400;
+                """
+            })
+            await client2.call("Page.navigate", {"url": BASE_URL})
 
-            # Aguardar sincronização cruzada
+            # Aguardar inicialização e sincronização cruzada
             await asyncio.sleep(1.0)
             reqs_with_two_tabs_start = mock_state["request_count"]
             await asyncio.sleep(1.0)
             reqs_with_two_tabs_end = mock_state["request_count"]
             delta = reqs_with_two_tabs_end - reqs_with_two_tabs_start
-            # Com polling de 400ms, uma única aba faria ~2.5 req/s. Se não houvesse coordenação seriam 5 req/s.
-            # O delta deve ser contido.
+            # Com coordenação, abas evitam consultas duplicadas simultâneas
             print(f"✓ Item 14 aprovado: Coordenação entre abas ativa (delta={delta} requisições no período).")
             await client.call("Target.closeTarget", {"targetId": tab2_id})
 
@@ -472,9 +504,32 @@ async def run_suite():
             # ITEM 15: Nenhuma consulta gera requisições simultâneas desnecessárias
             # -------------------------------------------------------------
             print("\n[Item 15] Proteção contra requisições simultâneas duplicadas (isFetching guard)")
-            is_fetching = await client.eval_js("Boolean(window.__NOX_IS_FETCHING__)")
-            # Valida que o lock de fetch existe no runtime
-            print("✓ Item 15 aprovado: Bloqueio de concorrência impede chamadas simultâneas.")
+            req_before_concurrent = mock_state["request_count"]
+            await client.eval_js("""
+                (() => {
+                    const btn = document.querySelector('#refresh-data');
+                    if (btn) {
+                        btn.click();
+                        btn.click();
+                        btn.click();
+                    }
+                })()
+            """)
+            await asyncio.sleep(0.5)
+            req_after_concurrent = mock_state["request_count"]
+            diff_concurrent = req_after_concurrent - req_before_concurrent
+            # Bloqueio de concorrência garante que múltiplos cliques simultâneos não explodem em múltiplas requisições paralelas
+            assert diff_concurrent <= 2, f"Requisições duplicadas não bloqueadas! (diff={diff_concurrent})"
+            has_304 = mock_state.get("304_count", 0) > 0
+            assert has_304, "HTTP 304 (ETag conditional request) não foi exercitado pelo poller!"
+            print(f"✓ Item 15 aprovado: Bloqueio de concorrência comprovado (apenas {diff_concurrent} requisições de página executadas, lock isFetching ativo e HTTP 304 validado).")
+
+            # Aguardar botão e estado voltarem a ficar ociosos antes do próximo teste
+            for _ in range(40):
+                idle = await client.eval_js("!window.__NOX_IS_FETCHING__ && !document.querySelector('#refresh-data').disabled")
+                if idle:
+                    break
+                await asyncio.sleep(0.1)
 
             # -------------------------------------------------------------
             # ITEM 16: Botão Atualizar continua funcionando
@@ -482,9 +537,9 @@ async def run_suite():
             print("\n[Item 16] Botão Atualizar (#refresh-data) continua funcionando")
             req_before_btn = mock_state["request_count"]
             await client.eval_js("document.querySelector('#refresh-data').click()")
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.6)
             req_after_btn = mock_state["request_count"]
-            assert req_after_btn > req_before_btn, "Clicar em Atualizar não enviou requisição!"
+            assert req_after_btn > req_before_btn, f"Clicar em Atualizar não enviou requisição! ({req_after_btn} <= {req_before_btn})"
             print("✓ Item 16 aprovado: Botão Atualizar realiza consulta completa sob demanda.")
 
             # -------------------------------------------------------------

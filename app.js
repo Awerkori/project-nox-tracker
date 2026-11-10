@@ -22,6 +22,7 @@
   const CACHE_KEY = "project-nox-live-issues-v2";
   const CACHE_TIME_KEY = "project-nox-live-issues-v2-time";
   const CACHE_SIG_KEY = "project-nox-live-issues-v2-sig";
+  const CACHE_ETAG_KEY = "project-nox-live-issues-v2-etag";
   const STORAGE_LAST_SYNC_KEY = "project-nox-last-sync-time";
   const SYNC_CHANNEL_NAME = "project-nox-sync-channel";
 
@@ -114,13 +115,21 @@
   let lastFocus = null;
   let generatedAt = null;
   let currentSignature = "";
+  let currentEtag = "";
   let isFetching = false;
+  let pendingManualRefresh = false;
   let pollTimer = null;
   let rateLimitUntil = 0;
   let rateLimitRemaining = null;
   let lastSyncTime = 0;
   const openedAt = Date.now();
   let syncChannel = null;
+
+  try {
+    currentEtag = localStorage.getItem(CACHE_ETAG_KEY) || "";
+  } catch {
+    // ignore
+  }
 
   try {
     if (typeof BroadcastChannel !== "undefined") {
@@ -139,9 +148,13 @@
   window.addEventListener("storage", (e) => {
     if (e.key === CACHE_KEY && e.newValue) {
       try {
-        const newIssues = JSON.parse(e.newValue);
-        const newTime = localStorage.getItem(CACHE_TIME_KEY);
-        applyRawIssues(newIssues, newTime, "live", false);
+        const syncSource = localStorage.getItem(STORAGE_LAST_SYNC_KEY);
+        // Only react to storage events if a genuine live sync occurred recently
+        if (syncSource && Math.abs(Date.now() - Number(syncSource)) < 5000) {
+          const newIssues = JSON.parse(e.newValue);
+          const newTime = localStorage.getItem(CACHE_TIME_KEY);
+          applyRawIssues(newIssues, newTime, "live", false);
+        }
       } catch {
         // ignore
       }
@@ -1182,18 +1195,40 @@
     const sortParam = manual ? "created" : "updated";
 
     while (page <= maxPages) {
+      const headers = {
+        "Accept": "application/vnd.github+json"
+      };
+      if (!manual && page === 1 && currentEtag) {
+        headers["If-None-Match"] = currentEtag;
+      }
+
       const res = await fetch(`${apiBase}?state=all&per_page=100&page=${page}&sort=${sortParam}&direction=desc`, {
-        headers: {
-          "Accept": "application/vnd.github+json"
-        }
+        headers
       });
 
       const isRateLimited = parseRateLimitHeaders(res);
+
+      if (res.status === 304) {
+        return { notModified: true };
+      }
+
       if (!res.ok) {
         if (res.status === 403 || res.status === 429 || isRateLimited) {
           throw new Error("RATE_LIMITED");
         }
         throw new Error(`HTTP_${res.status}`);
+      }
+
+      if (page === 1) {
+        const newEtag = res.headers.get("etag");
+        if (newEtag) {
+          currentEtag = newEtag;
+          try {
+            localStorage.setItem(CACHE_ETAG_KEY, newEtag);
+          } catch {
+            // ignore
+          }
+        }
       }
 
       const batch = await res.json();
@@ -1264,7 +1299,9 @@
       localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
       localStorage.setItem(CACHE_TIME_KEY, generatedAt);
       localStorage.setItem(CACHE_SIG_KEY, newSignature);
-      localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
+      if (dataSource === "live") {
+        localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
+      }
     } catch {
       // ignore
     }
@@ -1290,6 +1327,9 @@
       return;
     }
     if (isFetching) {
+      if (manual) {
+        pendingManualRefresh = true;
+      }
       return;
     }
 
@@ -1315,15 +1355,27 @@
     }
 
     isFetching = true;
+    window.__NOX_IS_FETCHING__ = true;
     if (manual && el.refresh) {
       el.refresh.disabled = true;
       el.refresh.classList.add("spinning");
     }
 
     try {
-      const freshBatch = await fetchLiveIssuesFromGitHub({ manual });
-      if (Array.isArray(freshBatch) && freshBatch.length > 0) {
-        const merged = manual ? freshBatch : mergeRawIssues(currentRawIssues, freshBatch);
+      const freshResult = await fetchLiveIssuesFromGitHub({ manual });
+      if (freshResult && freshResult.notModified) {
+        lastSyncTime = Date.now();
+        try {
+          localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
+        } catch {
+          // ignore
+        }
+        if (el.updated) {
+          const timeStr = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+          el.updated.textContent = `Atualizado agora via API do GitHub (${timeStr})`;
+        }
+      } else if (Array.isArray(freshResult) && freshResult.length > 0) {
+        const merged = manual ? freshResult : mergeRawIssues(currentRawIssues, freshResult);
         applyRawIssues(merged, new Date().toISOString(), "live", true, manual);
         lastSyncTime = Date.now();
       }
@@ -1336,6 +1388,7 @@
       }
     } finally {
       isFetching = false;
+      window.__NOX_IS_FETCHING__ = false;
       if (manual && el.refresh) {
         setTimeout(() => {
           if (el.refresh) {
@@ -1344,7 +1397,12 @@
           }
         }, 600);
       }
-      scheduleNextPoll();
+      if (pendingManualRefresh) {
+        pendingManualRefresh = false;
+        setTimeout(() => refreshLive({ manual: true }), 100);
+      } else {
+        scheduleNextPoll();
+      }
     }
   }
 
@@ -1378,7 +1436,8 @@
           dataSource = "live";
           try {
             localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
-            localStorage.setItem(`${CACHE_KEY}-time`, generatedAt);
+            localStorage.setItem(CACHE_TIME_KEY, generatedAt);
+            localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
           } catch {
             // ignore
           }
@@ -1392,6 +1451,18 @@
 
     // 2. Fetch static issues.json (with strict cache-busting)
     if (!rawIssues) {
+      let cachedIssues = null;
+      let cachedTime = null;
+      try {
+        const cachedStr = localStorage.getItem(CACHE_KEY);
+        cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+        if (cachedStr) {
+          cachedIssues = JSON.parse(cachedStr);
+        }
+      } catch {
+        // ignore
+      }
+
       try {
         const res = await fetch(`${DATA_URL}?_t=${Date.now()}`, {
           cache: "no-store",
@@ -1404,13 +1475,17 @@
         if (res.ok) {
           const json = await res.json();
           if (Array.isArray(json.issues) && json.issues.length > 0) {
-            rawIssues = json.issues;
-            generatedAt = json.generated_at;
-            try {
-              localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
-              localStorage.setItem(`${CACHE_KEY}-time`, generatedAt);
-            } catch {
-              // ignore
+            const staticTime = json.generated_at ? new Date(json.generated_at).getTime() : 0;
+            const cacheTimeVal = cachedTime ? new Date(cachedTime).getTime() : 0;
+
+            if (cachedIssues && Array.isArray(cachedIssues) && cachedIssues.length > 0 && cacheTimeVal > staticTime) {
+              rawIssues = cachedIssues;
+              generatedAt = cachedTime;
+              dataSource = "live";
+            } else {
+              rawIssues = json.issues;
+              generatedAt = json.generated_at;
+              dataSource = "published";
             }
           }
         }
@@ -1423,7 +1498,7 @@
     if (!rawIssues || rawIssues.length === 0) {
       try {
         const cached = localStorage.getItem(CACHE_KEY);
-        const cachedTime = localStorage.getItem(`${CACHE_KEY}-time`);
+        const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
         if (cached) {
           rawIssues = JSON.parse(cached);
           generatedAt = cachedTime || generatedAt;
@@ -1476,7 +1551,11 @@
     document.addEventListener("visibilitychange", handleVisibilityChange);
     // Background polling starts after initial page load
     const lastSync = Number(localStorage.getItem(STORAGE_LAST_SYNC_KEY) || 0);
-    const delay = (Date.now() - lastSync > FAST_INTERVAL) ? 1500 : nextPollDelay();
+    const minGap = (window.__NOX_POLL_INTERVAL__ || FAST_INTERVAL) * 0.75;
+    let delay = 1500;
+    if (lastSync > 0 && Date.now() - lastSync < minGap) {
+      delay = Math.max(1500, minGap - (Date.now() - lastSync));
+    }
     scheduleNextPoll(delay);
   }
 
