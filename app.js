@@ -22,9 +22,12 @@
   const CACHE_KEY = "project-nox-live-issues-v2";
   const CACHE_TIME_KEY = "project-nox-live-issues-v2-time";
   const CACHE_SIG_KEY = "project-nox-live-issues-v2-sig";
+  const CACHE_VERSION_KEY = "project-nox-live-issues-v2-ver";
   const CACHE_ETAG_KEY = "project-nox-live-issues-v2-etag";
   const CACHE_ETAG_STORE_KEY = "project-nox-live-etags-v2";
+  const CACHE_PAGE_STORE_KEY = "project-nox-live-pages-v2";
   const STORAGE_LAST_SYNC_KEY = "project-nox-last-sync-time";
+  const STORAGE_LAST_RECONCILE_KEY = "project-nox-last-reconcile-time";
   const SYNC_CHANNEL_NAME = "project-nox-sync-channel";
 
   // Polling intervals & adaptive timing
@@ -130,6 +133,7 @@
   let currentDataVersion = 0;
   let syncChannel = null;
   const etagStore = new Map();
+  const pageIssuesStore = new Map();
 
   function initEtagStore() {
     try {
@@ -164,6 +168,37 @@
     }
   }
 
+  function initPageIssuesStore() {
+    try {
+      const raw = localStorage.getItem(CACHE_PAGE_STORE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          for (const [k, v] of Object.entries(parsed)) {
+            if (Array.isArray(v)) pageIssuesStore.set(k, v);
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  function getStoredPageIssues(url) {
+    return pageIssuesStore.get(url) || null;
+  }
+
+  function setStoredPageIssues(url, batch) {
+    if (!url || !Array.isArray(batch)) return;
+    pageIssuesStore.set(url, batch);
+    try {
+      const obj = Object.fromEntries(pageIssuesStore.entries());
+      localStorage.setItem(CACHE_PAGE_STORE_KEY, JSON.stringify(obj));
+    } catch {
+      // ignore
+    }
+  }
+
   function parseTimestampMs(value) {
     if (!value) return 0;
     if (typeof value === "number") return isNaN(value) ? 0 : value;
@@ -172,8 +207,10 @@
   }
 
   initEtagStore();
+  initPageIssuesStore();
   try {
     currentEtag = localStorage.getItem(CACHE_ETAG_KEY) || "";
+    currentDataVersion = Number(localStorage.getItem(CACHE_VERSION_KEY) || 0);
   } catch {
     // ignore
   }
@@ -184,8 +221,17 @@
       syncChannel.onmessage = (event) => {
         if (event.data && event.data.type === "issues-sync" && Array.isArray(event.data.rawIssues)) {
           const incomingMs = event.data.timestampMs || parseTimestampMs(event.data.generatedAt);
-          if (incomingMs && currentDataTimeMs && incomingMs < currentDataTimeMs) {
-            return;
+          const incomingVer = Number(event.data.version || 0);
+          if (incomingMs && currentDataTimeMs) {
+            if (incomingMs < currentDataTimeMs) {
+              return;
+            }
+            if (incomingMs === currentDataTimeMs && incomingVer && incomingVer < currentDataVersion) {
+              return;
+            }
+          }
+          if (incomingVer) {
+            currentDataVersion = Math.max(currentDataVersion, incomingVer);
           }
           applyRawIssues(event.data.rawIssues, event.data.generatedAt, "live", false, false, incomingMs);
         }
@@ -201,11 +247,20 @@
       try {
         const syncSource = localStorage.getItem(STORAGE_LAST_SYNC_KEY);
         // Only react to storage events if a genuine live sync occurred recently
-        if (syncSource && Math.abs(Date.now() - Number(syncSource)) < 5000) {
+        if (syncSource && Math.abs(Date.now() - Number(syncSource)) < 15000) {
           const newTime = localStorage.getItem(CACHE_TIME_KEY);
           const incomingMs = parseTimestampMs(newTime);
-          if (incomingMs && currentDataTimeMs && incomingMs < currentDataTimeMs) {
-            return;
+          const incomingVer = Number(localStorage.getItem(CACHE_VERSION_KEY) || 0);
+          if (incomingMs && currentDataTimeMs) {
+            if (incomingMs < currentDataTimeMs) {
+              return;
+            }
+            if (incomingMs === currentDataTimeMs && incomingVer && incomingVer < currentDataVersion) {
+              return;
+            }
+          }
+          if (incomingVer) {
+            currentDataVersion = Math.max(currentDataVersion, incomingVer);
           }
           const newIssues = JSON.parse(e.newValue);
           applyRawIssues(newIssues, newTime, "live", false, false, incomingMs);
@@ -1264,6 +1319,8 @@
     const isFull = manual || isFullReconcile;
     const maxPages = isFull ? 5 : 1;
     const sortParam = isFull ? "created" : "updated";
+    let all304 = true;
+    let pagesChecked = 0;
 
     while (page <= maxPages) {
       const targetUrl = `${apiBase}?state=all&per_page=100&page=${page}&sort=${sortParam}&direction=desc`;
@@ -1271,7 +1328,10 @@
         "Accept": "application/vnd.github+json"
       };
       const cachedEtag = getStoredEtag(targetUrl);
-      if (!manual && cachedEtag) {
+      const cachedBatch = getStoredPageIssues(targetUrl);
+
+      const canSendEtag = !manual && Boolean(cachedEtag) && (!isFull || (Array.isArray(cachedBatch) && cachedBatch.length > 0));
+      if (canSendEtag) {
         headers["If-None-Match"] = cachedEtag;
       }
 
@@ -1282,11 +1342,26 @@
       const isRateLimited = parseRateLimitHeaders(res);
 
       if (res.status === 304) {
-        if (page === 1) {
+        pagesChecked++;
+        if (!isFull) {
           return { notModified: true };
         }
-        break;
+        if (Array.isArray(cachedBatch) && cachedBatch.length > 0) {
+          for (const item of cachedBatch) {
+            if (!item.pull_request && !seen.has(item.number)) {
+              seen.add(item.number);
+              all.push(item);
+            }
+          }
+          if (cachedBatch.length < 100) break;
+          page++;
+          continue;
+        } else {
+          break;
+        }
       }
+
+      all304 = false;
 
       if (!res.ok) {
         if (res.status === 403 || res.status === 429 || isRateLimited) {
@@ -1295,6 +1370,7 @@
         throw new Error(`HTTP_${res.status}`);
       }
 
+      pagesChecked++;
       const newEtag = res.headers.get("etag");
       if (newEtag) {
         setStoredEtag(targetUrl, newEtag);
@@ -1302,6 +1378,9 @@
 
       const batch = await res.json();
       if (!Array.isArray(batch) || batch.length === 0) break;
+      if (isFull) {
+        setStoredPageIssues(targetUrl, batch);
+      }
       for (const item of batch) {
         if (!item.pull_request && !seen.has(item.number)) {
           seen.add(item.number);
@@ -1311,6 +1390,11 @@
       if (batch.length < 100) break;
       page++;
     }
+
+    if (isFull && pagesChecked > 0 && all304) {
+      return { notModified: true };
+    }
+
     return all;
   }
 
@@ -1376,12 +1460,13 @@
     }
 
     try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
-      localStorage.setItem(CACHE_TIME_KEY, generatedAt);
-      localStorage.setItem(CACHE_SIG_KEY, newSignature);
       if (dataSource === "live") {
         localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
       }
+      localStorage.setItem(CACHE_TIME_KEY, generatedAt);
+      localStorage.setItem(CACHE_SIG_KEY, newSignature);
+      localStorage.setItem(CACHE_VERSION_KEY, String(currentDataVersion));
+      localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
     } catch {
       // ignore
     }
@@ -1427,7 +1512,8 @@
         const cachedSig = localStorage.getItem(CACHE_SIG_KEY);
         if (cachedStr && cachedSig && cachedSig !== currentSignature) {
           const cachedJson = JSON.parse(cachedStr);
-          applyRawIssues(cachedJson, cachedTime, "live", false);
+          const cachedMs = parseTimestampMs(cachedTime);
+          applyRawIssues(cachedJson, cachedTime, "live", false, false, cachedMs);
         }
       } catch {
         // ignore
@@ -1436,8 +1522,15 @@
       return;
     }
 
+    let storedLastReconcile = 0;
+    try {
+      storedLastReconcile = Number(localStorage.getItem(STORAGE_LAST_RECONCILE_KEY) || 0);
+    } catch {
+      // ignore
+    }
+    const effectiveLastReconcile = Math.max(lastReconcileTime, storedLastReconcile);
     const reconcileInterval = window.__NOX_RECONCILE_INTERVAL__ || RECONCILE_INTERVAL;
-    const isDueForReconcile = (Date.now() - lastReconcileTime >= reconcileInterval);
+    const isDueForReconcile = (Date.now() - effectiveLastReconcile >= reconcileInterval);
     const hasQuotaForReconcile = (rateLimitRemaining === null || rateLimitRemaining >= 15);
     const isFullReconcile = manual || ((isDueForReconcile && hasQuotaForReconcile) || !!window.__NOX_FORCE_RECONCILE__);
 
@@ -1454,6 +1547,11 @@
         lastSyncTime = Date.now();
         if (isFullReconcile) {
           lastReconcileTime = Date.now();
+          try {
+            localStorage.setItem(STORAGE_LAST_RECONCILE_KEY, String(Date.now()));
+          } catch {
+            // ignore
+          }
         }
         try {
           localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
@@ -1470,6 +1568,11 @@
         lastSyncTime = Date.now();
         if (isFullReconcile) {
           lastReconcileTime = Date.now();
+          try {
+            localStorage.setItem(STORAGE_LAST_RECONCILE_KEY, String(Date.now()));
+          } catch {
+            // ignore
+          }
         }
       }
     } catch (err) {
@@ -1530,9 +1633,11 @@
           lastReconcileTime = Date.now();
           lastSyncTime = Date.now();
           try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
-            localStorage.setItem(CACHE_TIME_KEY, generatedAt);
+            localStorage.setItem(STORAGE_LAST_RECONCILE_KEY, String(Date.now()));
             localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
+            localStorage.setItem(CACHE_TIME_KEY, generatedAt);
+            localStorage.setItem(CACHE_VERSION_KEY, String(currentDataVersion));
+            localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
           } catch {
             // ignore
           }

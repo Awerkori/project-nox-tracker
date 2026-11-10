@@ -249,7 +249,35 @@ async def main():
             assert total_after == open_after + closed_after, "Reconciliação matemática Total = Abertos + Fechados violada!"
 
             print(f"  ✓ Contadores atualizados perfeitamente: Total={total_after}, Abertos={open_after}, Fechados={closed_after}")
-            print("✓ PONTO 1 APROVADO: Reconciliação periódica remove tickets excluídos e recalcula contadores matematicamente!")
+
+            # SIMULATE DELETION OF ISSUE #39 (PAGE 2) ON GITHUB API
+            print("  Excluindo Issue #39 (Página 2) da API GitHub simulada (onde Página 1 retorna 304)...")
+            mock_state["issues"] = [i for i in mock_state["issues"] if i["number"] != 39]
+
+            # Wait for periodic full reconciliation to run and purge issue #39
+            purged_39 = False
+            for _ in range(40):
+                await asyncio.sleep(0.2)
+                await client.eval_js("window.__NOX_FORCE_RECONCILE__ = true;")
+                total_check = int(await client.eval_js("Number(document.querySelector('[data-stat=\"total\"]').textContent)"))
+                if total_check == 127:
+                    purged_39 = True
+                    break
+
+            assert purged_39, f"FALHA: Exclusão de Issue #39 na página 2 não foi reconciliada! (total obtido: {total_check})"
+            open_after_39 = int(await client.eval_js("Number(document.querySelector('[data-stat=\"open\"]').textContent)"))
+            total_after_39 = int(await client.eval_js("Number(document.querySelector('[data-stat=\"total\"]').textContent)"))
+            closed_after_39 = int(await client.eval_js("Number(document.querySelector('[data-stat=\"closed\"]').textContent)"))
+            assert open_after_39 == 17, f"Abertos deveria permanecer 17 (obtido {open_after_39})"
+            assert closed_after_39 == 110, f"Fechados deveria diminuir para 110 (obtido {closed_after_39})"
+            assert total_after_39 == 127, f"Total deveria ser 127 (obtido {total_after_39})"
+            assert total_after_39 == open_after_39 + closed_after_39, "Reconciliação matemática Total = Abertos + Fechados violada após remoção da Página 2!"
+            print(f"  ✓ Issue #39 (Página 2) expurgada com sucesso com Página 1 em 304: Total={total_after_39}, Abertos={open_after_39}, Fechados={closed_after_39}")
+
+            # Reset FORCE_RECONCILE
+            await client.eval_js("window.__NOX_FORCE_RECONCILE__ = false;")
+
+            print("✓ PONTO 1 APROVADO: Reconciliação periódica remove tickets excluídos (Páginas 1 e 2) e recalcula contadores matematicamente!")
 
             # ------------------------------------------------------------------
             # PONTO 2: Proteção contra dados antigos entre abas e preservação de filtros/rolagem
@@ -258,7 +286,7 @@ async def main():
 
             # Check total before applying manga filter
             total_before_filter = int(await client.eval_js("Number(document.querySelector('[data-stat=\"total\"]').textContent)"))
-            assert total_before_filter == 128, f"Esperado 128 total antes do filtro, obtido {total_before_filter}"
+            assert total_before_filter == 127, f"Esperado 127 total antes do filtro, obtido {total_before_filter}"
 
             # Apply user filter: Manga filter
             await client.eval_js("document.querySelector('[data-filter-stat=\"manga\"]').click()")
@@ -274,11 +302,48 @@ async def main():
             assert scroll_pos > 0, "Posição de rolagem não foi alterada"
             print(f"  Filtro ativo: tipo={filter_type} (manga total={scoped_manga_total}), scrollY={scroll_pos}")
 
-            # Simulate out-of-order stale BroadcastChannel message from another tab (timestamp from past)
+            # Test explicit out-of-order arrival of two synchronizations
+            print("  Testando chegada explicitamente fora de ordem de duas sincronizações...")
+            now_ms = int(time.time() * 1000)
+            sync_newer = {
+                "type": "issues-sync",
+                "rawIssues": [i for i in mock_state["issues"]],
+                "generatedAt": "2026-11-10T21:00:00Z",
+                "timestampMs": now_ms + 10000,
+                "version": 10,
+                "signature": "sync_newer_v10"
+            }
+            sync_older = {
+                "type": "issues-sync",
+                "rawIssues": [i for i in baseline["issues"]][:10],
+                "generatedAt": "2026-11-10T20:59:00Z",
+                "timestampMs": now_ms + 1000, # Older timestamp
+                "version": 5,
+                "signature": "sync_older_v5"
+            }
+            # Deliver newer first
+            await client.eval_js(f"""
+                const bc = new BroadcastChannel("project-nox-sync-channel");
+                bc.postMessage({json.dumps(sync_newer)});
+            """)
+            await asyncio.sleep(0.3)
+            # Deliver older second (delayed in flight)
+            await client.eval_js(f"""
+                const bc = new BroadcastChannel("project-nox-sync-channel");
+                bc.postMessage({json.dumps(sync_older)});
+            """)
+            await asyncio.sleep(0.5)
+
+            # Ensure state was not rolled back to 10 issues
+            count_after_ooo = int(await client.eval_js("Number(document.querySelector('[data-stat=\"total\"]').textContent)"))
+            assert count_after_ooo == scoped_manga_total, f"Rollback por entrega fora de ordem! Total caiu para {count_after_ooo}!"
+            print("  ✓ Chegada fora de ordem de duas sincronizações rejeitou com segurança o snapshot defasado!")
+
+            # Simulate out-of-order stale BroadcastChannel message from past
             print("  Disparando mensagem fora de ordem com timestamp antigo via BroadcastChannel...")
             stale_payload = {
                 "type": "issues-sync",
-                "rawIssues": baseline["issues"], # Has old 129 issues with deleted #144
+                "rawIssues": baseline["issues"],
                 "generatedAt": "2020-01-01T00:00:00Z",
                 "timestampMs": 1577836800000,
                 "version": 1,
