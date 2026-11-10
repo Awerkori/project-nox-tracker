@@ -438,8 +438,19 @@ def run_tests():
         filtered_manga_closed = filter_issues([live_121], {"state": "closed", "type": "manga"})
         assert len(filtered_manga_closed) == 1, "ERRO CRÍTICO: Issue #121 não apareceu em Mangá + Fechados!"
         print("✓ Cenário 13 aprovado: Issue #121 comprovada como Fechada na API, sai de Abertos e entra em Fechados!")
-    except Exception as e:
+    except (HTTPError, URLError, TimeoutError, OSError) as e:
         print(f"Aviso de rede na consulta à API: {e}. Executando verificação de integridade via snapshot.")
+        snap_121 = next((i for i in base_issues if i["number"] == 121), None)
+        assert snap_121 is not None, "ERRO CRÍTICO: Issue #121 não encontrada no snapshot local!"
+        norm_snap_121 = normalize_issue(snap_121)
+        assert norm_snap_121["isClosed"] is True
+        assert norm_snap_121["isOpen"] is False
+        assert norm_snap_121["resolution"] == "done"
+        assert len(filter_issues([snap_121], {"state": "open", "type": "all"})) == 0, "ERRO CRÍTICO: #121 no snapshot apareceu em Abertos!"
+        assert len(filter_issues([snap_121], {"state": "closed", "type": "all"})) == 1, "ERRO CRÍTICO: #121 no snapshot não apareceu em Fechados!"
+        assert len(filter_issues([snap_121], {"state": "open", "type": "manga"})) == 0, "ERRO CRÍTICO: #121 no snapshot apareceu em Mangá + Abertos!"
+        assert len(filter_issues([snap_121], {"state": "closed", "type": "manga"})) == 1, "ERRO CRÍTICO: #121 no snapshot não apareceu em Mangá + Fechados!"
+        print("✓ Cenário 13 aprovado: Issue #121 comprovada como Fechada via snapshot local!")
 
     print("\n" + "=" * 80)
     print("TODOS OS CENÁRIOS DE AUDITORIA E SINCRONIZAÇÃO PASSARAM COM 100% DE SUCESSO!")

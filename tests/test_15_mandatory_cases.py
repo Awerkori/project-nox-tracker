@@ -206,14 +206,21 @@ def run_all_cases():
     # -------------------------------------------------------------
     print("\n[CASO 1] Issue recém-aberta aparece no Tracker após a sincronização")
     fixture_1 = copy.deepcopy(base_issues)
+    latest_created = max((i.get("created_at") or "" for i in base_issues), default="2026-11-10T00:00:00Z")
+    try:
+        dt = datetime.fromisoformat(latest_created.replace("Z", "+00:00")) + timedelta(hours=1)
+        future_timestamp = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:
+        future_timestamp = "2099-01-01T00:00:00Z"
+
     new_issue = {
         "number": 999,
         "title": "[Nova extensão]: Teste Isolado Recém Aberto",
         "html_url": "https://github.com/Awerkori/project-nox-requests/issues/999",
         "state": "open",
         "state_reason": None,
-        "created_at": "2026-11-10T12:00:00Z",
-        "updated_at": "2026-11-10T12:00:00Z",
+        "created_at": future_timestamp,
+        "updated_at": future_timestamp,
         "closed_at": None,
         "comments": 0,
         "labels": [{"name": "Nova extensão", "color": "8b5cf6"}, {"name": "Mangá", "color": "3b82f6"}],
