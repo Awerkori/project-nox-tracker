@@ -18,10 +18,12 @@ import subprocess
 import sys
 import aiohttp
 
+from pathlib import Path
+
 CDP_PORT = 9226
 DEV_PORT = 8088
 BASE_URL = f"http://localhost:{DEV_PORT}/"
-BASE_DIR = "/home/awerkori/.Projects/Project-Nox-Tracker"
+BASE_DIR = str(Path(__file__).resolve().parent.parent)
 BRAIN_DIR = "/home/awerkori/.gemini/antigravity-cli/brain/f4dcc61a-039c-46ea-bcb0-e71282c54d0f/screenshots/e2e"
 
 os.makedirs(BRAIN_DIR, exist_ok=True)
@@ -126,6 +128,14 @@ async def run():
                     break
                 await asyncio.sleep(0.1)
 
+            with open(f"{BASE_DIR}/data/issues.json", "r", encoding="utf-8") as f:
+                snap_data = json.load(f)
+            snap_issues = snap_data.get("issues", [])
+            expected_open_issues = sorted([i for i in snap_issues if i.get("state") == "open"], key=lambda x: (x.get("created_at") or "", int(x["number"])), reverse=True)
+            expected_open_numbers = [i["number"] for i in expected_open_issues]
+            expected_open_count = len(expected_open_numbers)
+            expected_total_count = len(snap_issues)
+
             cards = await client.eval_js("""
                 Array.from(document.querySelectorAll('#tickets .ticket-card')).map(c => ({
                     number: Number(c.getAttribute('data-number')),
@@ -138,16 +148,16 @@ async def run():
             for c in cards:
                 print(f"     #{c['number']} | {c['stateBadge']} | {c['title']}")
 
-            assert len(cards) == 6, f"Esperado exatamente 6 cards, obtido {len(cards)}"
+            assert len(cards) == expected_open_count, f"Esperado exatamente {expected_open_count} cards, obtido {len(cards)}"
             assert all("ABERTO" in c["stateBadge"] for c in cards), "ERRO: Tickets fechados misturados na página inicial!"
-            assert cards[0]["number"] == 127, f"ERRO: Ticket #127 deveria ser o primeiro, obtido #{cards[0]['number']}"
-            assert [c["number"] for c in cards] == [127, 126, 125, 123, 122, 121], "Ordem incorreta de criação recente!"
+            assert cards[0]["number"] == expected_open_numbers[0], f"ERRO: Ticket #{expected_open_numbers[0]} deveria ser o primeiro, obtido #{cards[0]['number']}"
+            assert [c["number"] for c in cards] == expected_open_numbers, "Ordem incorreta de criação recente!"
 
             # Scroll até os cards e capturar
             await client.eval_js("document.querySelector('#tickets').scrollIntoView()")
             await asyncio.sleep(0.3)
             await client.capture_screenshot("cenario1_url_limpa_abertos.png")
-            print("✓ CENÁRIO 1 CONFIRMADO: Página inicial abre com 6 tickets ABERTOS, ordenados por MAIS RECENTES (#127 no topo). ZERO tickets fechados misturados!")
+            print(f"✓ CENÁRIO 1 CONFIRMADO: Página inicial abre com {expected_open_count} tickets ABERTOS, ordenados por MAIS RECENTES (#{expected_open_numbers[0]} no topo). ZERO tickets fechados misturados!")
 
             # -------------------------------------------------------------
             # CENÁRIO 2: Atualizar a página (Reload e botão Atualizar)
@@ -161,13 +171,13 @@ async def run():
                 await asyncio.sleep(0.1)
 
             cards_after_reload = await client.eval_js("Array.from(document.querySelectorAll('#tickets .ticket-card')).map(c => Number(c.getAttribute('data-number')))")
-            assert cards_after_reload == [127, 126, 125, 123, 122, 121], f"Cards após reload alterados: {cards_after_reload}"
+            assert cards_after_reload == expected_open_numbers, f"Cards após reload alterados: {cards_after_reload}"
 
             # Clicar no botão Atualizar (#refresh-data)
             await client.eval_js("document.querySelector('#refresh-data').click()")
             await asyncio.sleep(1.0)
             cards_after_refresh_btn = await client.eval_js("Array.from(document.querySelectorAll('#tickets .ticket-card')).map(c => Number(c.getAttribute('data-number')))")
-            assert cards_after_refresh_btn == [127, 126, 125, 123, 122, 121], f"Cards após botão atualizar alterados: {cards_after_refresh_btn}"
+            assert cards_after_refresh_btn == expected_open_numbers, f"Cards após botão atualizar alterados: {cards_after_refresh_btn}"
             print("✓ CENÁRIO 2 CONFIRMADO: Recarregamento e botão Atualizar mantêm estritamente Abertos + Mais recentes!")
 
             # -------------------------------------------------------------
@@ -178,7 +188,7 @@ async def run():
             await client.eval_js("document.querySelector('[data-quick-state=\"all\"]').click()")
             await asyncio.sleep(0.2)
             count_all = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
-            assert count_all == 114, f"Esperado 114 em Todos, obtido {count_all}"
+            assert count_all == expected_total_count, f"Esperado {expected_total_count} em Todos, obtido {count_all}"
 
             # Clicar em Limpar filtros
             await client.eval_js("document.querySelector('#clear-filters').click()")
@@ -186,10 +196,10 @@ async def run():
             cards_after_clear = await client.eval_js("Array.from(document.querySelectorAll('#tickets .ticket-card')).map(c => Number(c.getAttribute('data-number')))")
             state_val_clear = await client.eval_js("document.querySelector('#state').value")
             sort_val_clear = await client.eval_js("document.querySelector('#sort').value")
-            assert cards_after_clear == [127, 126, 125, 123, 122, 121]
+            assert cards_after_clear == expected_open_numbers
             assert state_val_clear == "open"
             assert sort_val_clear == "recent"
-            print("✓ CENÁRIO 3 CONFIRMADO: Limpar filtros restaura obrigatoriamente Abertos + Mais recentes (6 cards, #127 no topo)!")
+            print(f"✓ CENÁRIO 3 CONFIRMADO: Limpar filtros restaura obrigatoriamente Abertos + Mais recentes ({expected_open_count} cards, #{expected_open_numbers[0]} no topo)!")
 
             # -------------------------------------------------------------
             # CENÁRIO 4: Abrir no celular (Mobile Android 393x852)
@@ -204,7 +214,7 @@ async def run():
                 await asyncio.sleep(0.1)
 
             mobile_cards = await client.eval_js("Array.from(document.querySelectorAll('#tickets .ticket-card')).map(c => Number(c.getAttribute('data-number')))")
-            assert mobile_cards == [127, 126, 125, 123, 122, 121], f"Cards no mobile incorretos: {mobile_cards}"
+            assert mobile_cards == expected_open_numbers, f"Cards no mobile incorretos: {mobile_cards}"
 
             # Verificar overflow horizontal
             overflow = await client.eval_js("document.documentElement.scrollWidth > document.documentElement.clientWidth")
@@ -220,23 +230,24 @@ async def run():
             # CENÁRIO 5: Filtros explícitos na URL preservados
             # -------------------------------------------------------------
             print("\n[CENÁRIO 5] Filtros explícitos na URL preservados")
+            expected_closed_count = expected_total_count - expected_open_count
             await client.call("Page.navigate", {"url": f"{BASE_URL}?state=all"})
             for _ in range(50):
-                ready = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length === 114")
+                ready = await client.eval_js(f"document.querySelectorAll('#tickets .ticket-card').length === {expected_total_count}")
                 if ready:
                     break
                 await asyncio.sleep(0.1)
             count_url_all = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
-            assert count_url_all == 114, f"Falha ?state=all: {count_url_all}"
+            assert count_url_all == expected_total_count, f"Falha ?state=all: {count_url_all}"
 
             await client.call("Page.navigate", {"url": f"{BASE_URL}?state=closed"})
             for _ in range(50):
-                ready = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length === 108")
+                ready = await client.eval_js(f"document.querySelectorAll('#tickets .ticket-card').length === {expected_closed_count}")
                 if ready:
                     break
                 await asyncio.sleep(0.1)
             count_url_closed = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
-            assert count_url_closed == 108, f"Falha ?state=closed: {count_url_closed}"
+            assert count_url_closed == expected_closed_count, f"Falha ?state=closed: {count_url_closed}"
             print("✓ CENÁRIO 5 CONFIRMADO: URLs explícitas (?state=all e ?state=closed) continuam funcionando soberanamente!")
 
             print("\n" + "=" * 70)

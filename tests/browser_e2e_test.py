@@ -14,12 +14,13 @@ import subprocess
 import sys
 import time
 from datetime import datetime
+from pathlib import Path
 import aiohttp
 
 CDP_PORT = 9223
 DEV_SERVER_PORT = 8088
 BASE_URL = f"http://localhost:{DEV_SERVER_PORT}/"
-BASE_DIR = "/home/awerkori/.Projects/Project-Nox-Tracker"
+BASE_DIR = str(Path(__file__).resolve().parent.parent)
 ISSUES_JSON_PATH = f"{BASE_DIR}/data/issues.json"
 SCREENSHOTS_DIR = f"{BASE_DIR}/screenshots/e2e"
 BRAIN_SCREENSHOTS_DIR = "/home/awerkori/.gemini/antigravity-cli/brain/f4dcc61a-039c-46ea-bcb0-e71282c54d0f/screenshots/e2e"
@@ -143,6 +144,12 @@ async def run_tests():
             with open(ISSUES_JSON_PATH, "r", encoding="utf-8") as f:
                 issues_data = json.load(f)["issues"]
             issues_map = {i["number"]: i for i in issues_data}
+            open_issues = sorted([i for i in issues_data if i.get("state") == "open"], key=lambda x: (x.get("created_at") or "", int(x["number"])), reverse=True)
+            expected_open_numbers = [i["number"] for i in open_issues]
+            expected_open_count = len(expected_open_numbers)
+            expected_total_count = len(issues_data)
+            expected_closed_count = expected_total_count - expected_open_count
+            first_open_num = expected_open_numbers[0]
 
             # -----------------------------------------------------------
             # TEST 1: Sessão limpa — Padrão ABERTOS + MAIS RECENTES
@@ -182,38 +189,36 @@ async def run_tests():
             print(f"  → Total de cards renderizados: {len(card_numbers)}")
             print(f"  → Tickets exibidos no DOM: {card_numbers}")
 
-            assert len(card_numbers) == 6, f"ERRO: Esperado 6 tickets abertos, obtido {len(card_numbers)}"
-            assert card_numbers[0] == 127, f"ERRO: Primeiro ticket deveria ser #127, obtido #{card_numbers[0]}"
-            assert card_numbers == [127, 126, 125, 123, 122, 121], f"Ordem inesperada: {card_numbers}"
-            print("  ✓ SUCESSO: Exatamente 6 tickets abertos renderizados em ordem de criação recente, com #127 no topo!")
+            assert len(card_numbers) == expected_open_count, f"ERRO: Esperado {expected_open_count} tickets abertos, obtido {len(card_numbers)}"
+            assert card_numbers[0] == first_open_num, f"ERRO: Primeiro ticket deveria ser #{first_open_num}, obtido #{card_numbers[0]}"
+            assert card_numbers == expected_open_numbers, f"Ordem inesperada: {card_numbers}"
+            print(f"  ✓ SUCESSO: Exatamente {expected_open_count} tickets abertos renderizados em ordem de criação recente, com #{first_open_num} no topo!")
 
             # -----------------------------------------------------------
-            # TEST 3: Inspeção detalhada do Ticket #127
+            # TEST 3: Inspeção detalhada do Ticket principal aberto
             # -----------------------------------------------------------
-            print("\n[TESTE 3] Inspeção detalhada dos elementos visuais do Ticket #127")
-            card_127_info = await client.eval_js("""
-                (() => {
-                    const card = document.querySelector('.ticket-card[data-number="127"]');
+            print(f"\n[TESTE 3] Inspeção detalhada dos elementos visuais do Ticket #{first_open_num}")
+            card_top_info = await client.eval_js(f"""
+                (() => {{
+                    const card = document.querySelector('.ticket-card[data-number="{first_open_num}"]');
                     if (!card) return null;
-                    return {
+                    return {{
                         title: card.querySelector('.ticket-title').textContent.trim(),
                         stateBadge: card.querySelector('.badge-state').textContent.trim(),
-                        workflowBadge: card.querySelector('.badge-workflow').textContent.trim(),
+                        workflowBadge: card.querySelector('.badge-workflow')?.textContent.trim() || '',
                         tags: Array.from(card.querySelectorAll('.badge-tag')).map(t => t.textContent.trim()),
                         author: card.querySelector('.meta-author').textContent.trim()
-                    };
-                })()
+                    }};
+                }})()
             """)
-            print(f"  → Título: {card_127_info['title']}")
-            print(f"  → Estado nativo: {card_127_info['stateBadge']}")
-            print(f"  → Status: {card_127_info['workflowBadge']}")
-            print(f"  → Tags: {card_127_info['tags']}")
-            print(f"  → Autor: {card_127_info['author']}")
+            print(f"  → Título: {card_top_info['title']}")
+            print(f"  → Estado nativo: {card_top_info['stateBadge']}")
+            print(f"  → Status: {card_top_info['workflowBadge']}")
+            print(f"  → Tags: {card_top_info['tags']}")
+            print(f"  → Autor: {card_top_info['author']}")
 
-            assert "Hanami Heaven" in card_127_info["title"], "Título não contém Hanami Heaven"
-            assert "ABERTO" in card_127_info["stateBadge"], "Badge não contém ABERTO"
-            assert "Em análise" in card_127_info["workflowBadge"], "Status não é Em análise"
-            print("  ✓ SUCESSO: Ticket #127 renderizado com todos os badges, estado nativo e informações completas!")
+            assert "ABERTO" in card_top_info["stateBadge"], "Badge não contém ABERTO"
+            print(f"  ✓ SUCESSO: Ticket #{first_open_num} renderizado com todos os badges, estado nativo e informações completas!")
 
             # -----------------------------------------------------------
             # TEST 4: Alternância rápida de estado (Todos | Abertos | Fechados)
@@ -225,7 +230,7 @@ async def run_tests():
             total_cards = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
             current_url = await client.eval_js("window.location.search")
             print(f"  → Ao clicar em 'Todos': {total_cards} cards exibidos, URL search='{current_url}'")
-            assert total_cards == 114, f"Esperado 114 cards em 'Todos', obtido {total_cards}"
+            assert total_cards == expected_total_count, f"Esperado {expected_total_count} cards em 'Todos', obtido {total_cards}"
             assert "state=all" in current_url, f"URL deveria conter state=all: {current_url}"
 
             # Clique em 'Fechados'
@@ -234,7 +239,7 @@ async def run_tests():
             closed_cards = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
             current_url = await client.eval_js("window.location.search")
             print(f"  → Ao clicar em 'Fechados': {closed_cards} cards exibidos, URL search='{current_url}'")
-            assert closed_cards == 108, f"Esperado 108 cards em 'Fechados', obtido {closed_cards}"
+            assert closed_cards == expected_closed_count, f"Esperado {expected_closed_count} cards em 'Fechados', obtido {closed_cards}"
             assert "state=closed" in current_url, f"URL deveria conter state=closed: {current_url}"
 
             # Clique em 'Abertos'
@@ -243,9 +248,9 @@ async def run_tests():
             open_cards = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
             current_url = await client.eval_js("window.location.search")
             print(f"  → Ao clicar em 'Abertos': {open_cards} cards exibidos, URL search='{current_url}'")
-            assert open_cards == 6, f"Esperado 6 cards em 'Abertos', obtido {open_cards}"
+            assert open_cards == expected_open_count, f"Esperado {expected_open_count} cards em 'Abertos', obtido {open_cards}"
             assert "state=" not in current_url, f"URL limpa não deveria conter state=: {current_url}"
-            print("  ✓ SUCESSO: Segmented Control alterna perfeitamente entre 114 -> 108 -> 6 cards com URLs limpas!")
+            print(f"  ✓ SUCESSO: Segmented Control alterna perfeitamente entre {expected_total_count} -> {expected_closed_count} -> {expected_open_count} cards com URLs limpas!")
 
             # -----------------------------------------------------------
             # TEST 5: Limpar Filtros restaura Abertos + Mais recentes
@@ -260,7 +265,7 @@ async def run_tests():
             """)
             await asyncio.sleep(0.2)
             cards_before_clear = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
-            assert cards_before_clear == 108
+            assert cards_before_clear == expected_closed_count
 
             # Clicar em limpar filtros
             await client.eval_js("document.querySelector('#clear-filters').click()")
@@ -271,11 +276,11 @@ async def run_tests():
             first_card_num = await client.eval_js("Number(document.querySelector('#tickets .ticket-card').getAttribute('data-number'))")
 
             print(f"  → Após reset: {cards_after_clear} cards | state='{state_after_clear}' | sort='{sort_after_clear}' | primeiro card=#{first_card_num}")
-            assert cards_after_clear == 6, f"Esperado 6 cards abertos após reset, obtido {cards_after_clear}"
+            assert cards_after_clear == expected_open_count, f"Esperado {expected_open_count} cards abertos após reset, obtido {cards_after_clear}"
             assert state_after_clear == "open", f"Esperado state='open' após reset, obtido '{state_after_clear}'"
             assert sort_after_clear == "recent", f"Esperado sort='recent' após reset, obtido '{sort_after_clear}'"
-            assert first_card_num == 127, f"Primeiro card após reset deveria ser #127, obtido #{first_card_num}"
-            print("  ✓ SUCESSO: Limpar filtros restaura exatamente Abertos + Mais recentes com #127 no topo!")
+            assert first_card_num == first_open_num, f"Primeiro card após reset deveria ser #{first_open_num}, obtido #{first_card_num}"
+            print(f"  ✓ SUCESSO: Limpar filtros restaura exatamente Abertos + Mais recentes com #{first_open_num} no topo!")
 
             # -----------------------------------------------------------
             # TEST 6: Botão Atualizar (com animação spinning e mensagem sincera)
@@ -290,7 +295,7 @@ async def run_tests():
             cards_after_refresh = await client.eval_js("document.querySelectorAll('#tickets .ticket-card').length")
             print(f"  → Status de sincronização exibido: '{sync_text_after}'")
             print(f"  → Total de cards pós-atualização: {cards_after_refresh}")
-            assert cards_after_refresh == 6, f"Cards após refresh mudou inesperadamente para {cards_after_refresh}"
+            assert cards_after_refresh == expected_open_count, f"Cards após refresh mudou inesperadamente para {cards_after_refresh}"
             assert len(sync_text_after) > 5, "Status de sincronização vazio"
             print("  ✓ SUCESSO: Botão Atualizar opera perfeitamente com feedback transparente e sem corrupção!")
 

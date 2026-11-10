@@ -4,8 +4,10 @@ import socketserver
 import os
 import sys
 
+from pathlib import Path
+
 PORT = 8088
-DIRECTORY = "/home/awerkori/.Projects/Project-Nox-Tracker"
+DIRECTORY = str(Path(__file__).resolve().parent.parent)
 
 class NoCacheHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):

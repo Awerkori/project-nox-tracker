@@ -20,6 +20,16 @@
   const CONFIG_URL = "data/config.json";
   const REPO_URL = "https://github.com/Awerkori/project-nox-requests";
   const CACHE_KEY = "project-nox-live-issues-v2";
+  const CACHE_TIME_KEY = "project-nox-live-issues-v2-time";
+  const CACHE_SIG_KEY = "project-nox-live-issues-v2-sig";
+  const STORAGE_LAST_SYNC_KEY = "project-nox-last-sync-time";
+  const SYNC_CHANNEL_NAME = "project-nox-sync-channel";
+
+  // Polling intervals & adaptive timing
+  const FAST_PHASE_DURATION = 5 * 60 * 1000; // 5 minutos iniciais
+  const FAST_INTERVAL = 30 * 1000;           // 30 segundos
+  const NORMAL_INTERVAL = 120 * 1000;        // 120 segundos (2 minutos)
+  const THROTTLED_INTERVAL = 180 * 1000;     // 180 segundos quando rate limit estiver baixo
 
   // Label Taxonomy Maps
   const TYPE_MAP = {
@@ -99,9 +109,44 @@
 
   const filters = { ...defaults };
   let allIssues = [];
+  let currentRawIssues = [];
   let trackerConfig = null;
   let lastFocus = null;
   let generatedAt = null;
+  let currentSignature = "";
+  let isFetching = false;
+  let pollTimer = null;
+  let rateLimitUntil = 0;
+  let rateLimitRemaining = null;
+  let lastSyncTime = 0;
+  const openedAt = Date.now();
+  let syncChannel = null;
+
+  try {
+    if (typeof BroadcastChannel !== "undefined") {
+      syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
+      syncChannel.onmessage = (event) => {
+        if (event.data && event.data.type === "issues-sync" && Array.isArray(event.data.rawIssues)) {
+          applyRawIssues(event.data.rawIssues, event.data.generatedAt, "live", false);
+        }
+      };
+    }
+  } catch (err) {
+    // BroadcastChannel unsupported or blocked
+  }
+
+  // Cross-tab fallback via storage event
+  window.addEventListener("storage", (e) => {
+    if (e.key === CACHE_KEY && e.newValue) {
+      try {
+        const newIssues = JSON.parse(e.newValue);
+        const newTime = localStorage.getItem(CACHE_TIME_KEY);
+        applyRawIssues(newIssues, newTime, "live", false);
+      } catch {
+        // ignore
+      }
+    }
+  });
 
   // DOM Elements Cache
   const el = {};
@@ -1016,17 +1061,8 @@
 
     // Refresh button
     if (el.refresh) {
-      el.refresh.addEventListener("click", async () => {
-        el.refresh.disabled = true;
-        el.refresh.classList.add("spinning");
-        try {
-          await loadData(true);
-        } finally {
-          setTimeout(() => {
-            el.refresh.disabled = false;
-            el.refresh.classList.remove("spinning");
-          }, 600);
-        }
+      el.refresh.addEventListener("click", () => {
+        refreshLive({ manual: true });
       });
     }
 
@@ -1047,24 +1083,119 @@
     });
   }
 
+  // Live GitHub Synchronization & Adaptive Polling
   const GITHUB_API_BASE = "https://api.github.com/repos/Awerkori/project-nox-requests/issues";
 
-  async function fetchLiveIssuesFromGitHub() {
+  function getGitHubApiBase() {
+    return window.__NOX_API_BASE__ || GITHUB_API_BASE;
+  }
+
+  function dataSignature(issues) {
+    return (issues || [])
+      .map(i => [
+        i.number,
+        i.state,
+        i.state_reason || "",
+        i.title,
+        i.updated_at,
+        (i.rawLabels || []).slice().sort().join(","),
+        i.upvotes || 0,
+        i.comments || 0
+      ].join("|"))
+      .sort()
+      .join("\n");
+  }
+
+  function parseRateLimitHeaders(res) {
+    if (!res || !res.headers) return false;
+    const remainingHeader = res.headers.get("x-ratelimit-remaining");
+    const resetHeader = res.headers.get("x-ratelimit-reset");
+    const retryAfterHeader = res.headers.get("retry-after");
+
+    if (remainingHeader !== null) {
+      const parsedRemaining = parseInt(remainingHeader, 10);
+      if (!isNaN(parsedRemaining)) {
+        rateLimitRemaining = parsedRemaining;
+      }
+    }
+
+    const resetSec = resetHeader ? parseInt(resetHeader, 10) : 0;
+    const retrySec = retryAfterHeader ? parseInt(retryAfterHeader, 10) : 0;
+
+    if (res.status === 403 || res.status === 429 || rateLimitRemaining === 0) {
+      const resetAt = resetSec > 0 ? resetSec * 1000 : 0;
+      const retryAt = retrySec > 0 ? Date.now() + retrySec * 1000 : 0;
+      rateLimitUntil = Math.max(rateLimitUntil, resetAt, retryAt, Date.now() + 60 * 1000);
+      return true;
+    }
+    return false;
+  }
+
+  function nextPollDelay() {
+    if (window.__NOX_POLL_INTERVAL__) {
+      return Number(window.__NOX_POLL_INTERVAL__);
+    }
+    if (rateLimitUntil > Date.now()) {
+      return Math.max(5000, rateLimitUntil - Date.now() + 1000);
+    }
+    if (rateLimitRemaining !== null && rateLimitRemaining < 10) {
+      return THROTTLED_INTERVAL;
+    }
+    const elapsed = Date.now() - openedAt;
+    if (elapsed < FAST_PHASE_DURATION) {
+      return Math.min(FAST_INTERVAL, Math.max(5000, FAST_PHASE_DURATION - elapsed));
+    }
+    return NORMAL_INTERVAL;
+  }
+
+  function scheduleNextPoll(delayMs) {
+    clearTimeout(pollTimer);
+    pollTimer = null;
+    if (document.visibilityState === "hidden") {
+      return;
+    }
+    const delay = typeof delayMs === "number" ? delayMs : nextPollDelay();
+    pollTimer = setTimeout(() => {
+      refreshLive();
+    }, delay);
+  }
+
+  function isAnotherTabActiveRecently() {
+    try {
+      const lastSync = Number(localStorage.getItem(STORAGE_LAST_SYNC_KEY) || 0);
+      const minGap = (window.__NOX_POLL_INTERVAL__ || (Date.now() - openedAt < FAST_PHASE_DURATION ? FAST_INTERVAL : NORMAL_INTERVAL)) * 0.75;
+      if (lastSync > 0 && Date.now() - lastSync < minGap) {
+        return true;
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  }
+
+  async function fetchLiveIssuesFromGitHub({ manual = false } = {}) {
+    const apiBase = getGitHubApiBase();
     const all = [];
     const seen = new Set();
     let page = 1;
-    while (page <= 5) {
-      const res = await fetch(`${GITHUB_API_BASE}?state=all&per_page=100&page=${page}&sort=created&direction=desc`, {
+    const maxPages = manual ? 5 : 1;
+    const sortParam = manual ? "created" : "updated";
+
+    while (page <= maxPages) {
+      const res = await fetch(`${apiBase}?state=all&per_page=100&page=${page}&sort=${sortParam}&direction=desc`, {
         headers: {
           "Accept": "application/vnd.github+json"
         }
       });
+
+      const isRateLimited = parseRateLimitHeaders(res);
       if (!res.ok) {
-        if (res.status === 403 || res.status === 429) {
+        if (res.status === 403 || res.status === 429 || isRateLimited) {
           throw new Error("RATE_LIMITED");
         }
         throw new Error(`HTTP_${res.status}`);
       }
+
       const batch = await res.json();
       if (!Array.isArray(batch) || batch.length === 0) break;
       for (const item of batch) {
@@ -1079,6 +1210,159 @@
     return all;
   }
 
+  function mergeRawIssues(existing, fresh) {
+    if (!Array.isArray(existing) || existing.length === 0) {
+      return fresh;
+    }
+    const map = new Map(existing.map(i => [i.number, i]));
+    for (const item of fresh) {
+      if (!item.pull_request) {
+        map.set(item.number, item);
+      }
+    }
+    return Array.from(map.values());
+  }
+
+  function applyRawIssues(rawIssues, timestamp, dataSource = "live", broadcast = true, forceLive = false) {
+    if (!Array.isArray(rawIssues) || rawIssues.length === 0) return false;
+
+    currentRawIssues = rawIssues;
+    if (timestamp) generatedAt = timestamp;
+
+    const normalized = rawIssues.map(normalizeIssue);
+    const newSignature = dataSignature(normalized);
+    const hasChanged = newSignature !== currentSignature;
+
+    if (hasChanged || allIssues.length === 0) {
+      allIssues = normalized;
+      currentSignature = newSignature;
+      renderTickets();
+    }
+
+    if (el.updated) {
+      const timeStr = generatedAt
+        ? new Date(generatedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+        : "";
+      const dateStr = generatedAt ? formatDate(generatedAt) : "";
+
+      if (dataSource === "live") {
+        el.updated.textContent = `Atualizado agora via API do GitHub (${timeStr})`;
+      } else if (dataSource === "offline") {
+        el.updated.textContent = `Modo offline (dados em cache de ${dateStr} ${timeStr})`;
+      } else if (dataSource === "rate_limited") {
+        el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr} (API GitHub limitada)`;
+      } else if (dataSource === "published_after_live_error") {
+        el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr} (falha na API ao vivo)`;
+      } else if (forceLive) {
+        el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr}`;
+      } else {
+        el.updated.textContent = `Última sincronização: ${dateStr} às ${timeStr}`;
+      }
+    }
+
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
+      localStorage.setItem(CACHE_TIME_KEY, generatedAt);
+      localStorage.setItem(CACHE_SIG_KEY, newSignature);
+      localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
+    } catch {
+      // ignore
+    }
+
+    if (broadcast && syncChannel && hasChanged) {
+      try {
+        syncChannel.postMessage({
+          type: "issues-sync",
+          rawIssues,
+          generatedAt,
+          signature: newSignature
+        });
+      } catch {
+        // ignore
+      }
+    }
+
+    return hasChanged;
+  }
+
+  async function refreshLive({ manual = false } = {}) {
+    if (!manual && document.visibilityState === "hidden") {
+      return;
+    }
+    if (isFetching) {
+      return;
+    }
+
+    if (!manual && rateLimitUntil > Date.now()) {
+      scheduleNextPoll();
+      return;
+    }
+
+    if (!manual && isAnotherTabActiveRecently()) {
+      try {
+        const cachedStr = localStorage.getItem(CACHE_KEY);
+        const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+        const cachedSig = localStorage.getItem(CACHE_SIG_KEY);
+        if (cachedStr && cachedSig && cachedSig !== currentSignature) {
+          const cachedJson = JSON.parse(cachedStr);
+          applyRawIssues(cachedJson, cachedTime, "live", false);
+        }
+      } catch {
+        // ignore
+      }
+      scheduleNextPoll();
+      return;
+    }
+
+    isFetching = true;
+    if (manual && el.refresh) {
+      el.refresh.disabled = true;
+      el.refresh.classList.add("spinning");
+    }
+
+    try {
+      const freshBatch = await fetchLiveIssuesFromGitHub({ manual });
+      if (Array.isArray(freshBatch) && freshBatch.length > 0) {
+        const merged = manual ? freshBatch : mergeRawIssues(currentRawIssues, freshBatch);
+        applyRawIssues(merged, new Date().toISOString(), "live", true, manual);
+        lastSyncTime = Date.now();
+      }
+    } catch (err) {
+      const isRateLimit = err && err.message === "RATE_LIMITED";
+      const dataSource = isRateLimit ? "rate_limited" : "published_after_live_error";
+      console.warn("Live GitHub API query failed or rate-limited:", err);
+      if (allIssues.length > 0) {
+        applyRawIssues(currentRawIssues, generatedAt, dataSource, false, manual);
+      }
+    } finally {
+      isFetching = false;
+      if (manual && el.refresh) {
+        setTimeout(() => {
+          if (el.refresh) {
+            el.refresh.disabled = false;
+            el.refresh.classList.remove("spinning");
+          }
+        }, 600);
+      }
+      scheduleNextPoll();
+    }
+  }
+
+  function handleVisibilityChange() {
+    if (document.visibilityState === "hidden") {
+      clearTimeout(pollTimer);
+      pollTimer = null;
+    } else if (document.visibilityState === "visible") {
+      const elapsed = Date.now() - lastSyncTime;
+      const delay = nextPollDelay();
+      if (elapsed >= delay) {
+        refreshLive();
+      } else {
+        scheduleNextPoll(delay - elapsed);
+      }
+    }
+  }
+
   // Load Issues Data
   async function loadData(forceLive = false) {
     let rawIssues = null;
@@ -1087,7 +1371,7 @@
     // 1. When forceLive is true, attempt to fetch directly from official GitHub API
     if (forceLive) {
       try {
-        const liveList = await fetchLiveIssuesFromGitHub();
+        const liveList = await fetchLiveIssuesFromGitHub({ manual: true });
         if (Array.isArray(liveList) && liveList.length > 0) {
           rawIssues = liveList;
           generatedAt = new Date().toISOString();
@@ -1152,29 +1436,7 @@
 
     // 4. Normalize and render
     if (rawIssues && rawIssues.length > 0) {
-      allIssues = rawIssues.map(normalizeIssue);
-      renderTickets();
-
-      if (el.updated) {
-        const timeStr = generatedAt
-          ? new Date(generatedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
-          : "";
-        const dateStr = generatedAt ? formatDate(generatedAt) : "";
-
-        if (dataSource === "live") {
-          el.updated.textContent = `Atualizado agora via API do GitHub (${timeStr})`;
-        } else if (dataSource === "offline") {
-          el.updated.textContent = `Modo offline (dados em cache de ${dateStr} ${timeStr})`;
-        } else if (dataSource === "rate_limited") {
-          el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr} (API GitHub limitada)`;
-        } else if (dataSource === "published_after_live_error") {
-          el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr} (falha na API ao vivo)`;
-        } else if (forceLive) {
-          el.updated.textContent = `Snapshot publicado: ${dateStr} às ${timeStr}`;
-        } else {
-          el.updated.textContent = `Última sincronização: ${dateStr} às ${timeStr}`;
-        }
-      }
+      applyRawIssues(rawIssues, generatedAt, dataSource, false, forceLive);
     } else {
       if (el.updated) {
         el.updated.textContent = "Falha ao carregar dados";
@@ -1210,6 +1472,14 @@
     }
   }
 
+  function initLiveSync() {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    // Background polling starts after initial page load
+    const lastSync = Number(localStorage.getItem(STORAGE_LAST_SYNC_KEY) || 0);
+    const delay = (Date.now() - lastSync > FAST_INTERVAL) ? 1500 : nextPollDelay();
+    scheduleNextPoll(delay);
+  }
+
   // Initialization
   async function init() {
     initElements();
@@ -1218,6 +1488,7 @@
     enforceDefaultStates();
     await Promise.all([loadConfig(), loadData()]);
     enforceDefaultStates();
+    initLiveSync();
   }
 
   // Handle pageshow (including Firefox bfcache and form restorations)
