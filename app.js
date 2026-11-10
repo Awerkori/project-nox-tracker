@@ -23,6 +23,7 @@
   const CACHE_TIME_KEY = "project-nox-live-issues-v2-time";
   const CACHE_SIG_KEY = "project-nox-live-issues-v2-sig";
   const CACHE_ETAG_KEY = "project-nox-live-issues-v2-etag";
+  const CACHE_ETAG_STORE_KEY = "project-nox-live-etags-v2";
   const STORAGE_LAST_SYNC_KEY = "project-nox-last-sync-time";
   const SYNC_CHANNEL_NAME = "project-nox-sync-channel";
 
@@ -31,6 +32,7 @@
   const FAST_INTERVAL = 30 * 1000;           // 30 segundos
   const NORMAL_INTERVAL = 120 * 1000;        // 120 segundos (2 minutos)
   const THROTTLED_INTERVAL = 180 * 1000;     // 180 segundos quando rate limit estiver baixo
+  const RECONCILE_INTERVAL = 10 * 60 * 1000; // 10 minutos (reconciliação periódica completa econômica)
 
   // Label Taxonomy Maps
   const TYPE_MAP = {
@@ -119,12 +121,57 @@
   let isFetching = false;
   let pendingManualRefresh = false;
   let pollTimer = null;
+  const openedAt = Date.now();
   let rateLimitUntil = 0;
   let rateLimitRemaining = null;
   let lastSyncTime = 0;
-  const openedAt = Date.now();
+  let lastReconcileTime = openedAt;
+  let currentDataTimeMs = 0;
+  let currentDataVersion = 0;
   let syncChannel = null;
+  const etagStore = new Map();
 
+  function initEtagStore() {
+    try {
+      const raw = localStorage.getItem(CACHE_ETAG_STORE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          for (const [k, v] of Object.entries(parsed)) {
+            if (typeof v === "string") etagStore.set(k, v);
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  function getStoredEtag(url) {
+    return etagStore.get(url) || "";
+  }
+
+  function setStoredEtag(url, etag) {
+    if (!url || !etag) return;
+    etagStore.set(url, etag);
+    currentEtag = etag;
+    try {
+      const obj = Object.fromEntries(etagStore.entries());
+      localStorage.setItem(CACHE_ETAG_STORE_KEY, JSON.stringify(obj));
+      localStorage.setItem(CACHE_ETAG_KEY, etag);
+    } catch {
+      // ignore
+    }
+  }
+
+  function parseTimestampMs(value) {
+    if (!value) return 0;
+    if (typeof value === "number") return isNaN(value) ? 0 : value;
+    const ms = new Date(value).getTime();
+    return isNaN(ms) ? 0 : ms;
+  }
+
+  initEtagStore();
   try {
     currentEtag = localStorage.getItem(CACHE_ETAG_KEY) || "";
   } catch {
@@ -136,7 +183,11 @@
       syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
       syncChannel.onmessage = (event) => {
         if (event.data && event.data.type === "issues-sync" && Array.isArray(event.data.rawIssues)) {
-          applyRawIssues(event.data.rawIssues, event.data.generatedAt, "live", false);
+          const incomingMs = event.data.timestampMs || parseTimestampMs(event.data.generatedAt);
+          if (incomingMs && currentDataTimeMs && incomingMs < currentDataTimeMs) {
+            return;
+          }
+          applyRawIssues(event.data.rawIssues, event.data.generatedAt, "live", false, false, incomingMs);
         }
       };
     }
@@ -151,9 +202,13 @@
         const syncSource = localStorage.getItem(STORAGE_LAST_SYNC_KEY);
         // Only react to storage events if a genuine live sync occurred recently
         if (syncSource && Math.abs(Date.now() - Number(syncSource)) < 5000) {
-          const newIssues = JSON.parse(e.newValue);
           const newTime = localStorage.getItem(CACHE_TIME_KEY);
-          applyRawIssues(newIssues, newTime, "live", false);
+          const incomingMs = parseTimestampMs(newTime);
+          if (incomingMs && currentDataTimeMs && incomingMs < currentDataTimeMs) {
+            return;
+          }
+          const newIssues = JSON.parse(e.newValue);
+          applyRawIssues(newIssues, newTime, "live", false, false, incomingMs);
         }
       } catch {
         // ignore
@@ -764,6 +819,10 @@
 
   // Render Tickets List
   function renderTickets() {
+    // Preserve current scroll position to avoid jump during background sync
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const scrollX = window.scrollX || window.pageXOffset || 0;
+
     // Reconcile select element with active sort and state filters if not explicit in URL
     const params = new URLSearchParams(location.search);
     if (!params.has("sort")) {
@@ -814,6 +873,9 @@
       `;
       const btn = document.querySelector("#empty-clear-filters");
       if (btn) btn.addEventListener("click", resetAllFilters);
+      if (scrollY > 0 || scrollX > 0) {
+        window.scrollTo(scrollX, scrollY);
+      }
       return;
     }
 
@@ -822,8 +884,16 @@
       fragment.appendChild(createTicketCard(issue));
     }
 
-    el.tickets.innerHTML = "";
-    el.tickets.appendChild(fragment);
+    if (typeof el.tickets.replaceChildren === "function") {
+      el.tickets.replaceChildren(fragment);
+    } else {
+      el.tickets.innerHTML = "";
+      el.tickets.appendChild(fragment);
+    }
+
+    if (scrollY > 0 || scrollX > 0) {
+      window.scrollTo(scrollX, scrollY);
+    }
   }
 
   // URL Synchronization
@@ -1186,30 +1256,36 @@
     return false;
   }
 
-  async function fetchLiveIssuesFromGitHub({ manual = false } = {}) {
+  async function fetchLiveIssuesFromGitHub({ manual = false, isFullReconcile = false } = {}) {
     const apiBase = getGitHubApiBase();
     const all = [];
     const seen = new Set();
     let page = 1;
-    const maxPages = manual ? 5 : 1;
-    const sortParam = manual ? "created" : "updated";
+    const isFull = manual || isFullReconcile;
+    const maxPages = isFull ? 5 : 1;
+    const sortParam = isFull ? "created" : "updated";
 
     while (page <= maxPages) {
+      const targetUrl = `${apiBase}?state=all&per_page=100&page=${page}&sort=${sortParam}&direction=desc`;
       const headers = {
         "Accept": "application/vnd.github+json"
       };
-      if (!manual && page === 1 && currentEtag) {
-        headers["If-None-Match"] = currentEtag;
+      const cachedEtag = getStoredEtag(targetUrl);
+      if (!manual && cachedEtag) {
+        headers["If-None-Match"] = cachedEtag;
       }
 
-      const res = await fetch(`${apiBase}?state=all&per_page=100&page=${page}&sort=${sortParam}&direction=desc`, {
+      const res = await fetch(targetUrl, {
         headers
       });
 
       const isRateLimited = parseRateLimitHeaders(res);
 
       if (res.status === 304) {
-        return { notModified: true };
+        if (page === 1) {
+          return { notModified: true };
+        }
+        break;
       }
 
       if (!res.ok) {
@@ -1219,16 +1295,9 @@
         throw new Error(`HTTP_${res.status}`);
       }
 
-      if (page === 1) {
-        const newEtag = res.headers.get("etag");
-        if (newEtag) {
-          currentEtag = newEtag;
-          try {
-            localStorage.setItem(CACHE_ETAG_KEY, newEtag);
-          } catch {
-            // ignore
-          }
-        }
+      const newEtag = res.headers.get("etag");
+      if (newEtag) {
+        setStoredEtag(targetUrl, newEtag);
       }
 
       const batch = await res.json();
@@ -1258,11 +1327,22 @@
     return Array.from(map.values());
   }
 
-  function applyRawIssues(rawIssues, timestamp, dataSource = "live", broadcast = true, forceLive = false) {
+  function applyRawIssues(rawIssues, timestamp, dataSource = "live", broadcast = true, forceLive = false, explicitMs = null) {
     if (!Array.isArray(rawIssues) || rawIssues.length === 0) return false;
+
+    const incomingMs = explicitMs || parseTimestampMs(timestamp);
+    if (!forceLive && allIssues.length > 0 && incomingMs && currentDataTimeMs && incomingMs < currentDataTimeMs) {
+      return false;
+    }
 
     currentRawIssues = rawIssues;
     if (timestamp) generatedAt = timestamp;
+    if (incomingMs) {
+      currentDataTimeMs = Math.max(currentDataTimeMs, incomingMs);
+    } else {
+      currentDataTimeMs = Math.max(currentDataTimeMs, Date.now());
+    }
+    currentDataVersion++;
 
     const normalized = rawIssues.map(normalizeIssue);
     const newSignature = dataSignature(normalized);
@@ -1312,6 +1392,8 @@
           type: "issues-sync",
           rawIssues,
           generatedAt,
+          timestampMs: currentDataTimeMs,
+          version: currentDataVersion,
           signature: newSignature
         });
       } catch {
@@ -1354,6 +1436,11 @@
       return;
     }
 
+    const reconcileInterval = window.__NOX_RECONCILE_INTERVAL__ || RECONCILE_INTERVAL;
+    const isDueForReconcile = (Date.now() - lastReconcileTime >= reconcileInterval);
+    const hasQuotaForReconcile = (rateLimitRemaining === null || rateLimitRemaining >= 15);
+    const isFullReconcile = manual || ((isDueForReconcile && hasQuotaForReconcile) || !!window.__NOX_FORCE_RECONCILE__);
+
     isFetching = true;
     window.__NOX_IS_FETCHING__ = true;
     if (manual && el.refresh) {
@@ -1362,9 +1449,12 @@
     }
 
     try {
-      const freshResult = await fetchLiveIssuesFromGitHub({ manual });
+      const freshResult = await fetchLiveIssuesFromGitHub({ manual, isFullReconcile });
       if (freshResult && freshResult.notModified) {
         lastSyncTime = Date.now();
+        if (isFullReconcile) {
+          lastReconcileTime = Date.now();
+        }
         try {
           localStorage.setItem(STORAGE_LAST_SYNC_KEY, String(Date.now()));
         } catch {
@@ -1375,9 +1465,12 @@
           el.updated.textContent = `Atualizado agora via API do GitHub (${timeStr})`;
         }
       } else if (Array.isArray(freshResult) && freshResult.length > 0) {
-        const merged = manual ? freshResult : mergeRawIssues(currentRawIssues, freshResult);
+        const merged = isFullReconcile ? freshResult : mergeRawIssues(currentRawIssues, freshResult);
         applyRawIssues(merged, new Date().toISOString(), "live", true, manual);
         lastSyncTime = Date.now();
+        if (isFullReconcile) {
+          lastReconcileTime = Date.now();
+        }
       }
     } catch (err) {
       const isRateLimit = err && err.message === "RATE_LIMITED";
@@ -1434,6 +1527,8 @@
           rawIssues = liveList;
           generatedAt = new Date().toISOString();
           dataSource = "live";
+          lastReconcileTime = Date.now();
+          lastSyncTime = Date.now();
           try {
             localStorage.setItem(CACHE_KEY, JSON.stringify(rawIssues));
             localStorage.setItem(CACHE_TIME_KEY, generatedAt);
