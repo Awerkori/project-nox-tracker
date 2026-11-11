@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T14:07:31.739146+00:00",
+  "generated_at": "2026-11-11T21:27:54.218321+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -38,12 +38,12 @@
       "number": 145,
       "title": "[Problema na extensão]: Blackout Comics — Blackout Comics HTTP 403, verifique o site na WebView",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/145",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-11-11T08:17:32Z",
-      "updated_at": "2026-11-11T08:17:41Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-11-11T15:01:20Z",
+      "closed_at": "2026-11-11T15:00:44Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Problema na extensão",
@@ -231,8 +231,8 @@
         }
       ],
       "reactions": {
-        "total_count": 1,
-        "+1": 1
+        "total_count": 2,
+        "+1": 2
       },
       "author": {
         "login": "mikhg397-cmyk"
@@ -263,8 +263,8 @@
         }
       ],
       "reactions": {
-        "total_count": 0,
-        "+1": 0
+        "total_count": 1,
+        "+1": 1
       },
       "author": {
         "login": "mikhg397-cmyk"
@@ -295,8 +295,8 @@
         }
       ],
       "reactions": {
-        "total_count": 0,
-        "+1": 0
+        "total_count": 1,
+        "+1": 1
       },
       "author": {
         "login": "mikhg397-cmyk"
@@ -327,8 +327,8 @@
         }
       ],
       "reactions": {
-        "total_count": 0,
-        "+1": 0
+        "total_count": 1,
+        "+1": 1
       },
       "author": {
         "login": "mikhg397-cmyk"
