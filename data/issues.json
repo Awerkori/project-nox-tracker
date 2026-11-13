@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-11-12T18:26:50.502000+00:00",
+  "generated_at": "2026-11-13T12:35:12.314016+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 150,
+      "title": "[Problema na extensão]: Xxxyaoi — Problemas com a extensão",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/150",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-13T07:56:18Z",
+      "updated_at": "2026-11-13T07:56:29Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "jjaekyung897-coder"
+      }
+    },
     {
       "number": 149,
       "title": "[Nova extensão]: Wacht anime hentai",
