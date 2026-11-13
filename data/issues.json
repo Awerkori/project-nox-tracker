@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-13T12:35:12.314016+00:00",
+  "generated_at": "2026-11-13T20:01:48.926446+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
@@ -159,7 +159,7 @@
         "+1": 0
       },
       "author": {
-        "login": "uncensoredisekai"
+        "login": "ghost"
       }
     },
     {
@@ -169,9 +169,9 @@
       "state": "open",
       "state_reason": "reopened",
       "created_at": "2026-11-11T08:17:32Z",
-      "updated_at": "2026-11-12T15:14:28Z",
+      "updated_at": "2026-11-13T15:24:46Z",
       "closed_at": null,
-      "comments": 1,
+      "comments": 0,
       "labels": [
         {
           "name": "Problema na extensão",
@@ -191,7 +191,7 @@
         "+1": 0
       },
       "author": {
-        "login": "uncensoredisekai"
+        "login": "ghost"
       }
     },
     {
@@ -255,7 +255,7 @@
         "+1": 0
       },
       "author": {
-        "login": "uncensoredisekai"
+        "login": "ghost"
       }
     },
     {
@@ -291,7 +291,7 @@
         "+1": 0
       },
       "author": {
-        "login": "uncensoredisekai"
+        "login": "ghost"
       }
     },
     {
@@ -327,7 +327,7 @@
         "+1": 0
       },
       "author": {
-        "login": "uncensoredisekai"
+        "login": "ghost"
       }
     },
     {
@@ -359,8 +359,8 @@
         }
       ],
       "reactions": {
-        "total_count": 2,
-        "+1": 2
+        "total_count": 1,
+        "+1": 1
       },
       "author": {
         "login": "mikhg397-cmyk"
