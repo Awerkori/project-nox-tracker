@@ -1,7 +1,35 @@
 {
-  "generated_at": "2026-11-13T20:01:48.926446+00:00",
+  "generated_at": "2026-11-14T23:11:25.162274+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 151,
+      "title": "[Sugestão]: Adicionar sistema de cadastro e login de contas do Hanami Heaven na extensão",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/151",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-14T22:29:01Z",
+      "updated_at": "2026-11-14T22:57:00Z",
+      "closed_at": null,
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Sugestão",
+          "color": "ec4899"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "eusouoscar"
+      }
+    },
     {
       "number": 150,
       "title": "[Problema na extensão]: Xxxyaoi — Problemas com a extensão",
