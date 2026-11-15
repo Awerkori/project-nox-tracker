@@ -1,7 +1,39 @@
 {
-  "generated_at": "2026-11-14T23:11:25.162274+00:00",
+  "generated_at": "2026-11-15T17:16:36.734820+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
+    {
+      "number": 152,
+      "title": "[Problema na extensão]: Cerise scan — Cerise scan reformulou o site",
+      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/152",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-15T13:55:43Z",
+      "updated_at": "2026-11-15T13:55:52Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "LUCASGYNBR"
+      }
+    },
     {
       "number": 151,
       "title": "[Sugestão]: Adicionar sistema de cadastro e login de contas do Hanami Heaven na extensão",
@@ -622,12 +654,12 @@
       "number": 131,
       "title": "[Nova extensão]: Baozinho",
       "html_url": "https://github.com/Awerkori/project-nox-requests/issues/131",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-11-06T11:53:44Z",
-      "updated_at": "2026-11-06T12:41:56Z",
-      "closed_at": null,
-      "comments": 1,
+      "updated_at": "2026-11-15T16:29:40Z",
+      "closed_at": "2026-11-15T16:29:12Z",
+      "comments": 2,
       "labels": [
         {
           "name": "Mangá",
