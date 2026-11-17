@@ -11,7 +11,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-REPOSITORY = "Awerkori/project-nox-requests"
+REPOSITORY = "ProjectNox-org/project-nox-requests"
 API_URL = f"https://api.github.com/repos/{REPOSITORY}/issues"
 OUTPUT = Path("data/issues.json")
 FIELDS = (

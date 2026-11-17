@@ -18,7 +18,7 @@
   // Constants
   const DATA_URL = "data/issues.json";
   const CONFIG_URL = "data/config.json";
-  const REPO_URL = "https://github.com/Awerkori/project-nox-requests";
+  const REPO_URL = "https://github.com/ProjectNox-org/project-nox-requests";
   const CACHE_KEY = "project-nox-live-issues-v2";
   const CACHE_TIME_KEY = "project-nox-live-issues-v2-time";
   const CACHE_SIG_KEY = "project-nox-live-issues-v2-sig";
@@ -1222,7 +1222,7 @@
   }
 
   // Live GitHub Synchronization & Adaptive Polling
-  const GITHUB_API_BASE = "https://api.github.com/repos/Awerkori/project-nox-requests/issues";
+  const GITHUB_API_BASE = "https://api.github.com/repos/ProjectNox-org/project-nox-requests/issues";
 
   function getGitHubApiBase() {
     return window.__NOX_API_BASE__ || GITHUB_API_BASE;
