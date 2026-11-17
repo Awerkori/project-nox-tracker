@@ -18,7 +18,7 @@ import urllib.parse
 from datetime import UTC, datetime
 from pathlib import Path
 
-REPOSITORY = "Awerkori/project-nox-requests"
+REPOSITORY = "ProjectNox-org/project-nox-requests"
 
 # 17 Official Standard Labels in 5 Groups
 STANDARD_LABELS = {

@@ -2068,3 +2068,64 @@ main {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   PORTAL INTEGRATION & ACCESSIBILITY ENHANCEMENTS
+   ========================================================================== */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  z-index: 1000;
+  padding: 10px 18px;
+  background: var(--nox-purple);
+  color: var(--bg-void-deep);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: top 180ms ease;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+.nav-portal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--nox-gold-light);
+  background: rgba(201, 170, 115, 0.10);
+  border: 1px solid rgba(201, 170, 115, 0.32);
+  cursor: pointer;
+  transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-portal-link:hover {
+  background: rgba(201, 170, 115, 0.18);
+  border-color: var(--nox-gold-light);
+  transform: translateY(-1px);
+}
+
+:focus-visible {
+  outline: 2px solid var(--nox-purple);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .nav-portal-link span {
+    display: none;
+  }
+  .nav-portal-link {
+    padding: 8px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle-canvas {
+    display: none;
+  }
+}
