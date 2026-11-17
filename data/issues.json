@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-11-15T17:16:36.734820+00:00",
+  "generated_at": "2026-11-17T06:58:05.105876+00:00",
   "repository": "Awerkori/project-nox-requests",
   "issues": [
     {
       "number": 152,
       "title": "[Problema na extensão]: Cerise scan — Cerise scan reformulou o site",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/152",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/152",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-15T13:55:43Z",
@@ -37,7 +37,7 @@
     {
       "number": 151,
       "title": "[Sugestão]: Adicionar sistema de cadastro e login de contas do Hanami Heaven na extensão",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/151",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/151",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-14T22:29:01Z",
@@ -65,7 +65,7 @@
     {
       "number": 150,
       "title": "[Problema na extensão]: Xxxyaoi — Problemas com a extensão",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/150",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/150",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-13T07:56:18Z",
@@ -97,7 +97,7 @@
     {
       "number": 149,
       "title": "[Nova extensão]: Wacht anime hentai",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/149",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/149",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-12T10:46:33Z",
@@ -129,7 +129,7 @@
     {
       "number": 148,
       "title": "[Problema na extensão]: Fliptru — Não está aparecendo todos os capitulos das obras dessa extensão",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/148",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/148",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-12T03:06:08Z",
@@ -161,7 +161,7 @@
     {
       "number": 147,
       "title": "[Problema na extensão]: CorujaToon — CorujaToon (PT-BR)",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/147",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/147",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-11-12T00:10:24Z",
@@ -193,7 +193,7 @@
     {
       "number": 146,
       "title": "[Problema na extensão]: Argos Comics — Argos Comics http 404",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/146",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/146",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-11T13:42:36Z",
@@ -225,7 +225,7 @@
     {
       "number": 145,
       "title": "[Problema na extensão]: Blackout Comics — Blackout Comics HTTP 403, verifique o site na WebView",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/145",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/145",
       "state": "open",
       "state_reason": "reopened",
       "created_at": "2026-11-11T08:17:32Z",
@@ -257,7 +257,7 @@
     {
       "number": 144,
       "title": "[Sugestão]: Blackout Comics",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/144",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/144",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-10T19:10:25Z",
@@ -285,7 +285,7 @@
     {
       "number": 143,
       "title": "[Nova extensão]: hentaihaven",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/143",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/143",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-10T03:22:49Z",
@@ -321,7 +321,7 @@
     {
       "number": 142,
       "title": "[Nova extensão]: watchanimehentai",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/142",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/142",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-11-10T02:13:26Z",
@@ -357,7 +357,7 @@
     {
       "number": 141,
       "title": "[Nova extensão]: hentaihaven",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/141",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/141",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-11-10T02:08:15Z",
@@ -393,7 +393,7 @@
     {
       "number": 140,
       "title": "[Nova extensão]: WatchAnimeHentai",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/140",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/140",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-09T20:13:21Z",
@@ -429,7 +429,7 @@
     {
       "number": 139,
       "title": "[Problema na extensão]: Animeplayer",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/139",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/139",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-09T20:05:24Z",
@@ -461,7 +461,7 @@
     {
       "number": 138,
       "title": "[Mudança de domínio]: CineVEO",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/138",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/138",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-09T19:56:44Z",
@@ -493,7 +493,7 @@
     {
       "number": 137,
       "title": "[Mudança de domínio]: RedeToons",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/137",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/137",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-09T19:53:46Z",
@@ -525,7 +525,7 @@
     {
       "number": 135,
       "title": "[Nova extensão]: Reino Manga",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/135",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/135",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-09T14:16:31Z",
@@ -557,7 +557,7 @@
     {
       "number": 134,
       "title": "[Problema na extensão]: Monte tai — Problema na extensão monte tai: lentidão nos dowloads de capitulos",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/134",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/134",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-09T09:39:20Z",
@@ -589,7 +589,7 @@
     {
       "number": 133,
       "title": "[Problema na extensão]: Nexus Mangas — HTTP Error 401",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/133",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/133",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-08T20:48:14Z",
@@ -621,7 +621,7 @@
     {
       "number": 132,
       "title": "[Problema na extensão]: Bakai — Bakai no pages found",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/132",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/132",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-07T21:01:53Z",
@@ -653,7 +653,7 @@
     {
       "number": 131,
       "title": "[Nova extensão]: Baozinho",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/131",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/131",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-11-06T11:53:44Z",
@@ -685,7 +685,7 @@
     {
       "number": 130,
       "title": "[Mudança de domínio]: Fleur Blanche",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/130",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/130",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-05T13:40:51Z",
@@ -717,7 +717,7 @@
     {
       "number": 129,
       "title": "[Problema na extensão]: Mediocre Toons — carregamento infinito mesmo com VIP",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/129",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/129",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-04T14:08:11Z",
@@ -749,7 +749,7 @@
     {
       "number": 128,
       "title": "[Problema na extensão]: Redetoons — Extensão com problema",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/128",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/128",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-04T00:30:32Z",
@@ -781,7 +781,7 @@
     {
       "number": 127,
       "title": "[Problema na extensão]: Hanami Heaven — HTTP 400",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/127",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/127",
       "state": "closed",
       "state_reason": "duplicate",
       "created_at": "2026-11-03T20:55:50Z",
@@ -817,7 +817,7 @@
     {
       "number": 126,
       "title": "[Nova extensão]: Saímo tv",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/126",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/126",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-03T10:54:58Z",
@@ -849,7 +849,7 @@
     {
       "number": 125,
       "title": "[Problema na extensão]: hanami heaven — Hanami",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/125",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/125",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-02T09:52:08Z",
@@ -881,7 +881,7 @@
     {
       "number": 124,
       "title": "[Problema na extensão]: Little Tyrant",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/124",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/124",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-11-02T02:58:27Z",
@@ -913,7 +913,7 @@
     {
       "number": 123,
       "title": "[Nova extensão]: Secozzi",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/123",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/123",
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-01T03:38:36Z",
@@ -949,7 +949,7 @@
     {
       "number": 121,
       "title": "[Nova extensão]: ECHO SCANS/MANGA",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/121",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/121",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-30T17:27:50Z",
@@ -985,7 +985,7 @@
     {
       "number": 120,
       "title": "[Nova extensão]: Sukimangas",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/120",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/120",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-27T14:37:13Z",
@@ -1013,7 +1013,7 @@
     {
       "number": 119,
       "title": "[Nova extensão]: ManHQ",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/119",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/119",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-27T14:21:29Z",
@@ -1041,7 +1041,7 @@
     {
       "number": 118,
       "title": "[Nova extensão]: Ler Mangá Online",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/118",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/118",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-27T14:19:05Z",
@@ -1069,7 +1069,7 @@
     {
       "number": 117,
       "title": "[Nova extensão]: Mangalivre.lat",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/117",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/117",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-27T14:17:23Z",
@@ -1097,7 +1097,7 @@
     {
       "number": 116,
       "title": "[Nova extensão]: Mangá Verde",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/116",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/116",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-27T14:14:16Z",
@@ -1125,7 +1125,7 @@
     {
       "number": 115,
       "title": "[Nova extensão]: GoMangas",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/115",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/115",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-27T14:06:59Z",
@@ -1153,7 +1153,7 @@
     {
       "number": 114,
       "title": "[Nova extensão]: NeoToons",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/114",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/114",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-27T14:04:38Z",
@@ -1181,7 +1181,7 @@
     {
       "number": 113,
       "title": "[Nova extensão]: Hentaiteca.net",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/113",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/113",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-25T23:15:28Z",
@@ -1209,7 +1209,7 @@
     {
       "number": 112,
       "title": "[Nova extensão]: hikaricomics",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/112",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/112",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-23T18:16:44Z",
@@ -1241,7 +1241,7 @@
     {
       "number": 111,
       "title": "[Bug]: Little Tyrant",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/111",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/111",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-23T16:33:14Z",
@@ -1269,7 +1269,7 @@
     {
       "number": 110,
       "title": "[Nova extensão]: animy extensão de anime e manga",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/110",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/110",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-23T11:29:37Z",
@@ -1297,7 +1297,7 @@
     {
       "number": 109,
       "title": "[Bug]: Sagrado Império da Britannia",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/109",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/109",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-22T17:01:55Z",
@@ -1325,7 +1325,7 @@
     {
       "number": 108,
       "title": "[Nova extensão]: animy",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/108",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/108",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-22T16:43:16Z",
@@ -1353,7 +1353,7 @@
     {
       "number": 107,
       "title": "[Bug]: RedeToons não funciona (erro 403)",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/107",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/107",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-21T21:00:35Z",
@@ -1381,7 +1381,7 @@
     {
       "number": 106,
       "title": "[Bug]: Os episódios não aparecem",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/106",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/106",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-21T19:06:59Z",
@@ -1409,7 +1409,7 @@
     {
       "number": 105,
       "title": "[Bug]: KuroMangas não está funcionando no Tadami",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/105",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/105",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-20T01:52:09Z",
@@ -1437,7 +1437,7 @@
     {
       "number": 104,
       "title": "[Bug]: Lycan Toons",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/104",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/104",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-19T17:18:08Z",
@@ -1465,7 +1465,7 @@
     {
       "number": 103,
       "title": "[Mudança de domínio]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/103",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/103",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-19T03:14:15Z",
@@ -1493,7 +1493,7 @@
     {
       "number": 102,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/102",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/102",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-18T13:47:25Z",
@@ -1521,7 +1521,7 @@
     {
       "number": 101,
       "title": "[Bug]: KuroMangas sem funcionar o login",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/101",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/101",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-17T19:29:35Z",
@@ -1553,7 +1553,7 @@
     {
       "number": 100,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/100",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/100",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-17T04:44:40Z",
@@ -1585,7 +1585,7 @@
     {
       "number": 99,
       "title": "[Bug]: Erro pink rosa scan",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/99",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/99",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-16T17:47:56Z",
@@ -1613,7 +1613,7 @@
     {
       "number": 98,
       "title": "[Bug]: Lycan Toons",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/98",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/98",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-16T00:52:43Z",
@@ -1645,7 +1645,7 @@
     {
       "number": 97,
       "title": "[Mudança de domínio]: Nox Manga PT BR.",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/97",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/97",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-15T02:09:35Z",
@@ -1673,7 +1673,7 @@
     {
       "number": 96,
       "title": "[Bug]: Lycan Toons",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/96",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/96",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-14T16:45:52Z",
@@ -1701,7 +1701,7 @@
     {
       "number": 95,
       "title": "[Bug]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/95",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/95",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-12T05:59:17Z",
@@ -1729,7 +1729,7 @@
     {
       "number": 94,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/94",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/94",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-12T04:12:25Z",
@@ -1761,7 +1761,7 @@
     {
       "number": 93,
       "title": "[Nova extensão]: supermanga",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/93",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/93",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-11T21:36:35Z",
@@ -1793,7 +1793,7 @@
     {
       "number": 92,
       "title": "[Bug]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/92",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/92",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-11T00:27:52Z",
@@ -1825,7 +1825,7 @@
     {
       "number": 91,
       "title": "[Bug]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/91",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/91",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-11T00:19:07Z",
@@ -1853,7 +1853,7 @@
     {
       "number": 90,
       "title": "[Bug]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/90",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/90",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-11T00:10:41Z",
@@ -1881,7 +1881,7 @@
     {
       "number": 89,
       "title": "[Bug]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/89",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/89",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-11T00:04:31Z",
@@ -1913,7 +1913,7 @@
     {
       "number": 88,
       "title": "[Bug]: OneReader",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/88",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/88",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-10T16:54:06Z",
@@ -1941,7 +1941,7 @@
     {
       "number": 87,
       "title": "[Nova extensão]: phantasie translate",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/87",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/87",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-10T11:26:04Z",
@@ -1969,7 +1969,7 @@
     {
       "number": 86,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/86",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/86",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-10T00:51:35Z",
@@ -1997,7 +1997,7 @@
     {
       "number": 83,
       "title": "[Mudança de domínio]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/83",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/83",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-09T22:47:12Z",
@@ -2029,7 +2029,7 @@
     {
       "number": 82,
       "title": "[Bug]: Lycan Toons",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/82",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/82",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-09T00:36:56Z",
@@ -2057,7 +2057,7 @@
     {
       "number": 81,
       "title": "[Bug]: não atualizando o recente",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/81",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/81",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-07T02:45:16Z",
@@ -2085,7 +2085,7 @@
     {
       "number": 80,
       "title": "[Bug]: Maid Scan",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/80",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/80",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-05T17:10:42Z",
@@ -2113,7 +2113,7 @@
     {
       "number": 78,
       "title": "[Bug]: Nexus Toons não está funcionando no Tadami",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/78",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/78",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-02T15:26:47Z",
@@ -2141,7 +2141,7 @@
     {
       "number": 77,
       "title": "[Mudança de domínio]: site mudou de dominio",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/77",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/77",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-10-02T11:42:12Z",
@@ -2173,7 +2173,7 @@
     {
       "number": 76,
       "title": "[Bug]: Nexus Toons - ID1ID2: actual 0x00001fef != expected 0x00001f8b",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/76",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/76",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-30T22:55:48Z",
@@ -2201,7 +2201,7 @@
     {
       "number": 75,
       "title": "[Bug]: OneReader",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/75",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/75",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-30T17:41:58Z",
@@ -2229,7 +2229,7 @@
     {
       "number": 74,
       "title": "[Bug]: não esta abrindo os videos",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/74",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/74",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-30T07:59:19Z",
@@ -2257,7 +2257,7 @@
     {
       "number": 73,
       "title": "[Bug]: Erro na Extensão",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/73",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/73",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-29T23:49:50Z",
@@ -2285,7 +2285,7 @@
     {
       "number": 72,
       "title": "Big:GALAX scans",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/72",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/72",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-29T23:06:51Z",
@@ -2313,7 +2313,7 @@
     {
       "number": 71,
       "title": "[Bug]: não tá pegando cineVEO",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/71",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/71",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-29T18:51:33Z",
@@ -2341,7 +2341,7 @@
     {
       "number": 70,
       "title": "[Bug]: OneReader",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/70",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/70",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-29T17:01:41Z",
@@ -2369,7 +2369,7 @@
     {
       "number": 69,
       "title": "N esta dando para ler nessa extensão",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/69",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/69",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-28T02:57:28Z",
@@ -2397,7 +2397,7 @@
     {
       "number": 68,
       "title": "[Bug]: mangaball mudou a interface",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/68",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/68",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-28T01:19:06Z",
@@ -2425,7 +2425,7 @@
     {
       "number": 67,
       "title": "[Bug]: Maid Scan, HTTP 404, verifique o site na WebView",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/67",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/67",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-28T00:34:41Z",
@@ -2453,7 +2453,7 @@
     {
       "number": 66,
       "title": "[Mudança de domínio]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/66",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/66",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-27T19:16:53Z",
@@ -2481,7 +2481,7 @@
     {
       "number": 65,
       "title": "[Bug]: Little Tyrant, Nenhum resultado encontrado",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/65",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/65",
       "state": "closed",
       "state_reason": "duplicate",
       "created_at": "2026-09-27T04:06:20Z",
@@ -2513,7 +2513,7 @@
     {
       "number": 64,
       "title": "[Bug]: Erro Java.io.IOException: private hosts not resolved",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/64",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/64",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-27T02:27:02Z",
@@ -2541,7 +2541,7 @@
     {
       "number": 63,
       "title": "[Bug]: Little Tyrant",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/63",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/63",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-26T19:51:47Z",
@@ -2573,7 +2573,7 @@
     {
       "number": 62,
       "title": "[Nova extensão]: colocar o pobreflix por favor",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/62",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/62",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-26T15:49:07Z",
@@ -2605,7 +2605,7 @@
     {
       "number": 61,
       "title": "[Bug]: não esta mais pegando",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/61",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/61",
       "state": "closed",
       "state_reason": "duplicate",
       "created_at": "2026-09-26T15:40:56Z",
@@ -2637,7 +2637,7 @@
     {
       "number": 60,
       "title": "[Nova extensão]: Baozinho",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/60",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/60",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-26T07:14:19Z",
@@ -2665,7 +2665,7 @@
     {
       "number": 59,
       "title": "[Bug]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/59",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/59",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-26T04:19:41Z",
@@ -2693,7 +2693,7 @@
     {
       "number": 58,
       "title": "[Mudança de domínio]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/58",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/58",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-26T03:00:16Z",
@@ -2721,7 +2721,7 @@
     {
       "number": 57,
       "title": "[Nova extensão]: Central novel",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/57",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/57",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-25T23:50:37Z",
@@ -2753,7 +2753,7 @@
     {
       "number": 56,
       "title": "[Mudança de domínio]: AniTube",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/56",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/56",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-25T02:16:07Z",
@@ -2785,7 +2785,7 @@
     {
       "number": 55,
       "title": "[Bug]: TaimuMangas, Não foi possível resolver apiv2.taimumangas.com: NXDOMAIN",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/55",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/55",
       "state": "closed",
       "state_reason": "duplicate",
       "created_at": "2026-09-25T01:15:22Z",
@@ -2817,7 +2817,7 @@
     {
       "number": 54,
       "title": "[Mudança de domínio]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/54",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/54",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-24T23:55:54Z",
@@ -2849,7 +2849,7 @@
     {
       "number": 53,
       "title": "[Bug]: OneReader",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/53",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/53",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-24T17:17:17Z",
@@ -2881,7 +2881,7 @@
     {
       "number": 52,
       "title": "[Bug]: Taimu Mangas",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/52",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/52",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-24T17:07:33Z",
@@ -2913,7 +2913,7 @@
     {
       "number": 51,
       "title": "[Bug]: Kitsune Yako",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/51",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/51",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-24T11:25:32Z",
@@ -2945,7 +2945,7 @@
     {
       "number": 50,
       "title": "[Bug]: Erro Leitor mudou XXX YAOI",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/50",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/50",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-23T23:52:56Z",
@@ -2977,7 +2977,7 @@
     {
       "number": 49,
       "title": "[Nova extensão]: Extensão Ragnarok Scanlation",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/49",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/49",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-23T20:04:59Z",
@@ -3009,7 +3009,7 @@
     {
       "number": 48,
       "title": "[Bug]: HTTP 522, verifique o site na WebView, Manga Online RED",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/48",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/48",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-23T19:04:37Z",
@@ -3037,7 +3037,7 @@
     {
       "number": 47,
       "title": "[Bug]: HTTP 522, verifique o site na WebView, FlowerManga.net",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/47",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/47",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-23T18:55:32Z",
@@ -3069,7 +3069,7 @@
     {
       "number": 46,
       "title": "[Bug]: HTTP 522, verifique o site na WebView Cerise Scan",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/46",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/46",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-23T18:52:31Z",
@@ -3101,7 +3101,7 @@
     {
       "number": 45,
       "title": "[Mudança de domínio]: Fenix Project não abre, WebView funciona",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/45",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/45",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-23T18:38:48Z",
@@ -3129,7 +3129,7 @@
     {
       "number": 44,
       "title": "[Sugestão]: redetoons",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/44",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/44",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-22T02:29:25Z",
@@ -3161,7 +3161,7 @@
     {
       "number": 43,
       "title": "[Bug]: anime fire",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/43",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/43",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-22T02:25:44Z",
@@ -3193,7 +3193,7 @@
     {
       "number": 42,
       "title": "[Bug]: erro HTTP 502",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/42",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/42",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-22T02:21:45Z",
@@ -3225,7 +3225,7 @@
     {
       "number": 41,
       "title": "OneReader",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/41",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/41",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-21T17:00:44Z",
@@ -3257,7 +3257,7 @@
     {
       "number": 40,
       "title": "Geass comics",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/40",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/40",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-21T01:06:43Z",
@@ -3289,7 +3289,7 @@
     {
       "number": 39,
       "title": "[Bug]: AcervoEremita. Entra, mas quando abre o capítulo, aparece um erro.",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/39",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/39",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-20T17:52:29Z",
@@ -3321,7 +3321,7 @@
     {
       "number": 38,
       "title": "[Bug]: Erro Java.io.IOException: private hosts not resolved",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/38",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/38",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-20T17:48:30Z",
@@ -3349,7 +3349,7 @@
     {
       "number": 37,
       "title": "[Bug]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/37",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/37",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-20T16:36:28Z",
@@ -3381,7 +3381,7 @@
     {
       "number": 36,
       "title": "[Nova extensão]: Extensão KariKari",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/36",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/36",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-19T12:12:50Z",
@@ -3413,7 +3413,7 @@
     {
       "number": 35,
       "title": "[Bug]: Erro 404 na extensão do Hanami Heaven",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/35",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/35",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-17T23:49:21Z",
@@ -3445,7 +3445,7 @@
     {
       "number": 34,
       "title": "[Bug]: Point Zero Toons, Nenhum resultado encontrado",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/34",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/34",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-16T19:16:04Z",
@@ -3477,7 +3477,7 @@
     {
       "number": 33,
       "title": "[Fonte morta]: Ghost Scan, Nenhum resultado encontrado",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/33",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/33",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-16T19:11:18Z",
@@ -3509,7 +3509,7 @@
     {
       "number": 32,
       "title": "[Bug]: HTTP 500, verifique o site na WebView no CorujaToon",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/32",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/32",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-16T19:07:48Z",
@@ -3537,7 +3537,7 @@
     {
       "number": 31,
       "title": "[Bug]:  Erro não carregamento das imagens no XXX YAOI",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/31",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/31",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-15T06:35:24Z",
@@ -3569,7 +3569,7 @@
     {
       "number": 30,
       "title": "[Bug]: Erro NullPointerException na Scan XXX YAOI",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/30",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/30",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-13T22:53:21Z",
@@ -3601,7 +3601,7 @@
     {
       "number": 29,
       "title": "Gostaria que adicionassem essa nova extensão que surgiu no português brasileiro",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/29",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/29",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-13T03:29:25Z",
@@ -3633,7 +3633,7 @@
     {
       "number": 28,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/28",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/28",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-13T02:07:46Z",
@@ -3661,7 +3661,7 @@
     {
       "number": 27,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/27",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/27",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-13T02:05:07Z",
@@ -3689,7 +3689,7 @@
     {
       "number": 26,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/26",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/26",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-13T02:03:07Z",
@@ -3717,7 +3717,7 @@
     {
       "number": 25,
       "title": "[Bug]: Erro de Nenhuma página encontrada XXX YAOI",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/25",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/25",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-11T23:57:16Z",
@@ -3749,7 +3749,7 @@
     {
       "number": 24,
       "title": "[Bug]: Erro ao tentar abrir algum capítulo",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/24",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/24",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-11T23:00:49Z",
@@ -3777,7 +3777,7 @@
     {
       "number": 18,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/18",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/18",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-08T11:41:18Z",
@@ -3809,7 +3809,7 @@
     {
       "number": 17,
       "title": "[Nova extensão]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/17",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/17",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-08T11:38:07Z",
@@ -3841,7 +3841,7 @@
     {
       "number": 16,
       "title": "[Bug]: as imagens obras dessa extensão n estão aparecendo",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/16",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/16",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-08T02:37:36Z",
@@ -3869,7 +3869,7 @@
     {
       "number": 15,
       "title": "[Bug]: Não aparece as paginas das obras dessa extensão",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/15",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/15",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-08T02:33:09Z",
@@ -3897,7 +3897,7 @@
     {
       "number": 14,
       "title": "[Bug]: As paginas n estão aparcendo ",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/14",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/14",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-08T02:06:06Z",
@@ -3929,7 +3929,7 @@
     {
       "number": 13,
       "title": "[Mudança de domínio]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/13",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/13",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-07T15:28:26Z",
@@ -3961,7 +3961,7 @@
     {
       "number": 12,
       "title": "[Bug]:",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/12",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/12",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-07T15:23:12Z",
@@ -3993,7 +3993,7 @@
     {
       "number": 9,
       "title": "[Bug]: erro ao carregar as páginas e a sinopse",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/9",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/9",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-07T07:23:46Z",
@@ -4021,7 +4021,7 @@
     {
       "number": 8,
       "title": "[Nova extensão]: Ink",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/8",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/8",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-06T03:43:06Z",
@@ -4049,7 +4049,7 @@
     {
       "number": 7,
       "title": "[Nova extensão]: Animes HD",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/7",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/7",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-04T21:25:08Z",
@@ -4081,7 +4081,7 @@
     {
       "number": 6,
       "title": "[Nova extensão]: Aniture-PT",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/6",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/6",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-04T21:24:02Z",
@@ -4113,7 +4113,7 @@
     {
       "number": 3,
       "title": "[Nova extensão]: Animex HD",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/3",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/3",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-04T20:57:18Z",
@@ -4145,7 +4145,7 @@
     {
       "number": 1,
       "title": "[Bug]: Rede Canais",
-      "html_url": "https://github.com/Awerkori/project-nox-requests/issues/1",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/1",
       "state": "closed",
       "state_reason": "completed",
       "created_at": "2026-09-04T14:15:22Z",
