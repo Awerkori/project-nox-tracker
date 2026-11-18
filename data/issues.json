@@ -1,7 +1,103 @@
 {
-  "generated_at": "2026-11-17T19:55:43.890398+00:00",
+  "generated_at": "2026-11-18T02:22:29.352889+00:00",
   "repository": "ProjectNox-org/project-nox-requests",
   "issues": [
+    {
+      "number": 155,
+      "title": "[Nova extensão]: Manga Leap",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/155",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-11-18T00:22:28Z",
+      "updated_at": "2026-11-18T01:09:17Z",
+      "closed_at": "2026-11-18T01:09:17Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Nova extensão",
+          "color": "8b5cf6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "iurymsantosp5-maker"
+      }
+    },
+    {
+      "number": 154,
+      "title": "[Problema na extensão]: Xxxyaoi — Bloqueio",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/154",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-17T22:43:20Z",
+      "updated_at": "2026-11-17T22:43:34Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "jjaekyung897-coder"
+      }
+    },
+    {
+      "number": 153,
+      "title": "[Mudança de domínio]: Fleur Blanche",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/153",
+      "state": "closed",
+      "state_reason": "completed",
+      "created_at": "2026-11-17T22:38:02Z",
+      "updated_at": "2026-11-18T00:32:45Z",
+      "closed_at": "2026-11-18T00:32:45Z",
+      "comments": 1,
+      "labels": [
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Mudança de domínio",
+          "color": "06b6d4"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "jjaekyung897-coder"
+      }
+    },
     {
       "number": 152,
       "title": "[Problema na extensão]: Cerise scan — Cerise scan reformulou o site",
@@ -526,12 +622,12 @@
       "number": 135,
       "title": "[Nova extensão]: Reino Manga",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/135",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-11-09T14:16:31Z",
-      "updated_at": "2026-11-09T14:17:17Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-11-18T01:28:50Z",
+      "closed_at": "2026-11-18T01:28:49Z",
+      "comments": 1,
       "labels": [
         {
           "name": "Mangá",
@@ -686,12 +782,12 @@
       "number": 130,
       "title": "[Mudança de domínio]: Fleur Blanche",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/130",
-      "state": "open",
-      "state_reason": "reopened",
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-11-05T13:40:51Z",
-      "updated_at": "2026-11-17T19:01:45Z",
-      "closed_at": null,
-      "comments": 2,
+      "updated_at": "2026-11-18T00:56:26Z",
+      "closed_at": "2026-11-18T00:56:25Z",
+      "comments": 4,
       "labels": [
         {
           "name": "Mangá",
