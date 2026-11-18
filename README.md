@@ -27,7 +27,7 @@ O **Project Nox Tracker** é uma ferramenta operacional para a comunidade encont
   - Ordenação: `Mais recentes` (padrão, com desempate determinístico por número), `Atualizados recentemente`, `Mais votados` (reações `👍` / `+1`) e `Mais antigos`.
 - **Votos Positivos:** Exibe a contagem real de reações `+1` (`👍`) do GitHub e direciona para a issue oficial para reagir (requer conta gratuita no GitHub).
 - **Listagem Progressiva:** Renderiza 24 solicitações por vez com botão `Mostrar mais`, mantendo busca, filtros, ordenação e contagens sobre todo o inventário.
-- **Controle de Movimento & Atmosfera Cósmica:** Fundo em 3 camadas (base `#07050d`/`#090611`/`#0d0916`, 5 gradientes radiais roxos com reflexo prateado sutil e neve cósmica em Canvas zero-GC com 3 camadas de profundidade e densidade adaptativa). Suporta interação por mouse, toque passivo, inclinação opcional via `DeviceOrientationEvent` quando suportada pelo navegador, `prefers-reduced-motion` e botão `Pausar animações` / `Retomar animações`.
+- **Controle de Movimento & Atmosfera Cósmica:** Fundo em 3 camadas (base `#07050d`/`#090611`/`#0d0916`, 5 gradientes radiais roxos com reflexo prateado sutil e neve cósmica em Canvas otimizado, com caches de renderização e redução de alocações durante a animação, em 3 camadas de profundidade e densidade adaptativa). Suporta interação por mouse, toque passivo, inclinação opcional via `DeviceOrientationEvent` quando suportada pelo navegador, `prefers-reduced-motion` e botão `Pausar animações` / `Retomar animações`.
 
 ---
 

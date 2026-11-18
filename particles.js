@@ -4,7 +4,7 @@
 /**
  * Project Nox — Cosmic Snow & Stardust Particle System
  *
- * Reusable, zero-GC, 3-tier depth particle canvas with:
+ * Reusable, optimized Canvas 3-tier depth particle system with render caches and reduced per-frame allocations:
  * - Silver / cold-white (#F1F5F9, #DDE4F0, #CBD5E1, #E2D9F5) + cosmic violet & subtle gold
  * - Clamped delta-time physics (consistent across 30Hz–144Hz)
  * - Adaptive density & DPR cap + stable frame-time degradation
@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  // Precomputed zero-GC fill caches (alpha buckets 0..10)
+  // Precomputed fill caches to minimize per-frame allocations (alpha buckets 0..10)
   // Palettes: 268 (violet), 242 (indigo), 215 (silver-slate #CBD5E1/#DDE4F0), 42 (Nox gold)
   const FILL_CACHE_HALO = {
     268: Array.from({ length: 11 }, (_, i) => `hsla(268, 82%, 76%, ${((i / 10) * 0.24).toFixed(3)})`),

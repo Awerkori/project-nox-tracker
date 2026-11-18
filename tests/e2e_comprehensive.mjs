@@ -332,9 +332,70 @@ async function runCoreTests(browserType, browserName, baseUrl) {
       await page.waitForTimeout(500);
       assert.equal(await page.locator('[data-stat="closed"]').textContent(), "1", "Snapshot antigo não pode reverter #601 fechada");
       assert.equal(await page.locator('[data-stat="open"]').textContent(), "0");
-
       await context.close();
       console.log(`✓ [${browserName}] Prevenção de regressão temporal OK`);
+
+      // Phase 3: Reconciliação de snapshot completo (votos com mesmo updated_at, remoção de issue excluída, preservação de recém-criada)
+      const context2 = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+      const page2 = await context2.newPage();
+      let recPhase = 0;
+
+      await page2.addInitScript(() => {
+        window.__NOX_POLL_INTERVAL__ = 350;
+      });
+
+      await page2.route("**/data/issues.json*", route => {
+        if (recPhase === 0) {
+          route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({
+              generated_at: "2026-11-17T22:00:00Z",
+              issues: [
+                makeIssue(701, { state: "open", updated_at: "2026-11-17T21:50:00Z", reactions: { "+1": 1 } }),
+                makeIssue(702, { state: "open", updated_at: "2026-11-17T21:50:00Z" })
+              ]
+            })
+          });
+        } else {
+          // Snapshot mais novo: #701 tem 2 votos (mesmo updated_at!), #702 foi removida
+          route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({
+              generated_at: "2026-11-17T22:10:00Z",
+              issues: [
+                makeIssue(701, { state: "open", updated_at: "2026-11-17T21:50:00Z", reactions: { "+1": 2 } })
+              ]
+            })
+          });
+        }
+      });
+
+      await page2.route("https://api.github.com/repos/ProjectNox-org/project-nox-requests/issues*", route => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          headers: { "x-ratelimit-remaining": "55" },
+          body: JSON.stringify([
+            makeIssue(703, { state: "open", created_at: "2026-11-17T22:15:00Z", updated_at: "2026-11-17T22:15:00Z" })
+          ])
+        });
+      });
+
+      await page2.goto(baseUrl, { waitUntil: "domcontentloaded" });
+      await page2.waitForFunction(() => document.querySelector('.ticket-card[data-number="703"]') !== null, null, { timeout: 5000 });
+
+      recPhase = 1;
+      await page2.waitForFunction(() => {
+        const card701 = document.querySelector('.ticket-card[data-number="701"]')?.textContent || "";
+        const card702 = document.querySelector('.ticket-card[data-number="702"]');
+        const card703 = document.querySelector('.ticket-card[data-number="703"]');
+        return card701.includes("2 votos") && card702 === null && card703 !== null;
+      }, null, { timeout: 5000 });
+
+      await context2.close();
+      console.log(`✓ [${browserName}] Reconciliação (votos iguais, remoção em snapshot completo e preservação de recém-criada) OK`);
     }
 
     // 2b. Integridade estrita (estados inválidos, labels inválidas, JSON malformado, foco preservado)
@@ -477,8 +538,26 @@ async function runCoreTests(browserType, browserName, baseUrl) {
       await page1.locator("#refresh-data").click();
       await page2.waitForFunction(() => document.querySelector('[data-stat="total"]')?.textContent === "2", null, { timeout: 5000 });
 
+      // Shared rate-limit across tabs: tab 1 gets 429 -> tab 2 respects block even on manual refresh
+      let apiCallsAfter429 = 0;
+      await context.unroute("https://api.github.com/repos/ProjectNox-org/project-nox-requests/issues*");
+      await context.route("https://api.github.com/repos/ProjectNox-org/project-nox-requests/issues*", route => {
+        apiCallsAfter429++;
+        route.fulfill({
+          status: 429,
+          headers: { "x-ratelimit-remaining": "0", "retry-after": "30", "access-control-expose-headers": "retry-after, x-ratelimit-remaining" },
+          body: JSON.stringify({ message: "rate limit" })
+        });
+      });
+      await page1.locator("#refresh-data").click();
+      await page2.waitForFunction(() => document.querySelector("#updated")?.classList.contains("is-stale"), null, { timeout: 5000 });
+      const countAtBlock = apiCallsAfter429;
+      await page2.locator("#refresh-data").click();
+      await page2.waitForTimeout(250);
+      assert.equal(apiCallsAfter429, countAtBlock, "Aba 2 deve respeitar rate limit compartilhado pela Aba 1");
+
       await context.close();
-      console.log(`✓ [${browserName}] Sincronização entre múltiplas abas OK`);
+      console.log(`✓ [${browserName}] Sincronização e rate limit compartilhado entre múltiplas abas OK`);
     }
   } finally {
     await browser.close();

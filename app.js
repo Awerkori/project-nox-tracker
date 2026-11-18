@@ -30,6 +30,7 @@
   const STORAGE_LAST_API_SYNC_KEY = "project-nox-last-api-sync-time-v3";
   const STORAGE_LAST_RECONCILE_KEY = "project-nox-last-reconcile-time-v3";
   const STORAGE_FETCH_LOCK_KEY = "project-nox-fetch-lock-v3";
+  const STORAGE_RATE_LIMIT_KEY = "project-nox-rate-limit-v3";
   const SYNC_CHANNEL_NAME = "project-nox-sync-channel-v3";
 
   // Polling & Rate-Limit Safe Intervals
@@ -123,6 +124,7 @@
   let pollTimer = null;
   let rateLimitUntil = 0;
   let rateLimitRemaining = null;
+  let rateLimitUpdatedAt = 0;
   let lastSyncTime = 0;
   let lastApiSyncTime = 0;
   let lastReconcileTime = Date.now();
@@ -324,15 +326,74 @@
 
   window.addEventListener("pagehide", releaseCrossTabLock);
 
+  function syncRateLimitFromStorage() {
+    try {
+      const raw = safeStorageGet(STORAGE_RATE_LIMIT_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return;
+      const incomingUpdatedAt = Number(parsed.updatedAt || 0);
+      if (incomingUpdatedAt && incomingUpdatedAt < rateLimitUpdatedAt) return;
+      const incomingUntil = Number(parsed.until || 0);
+      const incomingRemaining = parsed.remaining === null || parsed.remaining === undefined ? null : Number(parsed.remaining);
+      const now = Date.now();
+      if (incomingUntil > now) {
+        rateLimitUntil = Math.max(rateLimitUntil, incomingUntil);
+      } else if (incomingUpdatedAt > rateLimitUpdatedAt && incomingUntil === 0) {
+        rateLimitUntil = 0;
+      }
+      if (incomingUpdatedAt >= rateLimitUpdatedAt) {
+        rateLimitUpdatedAt = incomingUpdatedAt;
+        if (incomingRemaining === null || !isNaN(incomingRemaining)) {
+          rateLimitRemaining = incomingRemaining;
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  function persistRateLimitState(broadcast = true) {
+    rateLimitUpdatedAt = Date.now();
+    const payload = {
+      remaining: rateLimitRemaining,
+      until: rateLimitUntil,
+      updatedAt: rateLimitUpdatedAt
+    };
+    safeStorageSet(STORAGE_RATE_LIMIT_KEY, JSON.stringify(payload));
+    if (broadcast && syncChannel) {
+      try {
+        syncChannel.postMessage({ type: "rate-limit-sync", ...payload });
+      } catch {
+        // ignore
+      }
+    }
+  }
+
   initEtagStore();
   initPageIssuesStore();
+  syncRateLimitFromStorage();
   currentDataVersion = Number(safeStorageGet(CACHE_VERSION_KEY) || 0);
 
   try {
     if (typeof BroadcastChannel !== "undefined") {
       syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
       syncChannel.onmessage = (event) => {
-        if (event.data && event.data.type === "issues-sync" && Array.isArray(event.data.rawIssues)) {
+        if (!event.data) return;
+        if (event.data.type === "rate-limit-sync") {
+          const incomingUpdatedAt = Number(event.data.updatedAt || 0);
+          if (incomingUpdatedAt >= rateLimitUpdatedAt) {
+            rateLimitUpdatedAt = incomingUpdatedAt;
+            const incomingUntil = Number(event.data.until || 0);
+            rateLimitUntil = incomingUntil > Date.now() ? Math.max(rateLimitUntil, incomingUntil) : 0;
+            rateLimitRemaining = event.data.remaining === null || event.data.remaining === undefined ? null : Number(event.data.remaining);
+            if (rateLimitUntil > Date.now() && hasLoadedData) {
+              updateStatusText("rate_limited");
+            }
+          }
+          return;
+        }
+        if (event.data.type === "issues-sync" && Array.isArray(event.data.rawIssues)) {
           const validated = sanitizeAndDeduplicateIssues(event.data.rawIssues);
           if (!validated) return;
           const incomingVer = Number(event.data.version || 0);
@@ -349,6 +410,13 @@
   }
 
   window.addEventListener("storage", (e) => {
+    if (e.key === STORAGE_RATE_LIMIT_KEY) {
+      syncRateLimitFromStorage();
+      if (rateLimitUntil > Date.now() && hasLoadedData) {
+        updateStatusText("rate_limited");
+      }
+      return;
+    }
     if (e.key === CACHE_KEY && e.newValue) {
       try {
         const syncSource = safeStorageGet(STORAGE_LAST_SYNC_KEY);
@@ -1390,11 +1458,13 @@
     const remainingHeader = res.headers.get("x-ratelimit-remaining");
     const resetHeader = res.headers.get("x-ratelimit-reset");
     const retryAfterHeader = res.headers.get("retry-after");
+    let changed = false;
 
     if (remainingHeader !== null) {
       const parsedRemaining = parseInt(remainingHeader, 10);
       if (!isNaN(parsedRemaining) && parsedRemaining >= 0) {
         rateLimitRemaining = parsedRemaining;
+        changed = true;
       }
     }
 
@@ -1407,7 +1477,12 @@
       const retryAt = !isNaN(retrySec) && retrySec > 0 ? now + retrySec * 1000 : 0;
       const explicitUntil = Math.max(resetAt, retryAt);
       rateLimitUntil = Math.max(rateLimitUntil, explicitUntil > now ? explicitUntil : now + 60 * 1000);
+      persistRateLimitState(true);
       return true;
+    }
+
+    if (changed) {
+      persistRateLimitState(true);
     }
     return false;
   }
@@ -1436,8 +1511,9 @@
     }, delay);
   }
 
-  // Strictly enforce rate-limit & budget BEFORE manual override, with automatic reset recovery
+  // Strictly enforce shared rate-limit & budget BEFORE manual override, with automatic reset recovery
   function shouldQueryGitHubApi(manual) {
+    syncRateLimitFromStorage();
     const now = Date.now();
     if (rateLimitUntil > 0 && now >= rateLimitUntil) {
       // Suspension expired: clear lock and allow one controlled probe to fetch fresh headers
@@ -1445,13 +1521,14 @@
       if (rateLimitRemaining !== null && rateLimitRemaining <= 0) {
         rateLimitRemaining = null;
       }
+      persistRateLimitState(true);
     }
 
     if (rateLimitUntil > now) return false;
 
     if (rateLimitRemaining !== null && rateLimitRemaining <= 0) {
-      // Fallback suspension window if header lacked reset timestamp
       rateLimitUntil = now + 60 * 1000;
+      persistRateLimitState(true);
       return false;
     }
 
@@ -1674,6 +1751,40 @@
     return Array.from(map.values());
   }
 
+  // Reconcile full authoritative snapshot against existing live records:
+  // - Removed issues (present in existing with freshness <= snapMs, absent from full snapshot) are deleted.
+  // - Newly created/updated issues on REST after snapMs (freshness > snapMs) are preserved.
+  // - When timestamps are equal, the authoritative snapshot wins (prevents stale vote regression).
+  function reconcileFullSnapshot(snapshotIssues, existingIssues, snapMs) {
+    if (!Array.isArray(existingIssues) || existingIssues.length === 0) {
+      return snapshotIssues;
+    }
+    const existingMap = new Map(existingIssues.map(i => [Number(i.number), i]));
+    const resultMap = new Map();
+
+    for (const snapItem of snapshotIssues) {
+      const num = Number(snapItem.number);
+      if (!isValidIssueRecord(snapItem)) continue;
+      const prev = existingMap.get(num);
+      if (prev && snapMs > 0 && issueFreshnessMs(prev) > Math.max(issueFreshnessMs(snapItem), snapMs)) {
+        resultMap.set(num, prev);
+      } else {
+        resultMap.set(num, { ...snapItem, number: num });
+      }
+    }
+
+    // Preserve only issues created/updated strictly after the snapshot was generated
+    if (snapMs > 0) {
+      for (const [num, prev] of existingMap.entries()) {
+        if (!resultMap.has(num) && issueFreshnessMs(prev) > snapMs) {
+          resultMap.set(num, prev);
+        }
+      }
+    }
+
+    return Array.from(resultMap.values());
+  }
+
   function updateStatusText(dataSource) {
     if (!el.updated) return;
     activeDataSource = dataSource;
@@ -1802,11 +1913,10 @@
         const snapMs = parseTimestampMs(snapResult.generated_at);
         if (!hasLoadedData || !snapshotGeneratedAtMs || snapMs > snapshotGeneratedAtMs) {
           lastCheckedAt = Date.now();
-          // Preserve newer individual records already obtained from live REST API
-          const mergedSnap = currentRawIssues.length > 0
-            ? mergeRawIssues(snapResult.issues, currentRawIssues, { allowNewerWins: true })
+          const reconciledSnap = currentRawIssues.length > 0
+            ? reconcileFullSnapshot(snapResult.issues, currentRawIssues, snapMs)
             : snapResult.issues;
-          applyRawIssues(mergedSnap, snapResult.generated_at, "published", true, { isFullSnapshot: true });
+          applyRawIssues(reconciledSnap, snapResult.generated_at, "published", true, { isFullSnapshot: true });
         }
       }
 
@@ -1923,7 +2033,7 @@
     let rawIssues = null;
     let dataSource = "published";
 
-    if (forceLive && shouldQueryGitHubApi(true)) {
+    if (forceLive && shouldQueryGitHubApi(true) && acquireCrossTabLock()) {
       try {
         const res = await fetchLiveIssuesFromGitHub({ manual: true });
         if (res && Array.isArray(res.issues) && !res.incomplete) {
@@ -1942,6 +2052,8 @@
       } catch (err) {
         const isRateLimit = err && err.message === "RATE_LIMITED";
         dataSource = isRateLimit ? "rate_limited" : "stale_error";
+      } finally {
+        releaseCrossTabLock();
       }
     }
 
