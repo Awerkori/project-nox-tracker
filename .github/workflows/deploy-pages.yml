@@ -29,6 +29,7 @@ jobs:
           node --check app.js
           node --check particles.js
           python3 -m py_compile scripts/update_issues.py
+          python3 -m pip install --quiet pytest
           python3 -m pytest tests/test_tracker.py
       - name: Executar testes E2E (Chromium e Firefox)
         run: |
