@@ -56,9 +56,14 @@
     let width = 0;
     let height = 0;
     let particles = [];
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let isScrolling = false;
-    let scrollTimeout = null;
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let reducedMotion = motionQuery.matches;
+    let userPaused = false;
+    try {
+      userPaused = localStorage.getItem('nox-tracker-animations-paused') === '1';
+    } catch {
+      userPaused = false;
+    }
     let resizeTimer = null;
     let lastFrameTime = 0;
 
@@ -244,8 +249,32 @@
       }
     }
 
+    function isAnimationBlocked() {
+      return reducedMotion || userPaused || document.hidden;
+    }
+
+    function stopLoop() {
+      if (animId !== null) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    }
+
+    function startLoop() {
+      if (isAnimationBlocked()) return;
+      if (animId === null) {
+        lastFrameTime = performance.now();
+        animId = requestAnimationFrame(loop);
+      }
+    }
+
+    function syncMotionClass() {
+      const paused = reducedMotion || userPaused;
+      document.documentElement.classList.toggle('animations-paused', paused);
+    }
+
     function loop(timestamp) {
-      if (document.hidden) {
+      if (isAnimationBlocked()) {
         animId = null;
         return;
       }
@@ -263,9 +292,12 @@
     }
 
     initSize();
-    if (!reducedMotion) {
+    syncMotionClass();
+    if (!isAnimationBlocked()) {
       renderFrame();
-      animId = requestAnimationFrame(loop);
+      startLoop();
+    } else {
+      ctx.clearRect(0, 0, width, height);
     }
 
     function onMouseMove(e) {
@@ -292,13 +324,9 @@
 
     function onVisibilityChange() {
       if (document.hidden) {
-        if (animId !== null) {
-          cancelAnimationFrame(animId);
-          animId = null;
-        }
-      } else if (!reducedMotion && animId === null) {
-        lastFrameTime = performance.now();
-        animId = requestAnimationFrame(loop);
+        stopLoop();
+      } else {
+        startLoop();
       }
     }
 
@@ -306,12 +334,59 @@
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         initSize();
-        if (!reducedMotion && animId === null && !document.hidden) {
-          lastFrameTime = performance.now();
-          animId = requestAnimationFrame(loop);
+        if (isAnimationBlocked()) {
+          ctx.clearRect(0, 0, width, height);
+        } else {
+          startLoop();
         }
       }, 150);
     }
+
+    function applyMotionState() {
+      syncMotionClass();
+      if (reducedMotion || userPaused) {
+        stopLoop();
+        ctx.clearRect(0, 0, width, height);
+      } else {
+        renderFrame();
+        startLoop();
+      }
+    }
+
+    if (typeof motionQuery.addEventListener === 'function') {
+      motionQuery.addEventListener('change', (e) => {
+        reducedMotion = e.matches;
+        applyMotionState();
+        window.dispatchEvent(new CustomEvent('nox:motion-change', { detail: { paused: reducedMotion || userPaused, reducedMotion } }));
+      });
+    }
+
+    window.__noxParticles = {
+      pause() {
+        userPaused = true;
+        try { localStorage.setItem('nox-tracker-animations-paused', '1'); } catch {}
+        applyMotionState();
+      },
+      resume() {
+        userPaused = false;
+        try { localStorage.setItem('nox-tracker-animations-paused', '0'); } catch {}
+        applyMotionState();
+      },
+      toggle() {
+        if (userPaused) this.resume();
+        else this.pause();
+        return this.isPaused();
+      },
+      isPaused() {
+        return reducedMotion || userPaused;
+      },
+      isUserPaused() {
+        return userPaused;
+      },
+      isReducedMotion() {
+        return reducedMotion;
+      }
+    };
 
     window.addEventListener('resize', onResize, { passive: true });
     window.addEventListener('mousemove', onMouseMove, { passive: true });

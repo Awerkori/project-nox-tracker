@@ -95,9 +95,10 @@ def main() -> None:
         if len(batch) < 100:
             break
         page += 1
-        if page > 50:
-            print("Limite de segurança de 50 páginas atingido.", file=sys.stderr)
-            break
+        if page > 100:
+            raise RuntimeError(
+                "Limite de segurança de 100 páginas atingido com inventário potencialmente incompleto. Abortando escrita para evitar truncamento."
+            )
 
     if not issues:
         raise ValueError("Nenhuma Issue válida foi obtida da API do GitHub! Abortando para evitar perda de dados.")

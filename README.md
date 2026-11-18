@@ -1,87 +1,65 @@
 # Project Nox · Tracker
 
-Painel web interativo e público do **Project Nox** para acompanhar em tempo real o andamento de pedidos, status de correções e demanda por extensões de Mangá e Anime para **Mihon e forks** e **Aniyomi e forks**.
-
----
+Painel web operacional e público do **Project Nox** para acompanhar solicitações, correções e melhorias das extensões de Mangá e Anime (**Mihon e forks** e **Aniyomi e forks**).
 
 🌐 **Acesse online:** [projectnox-org.github.io/project-nox-tracker](https://projectnox-org.github.io/project-nox-tracker/)
 
 ---
 
-## 🎯 Sobre o Tracker
+## 🎯 Finalidade e Fonte de Verdade
 
-O **Project Nox Tracker** oferece uma interface visual intuitiva para a comunidade acompanhar o ciclo de vida dos tickets sem precisar navegar por listagens brutas do GitHub.
+O **Project Nox Tracker** é uma ferramenta operacional para a comunidade encontrar solicitações, verificar seu estado atual e participar no GitHub em poucos segundos.
 
-- **Filtros Ágeis:** Navegue por tipo de solicitação (Novas Fontes, Erros/Bugs, Mudanças de Domínio, Fontes Mortas e Melhorias).
-- **Indicador de Demanda Popular:** Ordenação calculada a partir das reações 👍 (`+1`) dos usuários nos chamados oficiais.
-- **Transparência Operacional:** Status atualizados automaticamente a cada execução do pipeline (Em análise, Aprovado, Em desenvolvimento, Concluído).
-
----
-
-## ⚙️ Arquitetura e Fluxo de Dados
-
-O Tracker é uma Single Page Application (SPA) estática e serverless:
-
-1. **Fonte da Verdade:** Os chamados são abertos e gerenciados na [Central de Pedidos](https://github.com/ProjectNox-org/project-nox-requests).
-2. **Coleta Automatizada:** O workflow `update-data` consulta a API do GitHub a cada 15 minutos (ou sob demanda), compila os metadados e atualiza o arquivo `data/issues.json`.
-3. **Publicação Contínua:** O pipeline `deploy-pages` publica os assets estáticos no GitHub Pages após qualquer atualização na branch `main`.
+- **Fonte oficial das solicitações:** [ProjectNox-org/project-nox-requests](https://github.com/ProjectNox-org/project-nox-requests).
+- **Estados oficiais (`state`):** Apenas `ABERTA` (`open`) e `FECHADA` (`closed`), obtidos diretamente do campo oficial `state` da issue no GitHub.
+- **Independência de labels de andamento:** O Project Nox não utiliza regularmente labels de andamento ou resolução (como "Em análise", "Concluído" ou "Recusado"). O Tracker não infere essas classificações nem substitui o estado oficial do GitHub por labels.
+- **Resumo de Demandas:** Exibe exatamente três indicadores dinâmicos (`Total`, `Abertas`, `Fechadas`) com garantia matemática `Total = Abertas + Fechadas` (pull requests são excluídos).
 
 ---
 
-## 💻 Desenvolvimento Local
+## 🔍 Funcionalidades da Interface
 
-Para executar o Tracker em ambiente local:
+- **Indicadores Interativos:** Clique em `Total`, `Abertas` ou `Fechadas` para alternar o estado exibido (inicia em `Abertas` por padrão).
+- **Pesquisa:** Busca por título, extensão, autor ou número exato da issue (`#152` ou `152`), com normalização de acentos e atalho `/`.
+- **Filtros e Ordenação:**
+  - Tipo: `Todos | Mangás | Animes` (escopando também os números do resumo).
+  - Categoria: `Nova extensão`, `Problema na extensão`, `Mudança de domínio`, `Fonte indisponível`, `Sugestão`.
+  - Ordenação: `Mais recentes` (padrão, com desempate determinístico por número), `Atualizados recentemente`, `Mais votados` (reações `👍` / `+1`) e `Mais antigos`.
+- **Votos Positivos:** Exibe a contagem real de reações `+1` (`👍`) do GitHub e direciona para a issue oficial para reagir (requer conta gratuita no GitHub).
+- **Listagem Progressiva:** Renderiza 24 solicitações por vez com botão `Mostrar mais`, mantendo busca, filtros, ordenação e contagens sobre todo o inventário.
+- **Controle de Movimento:** Respeita `prefers-reduced-motion` e oferece botão `Pausar animações` / `Retomar animações`.
+
+---
+
+## ⚙️ Sincronização, Cache e Limites da API
+
+O Tracker é uma SPA estática hospedada no GitHub Pages:
+
+1. **Snapshot Estático (`data/issues.json`):** Gerado pelo script `scripts/update_issues.py` via workflow `.github/workflows/update-data.yml` (agendado a cada ~15 minutos, `workflow_dispatch` e `repository_dispatch: issues-updated`). O script é idempotente: preserva `generated_at` quando não há mudanças reais e aborta se atingir o limite de paginação com inventário incompleto.
+2. **Ciclo de Verificação de 10 segundos (`CHECK_INTERVAL = 10000ms`):** Enquanto a aba está visível, o navegador verifica a cada ~10 segundos se há novo snapshot publicado em `data/issues.json` (usando `If-None-Match`/ETag, sem consumir cota da API REST do GitHub).
+3. **Consultas à API REST do GitHub:** Como a API pública não autenticada do GitHub limita requisições a **60 por hora por IP**, o Tracker aplica intervalo mínimo adaptativo entre consultas diretas à API (`65s` em uso normal, `180s` quando `X-RateLimit-Remaining < 15`), além de `ETag`/`If-None-Match`, paginação completa via header `Link` e suspensão automática até `X-RateLimit-Reset` / `Retry-After` em respostas `403`/`429`.
+4. **Sincronização entre Abas & Fallback:** Compartilha atualizações entre abas via `BroadcastChannel` e `localStorage`, preservando o último catálogo válido em modo offline ou sob rate limit.
+5. **Segurança:** Construção de cards e chips via DOM (`textContent`, `createElement`) sem interpolação de HTML não confiável e validação estrita das URLs das issues.
+
+> **Nota sobre latência:** O ciclo de verificação no navegador roda a cada ~10 segundos, mas a visibilidade de mudanças feitas diretamente no GitHub depende da atualização do snapshot publicado ou da janela segura da API pública do GitHub (sem expor credenciais no cliente).
+
+---
+
+## 💻 Execução Local e Testes
 
 ```bash
-# 1. Atualizar os dados de issues localmente
+# 1. Atualizar os dados de issues localmente (opcional: export GITHUB_TOKEN=...)
 python3 scripts/update_issues.py
 
 # 2. Iniciar servidor estático local
 python3 -m http.server 8000
+
+# 3. Executar testes unitários
+python3 -m pytest tests/test_tracker.py
 ```
-
-Abra `http://localhost:8000` no seu navegador.  
-*(Opcional: defina a variável `GITHUB_TOKEN` no terminal para evitar limites de taxa da API pública do GitHub ao rodar o script de coleta).*
-
----
-
-## 🔗 Ecossistema Project Nox
-
-- 🎫 [**Project Nox · Central de Pedidos**](https://github.com/ProjectNox-org/project-nox-requests) — Onde os tickets são criados e votados.
-- 📦 [**Project Nox · Extensões de Mangá**](https://github.com/ProjectNox-org/manga-extensoes) — Distribuição de fontes de leitura para Mihon e forks.
-- 💻 [**Project Nox · Código-fonte das Extensões de Mangá**](https://github.com/ProjectNox-org/manga-fonte-extensoes) — Código em Kotlin das extensões de mangá.
-- 🎬 [**Project Nox · Extensões de Anime**](https://github.com/ProjectNox-org/anime-extensoes) — Catálogo de extensões de vídeo para Aniyomi e forks.
-- 💻 [**Project Nox · Código-fonte das Extensões de Anime**](https://github.com/ProjectNox-org/anime-fonte-extensoes) — Extractors e fontes de anime.
-- 🌐 [**Project Nox · Plataforma Web de Mangá**](https://github.com/ProjectNox-org/project-nox-manga) — Plataforma web oficial de leitura.
-
----
-
-## 🌟 Créditos
-
-- **Project Nox**: Concepção visual, pipeline de dados e interface estática interativa.
-- Comunidade participante da Central de Pedidos.
 
 ---
 
 ## ⚖️ Licença e Copyright
 
-Este projeto é software livre licenciado sob os termos da **GNU Affero General Public License versão 3.0** (`AGPL-3.0-only`). Consulte o arquivo [LICENSE](LICENSE) para obter o texto integral inalterado da licença e o arquivo [NOTICE](NOTICE) para informações detalhadas de autoria, termos de marca e governança.
-
-```
-Copyright (C) 2026 Project Nox Contributors & Awerkori
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, version 3 of the License.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
-```
-
-### 📌 Interação Remota de Rede (GNU AGPLv3 Seção 13)
-O Project Nox adota oficialmente a licença **GNU AGPL versão 3.0**. Nos termos da Seção 13 da AGPLv3, qualquer versão modificada desta aplicação operada em servidores ou instâncias acessíveis remotamente através de uma rede de computadores deve oferecer a todos os usuários remotos a oportunidade de obter o Código-Fonte Correspondente (Corresponding Source) da versão em execução, sem cobrança e por meio padrão de disponibilização de software em rede.
-
-### 🛡️ Proteção de Identidade e Marca (AGPLv3 Seção 7(e))
-A concessão da licença AGPLv3 refere-se estritamente aos direitos autorais do software. Os nomes "Project Nox" e "Awerkori", bem como logotipos associados, identificam a procedência e origem do projeto. A licença **não concede** autorização para uso de nomes, marcas ou logotipos para insinuar homologação, endosso ou representação oficial sem autorização prévia por escrito.
+Licenciado sob **GNU Affero General Public License v3.0 (`AGPL-3.0-only`)**. Consulte [LICENSE](LICENSE) e [NOTICE](NOTICE).

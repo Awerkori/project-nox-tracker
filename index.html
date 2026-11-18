@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Acompanhe em tempo real pedidos, correções de bugs e demanda das extensões de Mangá e Anime do Project Nox." />
+    <meta name="description" content="Acompanhe solicitações, correções e melhorias das extensões de mangá e anime do Project Nox." />
     <meta property="og:title" content="Project Nox Tracker" />
-    <meta property="og:description" content="Acompanhe em tempo real pedidos, correções de bugs e demanda das extensões de Mangá e Anime do Project Nox." />
+    <meta property="og:description" content="Acompanhe solicitações, correções e melhorias das extensões de mangá e anime do Project Nox." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://projectnox-org.github.io/project-nox-tracker/" />
     <meta property="og:image" content="assets/logo.png" />
@@ -25,11 +25,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="styles.css?v=2.1.0" />
+    <link rel="stylesheet" href="styles.css?v=3.0.0" />
     <title>Project Nox Tracker — Acompanhamento Oficial</title>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+
     <!-- Particle Canvas & Ambient Atmospheric System -->
     <div class="particle-system" id="particle-system" aria-hidden="true">
       <div class="ambient-mesh"></div>
@@ -45,7 +46,7 @@
       <header class="site-header">
         <a class="brand" href="./" aria-label="Project Nox Tracker, página inicial">
           <div class="brand-symbol-wrap">
-            <img src="assets/logo-header.png" alt="Project Nox" class="header-symbol" width="44" height="44" />
+            <img src="assets/logo-header.png" alt="Project Nox" class="header-symbol" width="40" height="40" />
           </div>
           <div class="brand-text">
             <div class="brand-title-row">
@@ -54,30 +55,30 @@
               <span class="brand-tracker">TRACKER</span>
               <span class="brand-badge">OFICIAL</span>
             </div>
-            <span class="brand-sub">Demandas & Extensões</span>
+            <span class="brand-sub">Solicitações &amp; Extensões</span>
           </div>
         </a>
 
         <nav class="nav-links" aria-label="Links principais">
-          <a class="nav-portal-link" href="https://projectnox-org.github.io/" aria-label="Voltar para a Central Oficial do Project Nox" title="Central Oficial do Project Nox">
+          <a class="nav-portal-link" href="https://projectnox-org.github.io/" aria-label="Central Oficial do Project Nox" title="Central Oficial do Project Nox">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
               <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
-            <span>Central Oficial</span>
+            <span class="nav-label">Central Oficial</span>
           </a>
-          <a class="community-link fluxer-link" href="https://web.canary.fluxer.app/invite/q456UCVt" target="_blank" rel="noopener noreferrer" aria-label="Entrar no Fluxer do Project Nox" title="Entrar no Fluxer do Project Nox">
+          <a class="community-link fluxer-link" href="https://web.canary.fluxer.app/invite/q456UCVt" target="_blank" rel="noopener noreferrer" aria-label="Entrar no Fluxer do Project Nox" title="Fluxer do Project Nox">
             <svg class="community-icon fluxer-icon" viewBox="90 120 332 272" aria-hidden="true" focusable="false">
               <path d="M187.53 266.057C171.987 266.057 157.206 269.562 143.187 276.571C129.321 283.581 118.044 294.781 109.359 310.171C103.743 320.3 100.041 332.574 98.2529 346.993C96.5986 360.334 107.829 371.2 121.271 371.2C135.049 371.2 145.336 359.626 148.673 346.259C150.564 338.68 153.612 332.67 157.815 328.229C165.891 319.695 176.101 315.429 188.444 315.429C196.673 315.429 204.216 317.486 211.073 321.6C217.93 325.562 226.844 332.343 237.815 341.943C254.577 356.724 269.359 367.467 282.159 374.171C294.959 380.724 309.13 384 324.673 384C340.216 384 354.997 380.495 369.016 373.486C383.035 366.476 394.387 355.276 403.073 339.886C408.811 329.718 412.521 317.389 414.202 302.899C415.745 289.597 404.498 278.857 391.106 278.857C377.243 278.858 366.904 290.561 363.218 303.927C361.421 310.442 358.706 315.952 355.073 320.457C347.454 329.905 337.016 334.629 323.759 334.629C315.53 334.629 308.063 332.647 301.359 328.686C294.806 324.571 285.816 317.714 274.387 308.114C257.473 293.943 242.615 283.429 229.815 276.571C217.168 269.562 203.073 266.057 187.53 266.057Z" fill="currentColor"/>
               <path d="M187.53 128C171.987 128 157.206 131.505 143.187 138.514C129.321 145.524 118.044 156.724 109.359 172.114C103.743 182.243 100.041 194.517 98.2529 208.935C96.5985 222.276 107.829 233.142 121.271 233.143C135.049 233.143 145.336 221.569 148.673 208.202C150.564 200.623 153.612 194.613 157.815 190.171C165.891 181.638 176.101 177.371 188.444 177.371C196.673 177.371 204.216 179.429 211.073 183.543C217.93 187.505 226.844 194.286 237.815 203.886C254.577 218.667 269.359 229.41 282.159 236.114C294.959 242.667 309.13 245.943 324.673 245.943C340.216 245.943 354.997 242.438 369.016 235.429C383.035 228.419 394.387 217.219 403.073 201.829C408.811 191.661 412.521 179.332 414.202 164.842C415.745 151.539 404.498 140.8 391.106 140.8C377.243 140.8 366.904 152.504 363.218 165.87C361.421 172.385 358.706 177.895 355.073 182.4C347.454 191.848 337.016 196.571 323.759 196.571C315.53 196.571 308.063 194.59 301.359 190.629C294.806 186.514 285.816 179.657 274.387 170.057C257.473 155.886 242.615 145.371 229.815 138.514C217.168 131.505 203.073 128 187.53 128Z" fill="currentColor"/>
             </svg>
-            <span>Fluxer</span>
+            <span class="nav-label">Fluxer</span>
           </a>
-          <a class="community-link discord-link" href="https://discord.com/invite/qNAMYUEmGj" target="_blank" rel="noopener noreferrer" aria-label="Entrar no Discord do Project Nox" title="Entrar no Discord do Project Nox">
+          <a class="community-link discord-link" href="https://discord.com/invite/qNAMYUEmGj" target="_blank" rel="noopener noreferrer" aria-label="Entrar no Discord do Project Nox" title="Discord do Project Nox">
             <svg class="community-icon discord-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M19.54 4.46A16.5 16.5 0 0 0 15.4 3.2l-.5 1.02a15.3 15.3 0 0 0-5.8 0L8.6 3.2a16.5 16.5 0 0 0-4.14 1.26C1.84 8.4 1.13 12.24 1.48 16.03A16.65 16.65 0 0 0 6.56 18.6l1.23-1.68a10.33 10.33 0 0 1-1.94-.93l.47-.36a11.92 11.92 0 0 0 11.36 0l.47.36c-.62.37-1.27.69-1.94.93l1.23 1.68a16.62 16.62 0 0 0 5.08-2.57c.41-4.4-.7-8.2-2.98-11.57ZM8.68 13.7c-1.1 0-2-1.01-2-2.25s.88-2.25 2-2.25 2.02 1.01 2 2.25c0 1.24-.88 2.25-2 2.25Zm6.64 0c-1.1 0-2-1.01-2-2.25s.88-2.25 2-2.25 2.02 1.01 2 2.25c0 1.24-.88 2.25-2 2.25Z" fill="currentColor"/>
             </svg>
-            <span>Discord</span>
+            <span class="nav-label">Discord</span>
           </a>
           <button class="button primary header-cta" id="open-ticket" type="button" aria-haspopup="dialog">
             <svg class="btn-plus-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="2.5" x2="8" y2="13.5"></line><line x1="2.5" y1="8" x2="13.5" y2="8"></line></svg>
@@ -89,184 +90,105 @@
 
       <!-- Main Content Area -->
       <main id="main-content">
-        <!-- Hero Section -->
+        <!-- Compact Operational Hero -->
         <section class="hero" aria-labelledby="page-title">
-          <div class="hero-eyebrow">✦ ACOMPANHAMENTO OFICIAL DE DEMANDAS</div>
           <h1 id="page-title">Project Nox Tracker</h1>
           <p class="hero-subtitle">
-            Acompanhe em tempo real o andamento de pedidos, correções e prioridades das extensões de Mangá e Anime do ecossistema Project Nox.
+            Acompanhe solicitações, correções e melhorias das extensões de mangá e anime do Project Nox.
           </p>
-
-          <aside class="notice-banner" role="note" aria-label="Aviso sobre demanda da comunidade">
+          <aside class="notice-banner" role="note" aria-label="Aviso sobre votação no GitHub">
             <span class="notice-icon" aria-hidden="true">👍</span>
             <span class="notice-text">
-              <strong class="notice-highlight">Demanda da comunidade:</strong> curta os tickets para ajudar a definir as prioridades das extensões.
+              Demonstre interesse nas solicitações abertas utilizando a reação <strong>👍</strong> no GitHub (requer conta gratuita no GitHub). Os votos ajudam a orientar as prioridades do Project Nox.
             </span>
           </aside>
         </section>
 
-        <!-- Statistics Dashboard -->
-        <section class="stats-panel" aria-label="Visão geral de tickets">
+        <!-- Summary Indicators (Strictly 3 Native Buttons: Total, Abertas, Fechadas) -->
+        <section class="stats-panel" aria-label="Resumo de solicitações">
           <div class="section-header">
-            <h2 class="section-title">Resumo de Demandas</h2>
-            <span class="section-caption">Clique em um indicador para filtrar a listagem</span>
+            <div class="section-title-group">
+              <h2 class="section-title">Resumo de Demandas</h2>
+              <span class="stats-scope-badge" id="stats-scope" hidden></span>
+            </div>
+            <span class="section-caption">Selecione um estado para filtrar</span>
           </div>
 
-          <!-- Main 6 Primary Stat Cards -->
           <div class="stats-grid">
-            <article class="stat-card" data-filter-stat="total" title="Clique para exibir todos os tickets" tabindex="0" role="button">
-              <span class="stat-number" data-stat="total">0</span>
-              <span class="stat-label">Total de Solicitações</span>
-            </article>
-
-            <article class="stat-card stat-card-open" data-filter-stat="open" title="Clique para filtrar apenas tickets abertos" tabindex="0" role="button">
-              <span class="stat-number text-open" data-stat="open">0</span>
-              <span class="stat-label">🟢 Abertos</span>
-            </article>
-
-            <article class="stat-card stat-card-closed" data-filter-stat="closed" title="Clique para filtrar todos os tickets fechados" tabindex="0" role="button">
-              <span class="stat-number text-closed" data-stat="closed">0</span>
-              <span class="stat-label">⚪ Fechados</span>
-            </article>
-
-            <article class="stat-card" data-filter-stat="in-progress" title="Clique para filtrar em desenvolvimento ativo" tabindex="0" role="button">
-              <span class="stat-number text-progress" data-stat="in-progress">0</span>
-              <span class="stat-label">⚡ Em Andamento</span>
-            </article>
-
-            <article class="stat-card" data-filter-stat="done" title="Clique para filtrar solicitações concluídas" tabindex="0" role="button">
-              <span class="stat-number text-done" data-stat="done">0</span>
-              <span class="stat-label">✓ Concluídos</span>
-            </article>
-
-            <article class="stat-card" data-filter-stat="declined" title="Clique para filtrar solicitações recusadas" tabindex="0" role="button">
-              <span class="stat-number text-declined" data-stat="declined">0</span>
-              <span class="stat-label">✕ Recusados</span>
-            </article>
-          </div>
-
-          <!-- Secondary Indicators Bar -->
-          <div class="stats-sub-row">
-            <button class="type-pill-button" data-filter-stat="manga" type="button" title="Filtrar por Mangás">
-              <span>📖 Mangás:</span>
-              <strong data-stat="manga">0</strong>
+            <button class="stat-card" type="button" data-filter-stat="total" aria-pressed="false" title="Exibir todas as solicitações">
+              <span class="stat-header">
+                <span class="stat-dot dot-total" aria-hidden="true"></span>
+                <span class="stat-label">Total</span>
+              </span>
+              <span class="stat-number text-total" data-stat="total">—</span>
             </button>
-            <button class="type-pill-button" data-filter-stat="anime" type="button" title="Filtrar por Animes">
-              <span>📺 Animes:</span>
-              <strong data-stat="anime">0</strong>
+
+            <button class="stat-card stat-card-open active" type="button" data-filter-stat="open" aria-pressed="true" title="Exibir somente solicitações abertas">
+              <span class="stat-header">
+                <span class="stat-dot dot-open" aria-hidden="true"></span>
+                <span class="stat-label">Abertas</span>
+              </span>
+              <span class="stat-number text-open" data-stat="open">—</span>
             </button>
-            <button class="type-pill-button pill-subtle" data-filter-stat="duplicate" type="button" title="Filtrar duplicados">
-              <span>⧉ Duplicados:</span>
-              <strong data-stat="duplicate">0</strong>
-            </button>
-            <button class="type-pill-button pill-subtle" data-filter-stat="unclassified" type="button" title="Filtrar encerrados sem classificação formal">
-              <span>⚑ Sem Classificação:</span>
-              <strong data-stat="unclassified">0</strong>
+
+            <button class="stat-card stat-card-closed" type="button" data-filter-stat="closed" aria-pressed="false" title="Exibir somente solicitações fechadas">
+              <span class="stat-header">
+                <span class="stat-dot dot-closed" aria-hidden="true"></span>
+                <span class="stat-label">Fechadas</span>
+              </span>
+              <span class="stat-number text-closed" data-stat="closed">—</span>
             </button>
           </div>
         </section>
 
         <!-- Controls & Filters Panel -->
-        <section class="controls-card" aria-label="Painel de filtros e pesquisa">
+        <section class="controls-card" aria-label="Filtros e pesquisa">
           <form id="filters-form" class="filters-form" autocomplete="off" onsubmit="return false;">
-            <!-- Quick State Filter (Segmented Control) -->
-            <div class="quick-filter-row">
-              <span class="quick-filter-label">Estado nativo:</span>
-              <div class="quick-segmented-control" role="group" aria-label="Filtrar por estado">
-                <button class="quick-btn" data-quick-state="all" type="button">
-                  <span>Todos</span>
-                  <span class="quick-badge" data-quick-count="total">0</span>
-                </button>
-                <button class="quick-btn active" data-quick-state="open" type="button">
-                  <span class="quick-dot open-dot"></span>
-                  <span>Abertos</span>
-                  <span class="quick-badge" data-quick-count="open">0</span>
-                </button>
-                <button class="quick-btn" data-quick-state="closed" type="button">
-                  <span class="quick-dot closed-dot"></span>
-                  <span>Fechados</span>
-                  <span class="quick-badge" data-quick-count="closed">0</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Search & Sort Row -->
+            <!-- Search Row -->
             <div class="search-row">
               <div class="control-field search-field-col">
                 <label class="field-label" for="search">
-                  <span>Pesquisar por título, extensão ou autor</span>
-                  <span class="search-hint">Atalho: Pressione /</span>
+                  <span>Pesquisar</span>
+                  <span class="search-hint">Atalho: /</span>
                 </label>
                 <div class="search-input-wrap">
                   <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                  <input id="search" class="search-input" type="search" placeholder="Ex.: MangaDex, ManHQ, #42..." autocomplete="off" />
+                  <input id="search" class="search-input" type="search" placeholder="Buscar por extensão, título, autor ou número..." autocomplete="off" />
                   <button id="clear-search" class="search-clear-btn" type="button" aria-label="Limpar pesquisa" hidden>×</button>
                 </div>
               </div>
-
-              <div class="control-field sort-field-col">
-                <label class="field-label" for="sort">Critério de ordenação</label>
-                <select id="sort" class="custom-select" autocomplete="off">
-                  <option value="recent" selected>✨ Mais recentes (Criação recente — Padrão)</option>
-                  <option value="updated">🕐 Atualizados recentemente (Última atividade)</option>
-                  <option value="demand">👍 Mais votados (Curtidos)</option>
-                  <option value="oldest">📅 Mais antigos (Nº da Issue crescente)</option>
-                </select>
-              </div>
             </div>
 
-            <!-- Advanced Dropdown Filter Grid -->
-            <div class="filter-grid">
-              <div class="control-field">
-                <label class="field-label" for="type">Tipo</label>
-                <select id="type" class="custom-select" autocomplete="off">
-                  <option value="all">Todos os tipos</option>
-                  <option value="manga">📖 Mangá</option>
-                  <option value="anime">📺 Anime</option>
-                </select>
-              </div>
-
-              <div class="control-field">
-                <label class="field-label" for="state">Estado</label>
-                <select id="state" class="custom-select" autocomplete="off">
-                  <option value="open" selected>🟢 Abertos (Padrão)</option>
-                  <option value="closed">⚪ Fechados</option>
-                  <option value="all">Todos os estados</option>
-                </select>
+            <!-- Type Segmented Control + Sort + Category -->
+            <div class="filter-toolbar">
+              <div class="control-field type-control-col">
+                <span class="field-label" id="type-filter-label">Tipo</span>
+                <div class="type-segmented" role="group" aria-labelledby="type-filter-label">
+                  <button class="type-btn active" type="button" data-filter-type="all" aria-pressed="true">Todos</button>
+                  <button class="type-btn" type="button" data-filter-type="manga" aria-pressed="false">Mangás</button>
+                  <button class="type-btn" type="button" data-filter-type="anime" aria-pressed="false">Animes</button>
+                </div>
               </div>
 
               <div class="control-field">
                 <label class="field-label" for="category">Categoria</label>
                 <select id="category" class="custom-select" autocomplete="off">
                   <option value="all">Todas as categorias</option>
-                  <option value="new-extension">🌐 Nova extensão</option>
-                  <option value="bug">🐛 Problema na extensão</option>
-                  <option value="domain">🔗 Mudança de domínio</option>
-                  <option value="dead-source">💀 Fonte indisponível</option>
-                  <option value="enhancement">✨ Sugestão</option>
+                  <option value="new-extension">Nova extensão</option>
+                  <option value="bug">Problema na extensão</option>
+                  <option value="domain">Mudança de domínio</option>
+                  <option value="dead-source">Fonte indisponível</option>
+                  <option value="enhancement">Sugestão</option>
                 </select>
               </div>
 
               <div class="control-field">
-                <label class="field-label" for="status">Andamento (Abertos)</label>
-                <select id="status" class="custom-select" autocomplete="off">
-                  <option value="all">Todos os status</option>
-                  <option value="triage">Em análise</option>
-                  <option value="accepted">Aceito</option>
-                  <option value="in-progress">Em desenvolvimento</option>
-                  <option value="needs-info">Aguardando info</option>
-                </select>
-              </div>
-
-              <div class="control-field">
-                <label class="field-label" for="resolution">Resolução (Fechados)</label>
-                <select id="resolution" class="custom-select" autocomplete="off">
-                  <option value="all">Todas as resoluções</option>
-                  <option value="done">Concluído</option>
-                  <option value="declined">Recusado</option>
-                  <option value="duplicate">Duplicado</option>
-                  <option value="cancelled">Cancelado</option>
-                  <option value="unclassified">Sem classificação</option>
+                <label class="field-label" for="sort">Ordenar por</label>
+                <select id="sort" class="custom-select" autocomplete="off">
+                  <option value="recent" selected>Mais recentes</option>
+                  <option value="updated">Atualizados recentemente</option>
+                  <option value="demand">Mais votados</option>
+                  <option value="oldest">Mais antigos</option>
                 </select>
               </div>
             </div>
@@ -275,32 +197,59 @@
             <div class="active-filters-bar" id="active-filters" hidden>
               <span class="active-filters-label">Filtros ativos:</span>
               <div class="filter-chips" id="filter-chips"></div>
-              <button class="btn-clear-all" id="clear-filters" type="button">Limpar todos os filtros</button>
+              <button class="btn-clear-all" id="clear-filters" type="button">Restaurar filtros padrão</button>
             </div>
           </form>
         </section>
 
         <!-- Results Header Bar -->
         <div class="results-bar">
-          <div class="results-count" id="ticket-count" aria-live="polite">Carregando tickets...</div>
+          <div class="results-count" id="ticket-count" aria-live="polite">Carregando solicitações...</div>
           <div class="results-actions">
-            <span id="updated" class="sync-status" aria-live="polite">Sincronizando...</span>
-            <button id="refresh-data" class="refresh-button" type="button" title="Atualizar tickets agora">
+            <span id="updated" class="sync-status">Sincronizando...</span>
+            <button id="refresh-data" class="refresh-button" type="button" title="Atualizar solicitações agora">
               <span class="refresh-icon" aria-hidden="true">↻</span>
               <span>Atualizar</span>
+            </button>
+            <button id="toggle-motion" class="motion-button" type="button" aria-pressed="false" title="Pausar animações decorativas">
+              <span class="motion-icon" aria-hidden="true">⏸</span>
+              <span class="motion-label">Pausar animações</span>
             </button>
           </div>
         </div>
 
         <!-- Tickets Cards Grid -->
-        <section id="tickets" class="tickets-grid" aria-live="polite" aria-label="Lista de tickets do Project Nox"></section>
+        <section id="tickets" class="tickets-grid" aria-label="Lista de solicitações do Project Nox"></section>
+
+        <!-- Progressive Loading Bar -->
+        <div class="load-more-bar" id="load-more-bar" hidden>
+          <button id="load-more-btn" class="button secondary load-more-btn" type="button">Mostrar mais</button>
+        </div>
       </main>
 
-      <!-- Category Modal / Wizard (Abrir Solicitação) -->
-      <div id="ticket-modal" class="modal" hidden>
+      <!-- Site Footer -->
+      <footer class="site-footer">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <img src="assets/logo-header.png" alt="" width="24" height="24" />
+            <span>&copy; 2026 Project Nox.</span>
+          </div>
+          <div class="footer-links">
+            <a href="https://projectnox-org.github.io/">Central Oficial</a>
+            <a href="https://github.com/ProjectNox-org/project-nox-requests" target="_blank" rel="noopener noreferrer">Central de Solicitações</a>
+            <a href="https://github.com/ProjectNox-org/project-nox-tracker" target="_blank" rel="noopener noreferrer">Código-fonte do Tracker</a>
+            <a href="https://discord.com/invite/qNAMYUEmGj" target="_blank" rel="noopener noreferrer">Discord</a>
+            <a href="https://web.canary.fluxer.app/invite/q456UCVt" target="_blank" rel="noopener noreferrer">Fluxer</a>
+            <a href="https://github.com/ProjectNox-org/project-nox-tracker/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">GNU AGPL-3.0</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Category Modal / Wizard (Abrir Solicitação) -->
+    <div id="ticket-modal" class="modal" hidden>
         <div class="modal-backdrop" data-close-modal></div>
         <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc" tabindex="-1">
-          <!-- Pinned Modal Header -->
           <div class="modal-header">
             <div class="modal-header-top">
               <span class="modal-eyebrow">Project Nox Community</span>
@@ -313,20 +262,16 @@
             </div>
             <h2 id="modal-title" class="modal-title">Abrir Solicitação</h2>
             <p id="modal-desc" class="modal-desc">
-              Escolha a categoria da sua solicitação. O formulário oficial correspondente será aberto diretamente no GitHub em uma nova aba.
+              Escolha a categoria abaixo para abrir o formulário oficial no GitHub em uma nova aba.
             </p>
           </div>
 
-          <!-- Scrollable Modal Body (Template List & Guidelines) -->
           <div class="modal-body">
             <div class="template-list">
               <a class="template-option" href="https://github.com/ProjectNox-org/project-nox-requests/issues/new?template=01_request_extension.yml" target="_blank" rel="noopener noreferrer">
                 <span class="template-icon" aria-hidden="true">🌐</span>
                 <div class="template-info">
-                  <div class="template-heading-row">
-                    <span class="template-name">Nova extensão</span>
-                    <span class="template-badge">Novo site</span>
-                  </div>
+                  <span class="template-name">Nova extensão</span>
                   <span class="template-hint">Solicitar um novo site de Mangá ou Anime.</span>
                 </div>
                 <span class="template-arrow" aria-hidden="true">→</span>
@@ -335,11 +280,8 @@
               <a class="template-option" href="https://github.com/ProjectNox-org/project-nox-requests/issues/new?template=02_report_broken.yml" target="_blank" rel="noopener noreferrer">
                 <span class="template-icon" aria-hidden="true">🐛</span>
                 <div class="template-info">
-                  <div class="template-heading-row">
-                    <span class="template-name">Extensão com problema</span>
-                    <span class="template-badge badge-bug">Reportar bug</span>
-                  </div>
-                  <span class="template-hint">Reportar problemas em extensões existentes.</span>
+                  <span class="template-name">Extensão com problema</span>
+                  <span class="template-hint">Reportar erros ou falhas em extensões existentes.</span>
                 </div>
                 <span class="template-arrow" aria-hidden="true">→</span>
               </a>
@@ -347,10 +289,7 @@
               <a class="template-option" href="https://github.com/ProjectNox-org/project-nox-requests/issues/new?template=03_report_url_change.yml" target="_blank" rel="noopener noreferrer">
                 <span class="template-icon" aria-hidden="true">🔗</span>
                 <div class="template-info">
-                  <div class="template-heading-row">
-                    <span class="template-name">Mudança de domínio</span>
-                    <span class="template-badge badge-domain">Troca de URL</span>
-                  </div>
+                  <span class="template-name">Mudança de domínio</span>
                   <span class="template-hint">Informar uma nova URL para uma fonte existente.</span>
                 </div>
                 <span class="template-arrow" aria-hidden="true">→</span>
@@ -359,11 +298,8 @@
               <a class="template-option" href="https://github.com/ProjectNox-org/project-nox-requests/issues/new?template=04_report_dead_source.yml" target="_blank" rel="noopener noreferrer">
                 <span class="template-icon" aria-hidden="true">💀</span>
                 <div class="template-info">
-                  <div class="template-heading-row">
-                    <span class="template-name">Fonte indisponível</span>
-                    <span class="template-badge badge-dead">Site offline</span>
-                  </div>
-                  <span class="template-hint">Reportar uma fonte que não funciona mais.</span>
+                  <span class="template-name">Fonte indisponível</span>
+                  <span class="template-hint">Reportar uma fonte que saiu do ar permanentemente.</span>
                 </div>
                 <span class="template-arrow" aria-hidden="true">→</span>
               </a>
@@ -371,10 +307,7 @@
               <a class="template-option" href="https://github.com/ProjectNox-org/project-nox-requests/issues/new?template=05_request_feature.yml" target="_blank" rel="noopener noreferrer">
                 <span class="template-icon" aria-hidden="true">✨</span>
                 <div class="template-info">
-                  <div class="template-heading-row">
-                    <span class="template-name">Sugestão de melhoria</span>
-                    <span class="template-badge badge-enhancement">Ideias & Recursos</span>
-                  </div>
+                  <span class="template-name">Sugestão de melhoria</span>
                   <span class="template-hint">Propor novas funcionalidades e melhorias.</span>
                 </div>
                 <span class="template-arrow" aria-hidden="true">→</span>
@@ -384,41 +317,24 @@
             <div class="modal-github-notice">
               <span class="notice-gh-icon" aria-hidden="true">ℹ️</span>
               <p>
-                Ao selecionar uma categoria, o formulário oficial correspondente será aberto em uma nova aba no repositório GitHub do Project Nox. É necessário possuir uma conta gratuita no GitHub para enviar a issue.
+                Para enviar uma solicitação, é necessário utilizar uma conta gratuita no GitHub. O formulário será aberto diretamente no repositório oficial.
               </p>
             </div>
 
             <div class="modal-guidelines">
-              <strong>Orientações importantes:</strong>
-              <ul style="margin: 6px 0 0 18px; padding: 0;">
-                <li>Pesquise antes de abrir para evitar criar solicitações repetidas.</li>
+              <strong>Orientações rápidas:</strong>
+              <ul>
+                <li>Pesquise no Tracker antes de abrir para evitar solicitações duplicadas.</li>
                 <li>Não compartilhe senhas, tokens ou dados pessoais nos tickets.</li>
-                <li>Use 👍 nas issues abertas para demonstrar interesse e aumentar a prioridade.</li>
+                <li>Use 👍 nas solicitações abertas no GitHub para demonstrar interesse.</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Site Footer -->
-      <footer class="site-footer">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <img src="assets/logo-header.png" alt="" width="26" height="26" style="vertical-align: middle; filter: drop-shadow(0 0 6px rgba(181,154,245,0.3));" />
-            <span>&copy; 2026 Project Nox. Todos os direitos reservados.</span>
-          </div>
-          <div class="footer-links">
-            <a href="https://projectnox-org.github.io/">Central Oficial</a>
-            <a href="https://web.canary.fluxer.app/invite/q456UCVt" target="_blank" rel="noopener noreferrer">Fluxer</a>
-            <a href="https://discord.com/invite/qNAMYUEmGj" target="_blank" rel="noopener noreferrer">Discord</a>
-            <a href="https://github.com/ProjectNox-org/project-nox-requests" target="_blank" rel="noopener noreferrer">Repositório GitHub</a>
-          </div>
-        </div>
-      </footer>
-    </div>
-
     <!-- Scripts -->
-    <script src="particles.js?v=2.1.0" defer></script>
-    <script src="app.js?v=2.1.2" defer></script>
+    <script src="particles.js?v=3.0.0" defer></script>
+    <script src="app.js?v=3.0.0" defer></script>
   </body>
 </html>
