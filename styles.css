@@ -137,6 +137,7 @@ body.modal-open {
   position: absolute;
   inset: 0;
   background:
+    radial-gradient(ellipse 52% 38% at 50% 20%, rgba(226, 217, 245, 0.045) 0%, transparent 70%),
     radial-gradient(ellipse 68% 54% at 14% 16%, rgba(103, 51, 168, 0.22) 0%, transparent 65%),
     radial-gradient(ellipse 64% 58% at 86% 24%, rgba(73, 33, 133, 0.24) 0%, transparent 65%),
     radial-gradient(ellipse 75% 60% at 50% 52%, rgba(124, 58, 237, 0.13) 0%, transparent 70%),
@@ -398,7 +399,7 @@ main#main-content {
 
 .hero {
   text-align: center;
-  max-width: 760px;
+  max-width: 860px;
   margin: 0 auto 24px;
 }
 
@@ -419,25 +420,34 @@ main#main-content {
   font-size: clamp(0.92rem, 1.4vw, 1.03rem);
   color: var(--text-secondary);
   max-width: 640px;
+  text-wrap: balance;
 }
 
 .notice-banner {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 9px 16px;
   border-radius: var(--radius-md);
-  background: rgba(17, 20, 36, 0.78);
+  background: rgba(18, 14, 30, 0.82);
   border: 1px solid rgba(201, 170, 115, 0.24);
   color: var(--text-secondary);
   font-size: 0.84rem;
-  text-align: left;
-  line-height: 1.4;
+  text-align: center;
+  line-height: 1.45;
 }
 
-.notice-icon {
-  flex-shrink: 0;
-  font-size: 1rem;
+.notice-text {
+  margin: 0;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.notice-sub {
+  color: var(--text-muted);
 }
 
 /* ==========================================================================
@@ -921,13 +931,15 @@ main#main-content {
 
 .closed-state-note {
   margin: -6px 0 14px;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-radius: var(--radius-sm);
   background: rgba(20, 15, 34, 0.72);
   border: 1px solid rgba(148, 163, 184, 0.22);
   color: var(--text-secondary);
   font-size: 0.82rem;
   line-height: 1.45;
+  text-align: center;
+  text-wrap: balance;
 }
 
 .noscript-notice a {

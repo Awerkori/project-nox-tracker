@@ -29,8 +29,12 @@ jobs:
           node --check app.js
           node --check particles.js
           python3 -m py_compile scripts/update_issues.py
-          python3 -m pip install --quiet pytest
           python3 -m pytest tests/test_tracker.py
+      - name: Executar testes E2E (Chromium e Firefox)
+        run: |
+          npm install --prefix /tmp/pw-runner --no-save playwright
+          /tmp/pw-runner/node_modules/.bin/playwright install chromium firefox
+          NODE_PATH=/tmp/pw-runner/node_modules node tests/e2e_comprehensive.mjs --no-screenshots
       - uses: actions/configure-pages@v5
       - name: Preparar arquivos estáticos
         run: |

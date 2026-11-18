@@ -105,6 +105,7 @@
 
   const filters = { ...defaults };
   const tabId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const expandedTitleNumbers = new Set();
   let allIssues = [];
   let currentRawIssues = [];
   let hasLoadedData = false;
@@ -242,7 +243,14 @@
     const num = Number(item.number);
     if (!Number.isInteger(num) || num <= 0) return false;
     if (item.state !== "open" && item.state !== "closed") return false;
-    if (item.labels !== undefined && !Array.isArray(item.labels)) return false;
+    if (item.labels !== undefined) {
+      if (!Array.isArray(item.labels)) return false;
+      for (const lbl of item.labels) {
+        if (typeof lbl === "string") continue;
+        if (lbl && typeof lbl === "object" && typeof lbl.name === "string") continue;
+        return false;
+      }
+    }
     if (item.comments !== undefined && (typeof item.comments !== "number" || item.comments < 0 || !Number.isFinite(item.comments))) {
       return false;
     }
@@ -286,6 +294,20 @@
     }
   }
 
+  function renewCrossTabLock() {
+    try {
+      const raw = safeStorageGet(STORAGE_FETCH_LOCK_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.owner === tabId) {
+          safeStorageSet(STORAGE_FETCH_LOCK_KEY, JSON.stringify({ owner: tabId, expiresAt: Date.now() + FETCH_LOCK_TTL }));
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   function releaseCrossTabLock() {
     try {
       const raw = safeStorageGet(STORAGE_FETCH_LOCK_KEY);
@@ -299,6 +321,8 @@
       // ignore
     }
   }
+
+  window.addEventListener("pagehide", releaseCrossTabLock);
 
   initEtagStore();
   initPageIssuesStore();
@@ -665,27 +689,29 @@
     const body = document.createElement("div");
     body.className = "ticket-body";
 
-    // Level 1: Title + accessible expansion for long titles
+    // Level 1: Title + real-truncation-based accessible expansion
     const titleEl = document.createElement("h3");
-    titleEl.className = "ticket-title";
+    const isExpanded = expandedTitleNumbers.has(issue.number);
+    titleEl.className = isExpanded ? "ticket-title is-expanded" : "ticket-title";
     titleEl.title = issue.title;
     titleEl.textContent = issue.title;
     body.appendChild(titleEl);
 
-    if (issue.title.length > 95) {
-      const expandBtn = document.createElement("button");
-      expandBtn.type = "button";
-      expandBtn.className = "title-expand-btn";
-      expandBtn.setAttribute("data-issue-number", String(issue.number));
-      expandBtn.setAttribute("aria-expanded", "false");
-      expandBtn.textContent = "Ver título completo";
-      expandBtn.addEventListener("click", () => {
-        const expanded = titleEl.classList.toggle("is-expanded");
-        expandBtn.setAttribute("aria-expanded", expanded ? "true" : "false");
-        expandBtn.textContent = expanded ? "Recolher título" : "Ver título completo";
-      });
-      body.appendChild(expandBtn);
-    }
+    const expandBtn = document.createElement("button");
+    expandBtn.type = "button";
+    expandBtn.className = "title-expand-btn";
+    expandBtn.setAttribute("data-issue-number", String(issue.number));
+    expandBtn.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+    expandBtn.textContent = isExpanded ? "Recolher título" : "Ver título completo";
+    expandBtn.hidden = !isExpanded;
+    expandBtn.addEventListener("click", () => {
+      const nowExpanded = titleEl.classList.toggle("is-expanded");
+      if (nowExpanded) expandedTitleNumbers.add(issue.number);
+      else expandedTitleNumbers.delete(issue.number);
+      expandBtn.setAttribute("aria-expanded", nowExpanded ? "true" : "false");
+      expandBtn.textContent = nowExpanded ? "Recolher título" : "Ver título completo";
+    });
+    body.appendChild(expandBtn);
 
     // Level 2: Native State (ABERTA / FECHADA)
     const statusRow = document.createElement("div");
@@ -931,6 +957,29 @@
     return `${count} ${count === 1 ? "solicitação no total" : "solicitações no total"}${scopeSuffix}`;
   }
 
+  let measureRafId = null;
+  function scheduleTitleTruncationMeasure() {
+    if (measureRafId !== null) cancelAnimationFrame(measureRafId);
+    measureRafId = requestAnimationFrame(() => {
+      measureRafId = null;
+      if (!el.tickets) return;
+      const cards = el.tickets.querySelectorAll(".ticket-card");
+      const updates = [];
+      for (const card of cards) {
+        const num = Number(card.getAttribute("data-number"));
+        const titleEl = card.querySelector(".ticket-title");
+        const btn = card.querySelector(".title-expand-btn");
+        if (!titleEl || !btn) continue;
+        const isExp = expandedTitleNumbers.has(num);
+        const isTruncated = isExp || (titleEl.scrollHeight > titleEl.clientHeight + 2);
+        updates.push({ btn, show: isTruncated });
+      }
+      for (const item of updates) {
+        item.btn.hidden = !item.show;
+      }
+    });
+  }
+
   // Capture focus inside #tickets before DOM rebuild
   function captureFocusedTicketInfo() {
     const active = document.activeElement;
@@ -1026,6 +1075,7 @@
     if (preserveScroll && (scrollY > 0 || scrollX > 0)) {
       window.scrollTo(scrollX, scrollY);
     }
+    scheduleTitleTruncationMeasure();
     restoreFocusedTicket(focusInfo);
   }
 
@@ -1304,6 +1354,15 @@
       syncFromUrl();
       renderTickets();
     });
+
+    if (typeof ResizeObserver !== "undefined" && el.tickets) {
+      let resizeObsTimer = null;
+      const ro = new ResizeObserver(() => {
+        clearTimeout(resizeObsTimer);
+        resizeObsTimer = setTimeout(scheduleTitleTruncationMeasure, 120);
+      });
+      ro.observe(el.tickets);
+    }
   }
 
   // Live GitHub Synchronization & Rate-Limit Budget Protection
@@ -1343,9 +1402,11 @@
     const retrySec = retryAfterHeader ? parseInt(retryAfterHeader, 10) : 0;
 
     if (res.status === 403 || res.status === 429 || rateLimitRemaining === 0) {
+      const now = Date.now();
       const resetAt = !isNaN(resetSec) && resetSec > 0 ? resetSec * 1000 : 0;
-      const retryAt = !isNaN(retrySec) && retrySec > 0 ? Date.now() + retrySec * 1000 : 0;
-      rateLimitUntil = Math.max(rateLimitUntil, resetAt, retryAt, Date.now() + 60 * 1000);
+      const retryAt = !isNaN(retrySec) && retrySec > 0 ? now + retrySec * 1000 : 0;
+      const explicitUntil = Math.max(resetAt, retryAt);
+      rateLimitUntil = Math.max(rateLimitUntil, explicitUntil > now ? explicitUntil : now + 60 * 1000);
       return true;
     }
     return false;
@@ -1375,10 +1436,25 @@
     }, delay);
   }
 
-  // Strictly enforce rate-limit & budget BEFORE manual override
+  // Strictly enforce rate-limit & budget BEFORE manual override, with automatic reset recovery
   function shouldQueryGitHubApi(manual) {
-    if (rateLimitUntil > Date.now()) return false;
-    if (rateLimitRemaining !== null && rateLimitRemaining <= 0) return false;
+    const now = Date.now();
+    if (rateLimitUntil > 0 && now >= rateLimitUntil) {
+      // Suspension expired: clear lock and allow one controlled probe to fetch fresh headers
+      rateLimitUntil = 0;
+      if (rateLimitRemaining !== null && rateLimitRemaining <= 0) {
+        rateLimitRemaining = null;
+      }
+    }
+
+    if (rateLimitUntil > now) return false;
+
+    if (rateLimitRemaining !== null && rateLimitRemaining <= 0) {
+      // Fallback suspension window if header lacked reset timestamp
+      rateLimitUntil = now + 60 * 1000;
+      return false;
+    }
+
     if (manual) return true;
 
     const minApiInterval = window.__NOX_POLL_INTERVAL__
@@ -1389,7 +1465,7 @@
     const storedLastApi = rawStored ? (Number(rawStored) || 0) : 0;
     const effectiveLast = Math.max(lastApiSyncTime, storedLastApi);
 
-    return (Date.now() - effectiveLast) >= minApiInterval;
+    return (now - effectiveLast) >= minApiInterval;
   }
 
   async function fetchStaticSnapshotIfUpdated() {
@@ -1569,16 +1645,31 @@
     return { issues: all, incomplete, notModified: false };
   }
 
-  function mergeRawIssues(existing, fresh) {
+  function issueFreshnessMs(item) {
+    if (!item) return 0;
+    return Math.max(
+      parseTimestampMs(item.updated_at),
+      parseTimestampMs(item.closed_at),
+      parseTimestampMs(item.created_at)
+    );
+  }
+
+  function mergeRawIssues(existing, fresh, { allowNewerWins = true } = {}) {
     if (!Array.isArray(existing) || existing.length === 0) {
       return fresh;
     }
     const map = new Map(existing.map(i => [Number(i.number), i]));
     for (const item of fresh) {
       const num = Number(item.number);
-      if (isValidIssueRecord(item)) {
-        map.set(num, { ...item, number: num });
+      if (!isValidIssueRecord(item)) continue;
+      const prev = map.get(num);
+      if (prev && allowNewerWins) {
+        const prevMs = issueFreshnessMs(prev);
+        const nextMs = issueFreshnessMs(item);
+        // Prevent stale snapshot/out-of-order response from reverting a newer issue state
+        if (prevMs > nextMs) continue;
       }
+      map.set(num, { ...item, number: num });
     }
     return Array.from(map.values());
   }
@@ -1703,6 +1794,7 @@
     }
 
     let lockAcquired = false;
+    let lockRenewTimer = null;
     try {
       // 1. Lightweight static snapshot check (~10s loop, 0 GitHub API quota cost)
       const snapResult = await fetchStaticSnapshotIfUpdated();
@@ -1710,14 +1802,19 @@
         const snapMs = parseTimestampMs(snapResult.generated_at);
         if (!hasLoadedData || !snapshotGeneratedAtMs || snapMs > snapshotGeneratedAtMs) {
           lastCheckedAt = Date.now();
-          applyRawIssues(snapResult.issues, snapResult.generated_at, "published", true, { isFullSnapshot: true });
+          // Preserve newer individual records already obtained from live REST API
+          const mergedSnap = currentRawIssues.length > 0
+            ? mergeRawIssues(snapResult.issues, currentRawIssues, { allowNewerWins: true })
+            : snapResult.issues;
+          applyRawIssues(mergedSnap, snapResult.generated_at, "published", true, { isFullSnapshot: true });
         }
       }
 
       // 2. Check rate-limit & budget before any GitHub REST API query (including manual)
       if (shouldQueryGitHubApi(manual)) {
         lockAcquired = acquireCrossTabLock();
-        if (lockAcquired || manual) {
+        if (lockAcquired) {
+          lockRenewTimer = setInterval(renewCrossTabLock, 7000);
           const storedLastReconcile = Number(safeStorageGet(STORAGE_LAST_RECONCILE_KEY) || 0);
           const effectiveLastReconcile = Math.max(lastReconcileTime, storedLastReconcile);
           const reconcileInterval = window.__NOX_RECONCILE_INTERVAL__ || RECONCILE_INTERVAL;
@@ -1745,9 +1842,8 @@
             const canReplaceCatalog = isFullReconcile && !freshResult.incomplete;
             const merged = canReplaceCatalog
               ? freshResult.issues
-              : mergeRawIssues(currentRawIssues, freshResult.issues);
+              : mergeRawIssues(currentRawIssues, freshResult.issues, { allowNewerWins: true });
 
-            // Note: Only mark isFullSnapshot=true when full reconciliation completed cleanly
             applyRawIssues(
               merged,
               canReplaceCatalog ? new Date().toISOString() : generatedAt,
@@ -1786,6 +1882,7 @@
         updateStatusText(dataSource);
       }
     } finally {
+      if (lockRenewTimer !== null) clearInterval(lockRenewTimer);
       if (lockAcquired) releaseCrossTabLock();
       isFetching = false;
       window.__NOX_IS_FETCHING__ = false;

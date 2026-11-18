@@ -6,7 +6,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
-const { chromium, firefox } = require("/home/awerkori/.local/share/npm-global/lib/node_modules/@playwright/cli/node_modules/playwright");
+let playwrightMod;
+try {
+  playwrightMod = require("playwright");
+} catch {
+  playwrightMod = require("/home/awerkori/.local/share/npm-global/lib/node_modules/@playwright/cli/node_modules/playwright");
+}
+const { chromium, firefox } = playwrightMod;
+const SKIP_SCREENSHOTS = process.argv.includes("--no-screenshots");
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, "..");
@@ -126,11 +133,20 @@ async function runCoreTests(browserType, browserName, baseUrl) {
       const href125 = await page.locator('.ticket-card[data-number="125"] .ticket-link').getAttribute("href");
       assert.equal(href125, "https://github.com/ProjectNox-org/project-nox-requests/issues/125");
 
-      // Long title expansion button (#127)
+      // Long title expansion button (#127) and short title (#124) hidden button
       const expandBtn127 = page.locator('.ticket-card[data-number="127"] .title-expand-btn');
-      assert.equal(await expandBtn127.count(), 1);
+      assert.equal(await expandBtn127.isVisible(), true, "Título longo truncado deve exibir botão de expansão");
       await expandBtn127.click();
       assert.equal(await expandBtn127.getAttribute("aria-expanded"), "true");
+      const expandBtn124 = page.locator('.ticket-card[data-number="124"] .title-expand-btn');
+      assert.equal(await expandBtn124.isVisible(), false, "Título curto não truncado não deve exibir botão de expansão");
+
+      // Particles metrics, mouse interaction, pause & resume
+      const pMetrics = await page.evaluate(() => window.__noxParticles?.getMetrics());
+      assert.ok(pMetrics && pMetrics.count >= 80 && pMetrics.animActive === true, `Densidade desktop esperada >=80, obtida ${pMetrics?.count}`);
+      await page.mouse.move(400, 300);
+      await page.waitForTimeout(50);
+      assert.equal(await page.evaluate(() => window.__noxParticles?.getMetrics().pointerActive), true);
 
       // Assert numeric search exact match: "123mangas" must NOT include #123
       await page.locator("#search").fill("123mangas");
@@ -224,7 +240,7 @@ async function runCoreTests(browserType, browserName, baseUrl) {
         } else if (phase === 2) {
           route.fulfill({ status: 304, headers: { "x-ratelimit-remaining": "54" } });
         } else {
-          route.fulfill({ status: 429, headers: { "x-ratelimit-remaining": "0", "retry-after": "120" }, body: JSON.stringify({ message: "rate limit" }) });
+          route.fulfill({ status: 429, headers: { "x-ratelimit-remaining": "0", "retry-after": "1", "access-control-expose-headers": "retry-after, x-ratelimit-remaining" }, body: JSON.stringify({ message: "rate limit" }) });
         }
       });
 
@@ -246,17 +262,79 @@ async function runCoreTests(browserType, browserName, baseUrl) {
       await page.waitForTimeout(500);
       assert.equal(await page.locator('[data-stat="total"]').textContent(), "3");
 
-      // Phase 3: 429 Rate Limit preserves valid data and BLOCKS manual refresh from hitting API
+      // Phase 3: 429 Rate Limit with Retry-After=1s blocks manual refresh, then recovers automatically after reset
       phase = 3;
       await page.waitForFunction(() => document.querySelector("#updated")?.classList.contains("is-stale"), null, { timeout: 5000 });
       assert.equal(await page.locator('[data-stat="total"]').textContent(), "3");
       const callsBeforeManual = apiCalls;
       await page.locator("#refresh-data").click();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(200);
       assert.equal(apiCalls, callsBeforeManual, "Atualização manual NÃO pode chamar API REST durante rate limit ativo");
 
+      // Advance past Retry-After (1s) and restore healthy API response -> automatic recovery without page reload
+      phase = 1;
+      await page.waitForTimeout(1150);
+      await page.waitForFunction(() => apiCalls > 0 && !document.querySelector("#updated")?.classList.contains("is-stale"), null, { timeout: 5000 }).catch(() => {});
+      await page.locator("#refresh-data").click();
+      await page.waitForFunction(() => !document.querySelector("#updated")?.classList.contains("is-stale"), null, { timeout: 5000 });
+      assert.ok(apiCalls > callsBeforeManual, "Após reset da API, consulta controlada deve ser retomada");
+
       await context.close();
-      console.log(`✓ [${browserName}] Sincronização (nova, fechamento, reabertura, edição, 304, 429 + bloqueio manual) OK`);
+      console.log(`✓ [${browserName}] Sincronização (nova, fechamento, reabertura, edição, 304, 429 + bloqueio manual + recuperação) OK`);
+    }
+
+    // 2c. Prevenção de regressão temporal (snapshot antigo não pode reverter issue fechada recentemente)
+    {
+      const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+      const page = await context.newPage();
+      let snapPhase = 0;
+
+      await page.addInitScript(() => {
+        window.__NOX_POLL_INTERVAL__ = 350;
+      });
+
+      await page.route("**/data/issues.json*", route => {
+        if (snapPhase === 0) {
+          route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({
+              generated_at: "2026-11-17T22:00:00Z",
+              issues: [makeIssue(601, { state: "open", updated_at: "2026-11-17T21:50:00Z" })]
+            })
+          });
+        } else {
+          // Newer snapshot publish timestamp, but #601 inside it is still old/open
+          route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({
+              generated_at: "2026-11-17T22:25:00Z",
+              issues: [makeIssue(601, { state: "open", updated_at: "2026-11-17T21:50:00Z" })]
+            })
+          });
+        }
+      });
+
+      await page.route("https://api.github.com/repos/ProjectNox-org/project-nox-requests/issues*", route => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          headers: { "x-ratelimit-remaining": "55" },
+          body: JSON.stringify([makeIssue(601, { state: "closed", updated_at: "2026-11-17T22:20:00Z", closed_at: "2026-11-17T22:20:00Z" })])
+        });
+      });
+
+      await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+      await page.waitForFunction(() => document.querySelector('[data-stat="closed"]')?.textContent === "1", null, { timeout: 5000 });
+
+      snapPhase = 1;
+      await page.waitForTimeout(500);
+      assert.equal(await page.locator('[data-stat="closed"]').textContent(), "1", "Snapshot antigo não pode reverter #601 fechada");
+      assert.equal(await page.locator('[data-stat="open"]').textContent(), "0");
+
+      await context.close();
+      console.log(`✓ [${browserName}] Prevenção de regressão temporal OK`);
     }
 
     // 2b. Integridade estrita (estados inválidos, labels inválidas, JSON malformado, foco preservado)
@@ -419,7 +497,7 @@ async function captureRealDataScreenshots(baseUrl) {
       await page.goto(baseUrl, { waitUntil: "networkidle" });
       await page.waitForTimeout(400);
 
-      await page.screenshot({ path: path.join(AUDIT_DIR, `etapa2-${name}-desktop-1440.png`), fullPage: true });
+      await page.screenshot({ path: path.join(AUDIT_DIR, `final-${name}-desktop-1440.png`), fullPage: true });
 
       if (name === "chromium") {
         await page.setViewportSize({ width: 1920, height: 1080 });
@@ -468,7 +546,9 @@ const { server, baseUrl } = await startStaticServer();
 try {
   await runCoreTests(chromium, "Chromium", baseUrl);
   await runCoreTests(firefox, "Firefox", baseUrl);
-  await captureRealDataScreenshots(baseUrl);
+  if (!SKIP_SCREENSHOTS) {
+    await captureRealDataScreenshots(baseUrl);
+  }
   console.log("\n✅ TODOS OS TESTES E2E (CHROMIUM + FIREFOX) PASSARAM!");
 } finally {
   server.close();
