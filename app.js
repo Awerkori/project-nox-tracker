@@ -2,14 +2,14 @@
 // Copyright (C) 2026 Project Nox Contributors & Awerkori
 
 /**
- * Project Nox Tracker 3.0 — Operational Core
+ * Project Nox Tracker 3.1 — Consolidated Operational Core
  *
  * Principles:
- * 1. Official GitHub `state` ("open" | "closed") is the sole source of truth for issue state.
- * 2. Labels never override native state and missing workflow/resolution labels are never inferred.
+ * 1. Official GitHub `state` ("open" | "closed") is the sole source of truth; unknown states are rejected.
+ * 2. Strict snapshot validation, deduplication, and validated-only ETag persistence.
  * 3. Safe DOM construction (no untrusted innerHTML interpolation) + strict URL validation.
- * 4. Complete API pagination + 10s check loop with GitHub unauthenticated rate-limit protection.
- * 5. Progressive list rendering (24 items per step) without losing full-inventory search/sort/counts.
+ * 4. Rate-limit & per-page budget enforcement across both automatic and manual refreshes.
+ * 5. Complete API pagination (up to 100 pages) + 10s snapshot check loop + focus preservation.
  */
 
 (function () {
@@ -29,13 +29,15 @@
   const STORAGE_LAST_SYNC_KEY = "project-nox-last-sync-time-v3";
   const STORAGE_LAST_API_SYNC_KEY = "project-nox-last-api-sync-time-v3";
   const STORAGE_LAST_RECONCILE_KEY = "project-nox-last-reconcile-time-v3";
+  const STORAGE_FETCH_LOCK_KEY = "project-nox-fetch-lock-v3";
   const SYNC_CHANNEL_NAME = "project-nox-sync-channel-v3";
 
   // Polling & Rate-Limit Safe Intervals
-  const CHECK_INTERVAL = 10 * 1000;            // 10s lightweight check cycle
+  const CHECK_INTERVAL = 10 * 1000;            // 10s lightweight snapshot check cycle
   const GITHUB_API_MIN_INTERVAL = 65 * 1000;   // <= ~55 req/h safe for unauthenticated 60 req/h limit
   const THROTTLED_API_INTERVAL = 180 * 1000;   // 3 min when remaining quota < 15
   const RECONCILE_INTERVAL = 10 * 60 * 1000;   // 10 min full inventory reconciliation
+  const FETCH_LOCK_TTL = 15 * 1000;            // 15s cross-tab lock TTL
   const MAX_SAFE_PAGES = 100;                  // Up to 10,000 issues safety ceiling
   const PAGE_SIZE = 24;
 
@@ -102,14 +104,18 @@
   }
 
   const filters = { ...defaults };
+  const tabId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   let allIssues = [];
   let currentRawIssues = [];
   let hasLoadedData = false;
   let visibleCount = PAGE_SIZE;
   let lastFocus = null;
   let generatedAt = null;
+  let snapshotGeneratedAtMs = 0;
   let lastCheckedAt = 0;
+  let lastFullReconcileAtMs = 0;
   let snapshotEtag = "";
+  let hasValidatedSnapshot = false;
   let currentSignature = "";
   let isFetching = false;
   let pendingManualRefresh = false;
@@ -119,7 +125,6 @@
   let lastSyncTime = 0;
   let lastApiSyncTime = 0;
   let lastReconcileTime = Date.now();
-  let currentDataTimeMs = 0;
   let currentDataVersion = 0;
   let syncChannel = null;
   let activeDataSource = "loading"; // "loading" | "live" | "published" | "offline" | "rate_limited" | "stale_error" | "error"
@@ -172,6 +177,16 @@
     }
   }
 
+  function clearStoredEtag(url) {
+    if (!url) return;
+    etagStore.delete(url);
+    try {
+      safeStorageSet(CACHE_ETAG_STORE_KEY, JSON.stringify(Object.fromEntries(etagStore.entries())));
+    } catch {
+      // ignore
+    }
+  }
+
   function initPageIssuesStore() {
     try {
       const raw = safeStorageGet(CACHE_PAGE_STORE_KEY);
@@ -206,7 +221,6 @@
       for (const batch of pageIssuesStore.values()) {
         totalItems += batch.length;
       }
-      // Avoid exceeding ~5MB localStorage quota on very large inventories
       if (totalItems > 1000) return;
       safeStorageSet(CACHE_PAGE_STORE_KEY, JSON.stringify(Object.fromEntries(pageIssuesStore.entries())));
     } catch {
@@ -221,10 +235,69 @@
     return isNaN(ms) ? 0 : ms;
   }
 
-  function isValidRawIssueArray(data) {
-    return Array.isArray(data) && data.every(
-      item => item && typeof item === "object" && Number.isInteger(Number(item.number)) && Number(item.number) > 0
-    );
+  // Strict Issue Validation & Deduplication
+  function isValidIssueRecord(item) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) return false;
+    if ("pull_request" in item && item.pull_request !== null && item.pull_request !== undefined) return false;
+    const num = Number(item.number);
+    if (!Number.isInteger(num) || num <= 0) return false;
+    if (item.state !== "open" && item.state !== "closed") return false;
+    if (item.labels !== undefined && !Array.isArray(item.labels)) return false;
+    if (item.comments !== undefined && (typeof item.comments !== "number" || item.comments < 0 || !Number.isFinite(item.comments))) {
+      return false;
+    }
+    if (item.reactions !== undefined && (typeof item.reactions !== "object" || item.reactions === null || Array.isArray(item.reactions))) {
+      return false;
+    }
+    return true;
+  }
+
+  function sanitizeAndDeduplicateIssues(data) {
+    if (!Array.isArray(data)) return null;
+    const map = new Map();
+    for (const item of data) {
+      if (!isValidIssueRecord(item)) {
+        // Ignore pull requests cleanly, but reject malformed issue records
+        if (item && typeof item === "object" && item.pull_request) continue;
+        return null;
+      }
+      const num = Number(item.number);
+      map.set(num, { ...item, number: num });
+    }
+    return Array.from(map.values());
+  }
+
+  function acquireCrossTabLock() {
+    const now = Date.now();
+    try {
+      const raw = safeStorageGet(STORAGE_FETCH_LOCK_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.owner !== tabId && parsed.expiresAt > now) {
+          return false;
+        }
+      }
+      safeStorageSet(STORAGE_FETCH_LOCK_KEY, JSON.stringify({ owner: tabId, expiresAt: now + FETCH_LOCK_TTL }));
+      const verify = safeStorageGet(STORAGE_FETCH_LOCK_KEY);
+      const verified = verify ? JSON.parse(verify) : null;
+      return !verified || verified.owner === tabId;
+    } catch {
+      return true;
+    }
+  }
+
+  function releaseCrossTabLock() {
+    try {
+      const raw = safeStorageGet(STORAGE_FETCH_LOCK_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.owner === tabId) {
+          localStorage.removeItem(STORAGE_FETCH_LOCK_KEY);
+        }
+      }
+    } catch {
+      // ignore
+    }
   }
 
   initEtagStore();
@@ -235,17 +308,15 @@
     if (typeof BroadcastChannel !== "undefined") {
       syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
       syncChannel.onmessage = (event) => {
-        if (event.data && event.data.type === "issues-sync" && isValidRawIssueArray(event.data.rawIssues)) {
-          const incomingMs = event.data.timestampMs || parseTimestampMs(event.data.generatedAt);
+        if (event.data && event.data.type === "issues-sync" && Array.isArray(event.data.rawIssues)) {
+          const validated = sanitizeAndDeduplicateIssues(event.data.rawIssues);
+          if (!validated) return;
           const incomingVer = Number(event.data.version || 0);
-          if (incomingMs && currentDataTimeMs) {
-            if (incomingMs < currentDataTimeMs) return;
-            if (incomingMs === currentDataTimeMs && incomingVer && incomingVer < currentDataVersion) return;
-          }
-          if (incomingVer) {
-            currentDataVersion = Math.max(currentDataVersion, incomingVer);
-          }
-          applyRawIssues(event.data.rawIssues, event.data.generatedAt, event.data.dataSource || "live", false, false, incomingMs);
+          if (incomingVer && incomingVer < currentDataVersion) return;
+          if (incomingVer) currentDataVersion = Math.max(currentDataVersion, incomingVer);
+          applyRawIssues(validated, event.data.generatedAt, event.data.dataSource || "live", false, {
+            isFullSnapshot: Boolean(event.data.isFullSnapshot)
+          });
         }
       };
     }
@@ -259,18 +330,13 @@
         const syncSource = safeStorageGet(STORAGE_LAST_SYNC_KEY);
         if (syncSource && Math.abs(Date.now() - Number(syncSource)) < 15000) {
           const newTime = safeStorageGet(CACHE_TIME_KEY);
-          const incomingMs = parseTimestampMs(newTime);
           const incomingVer = Number(safeStorageGet(CACHE_VERSION_KEY) || 0);
-          if (incomingMs && currentDataTimeMs) {
-            if (incomingMs < currentDataTimeMs) return;
-            if (incomingMs === currentDataTimeMs && incomingVer && incomingVer < currentDataVersion) return;
-          }
-          if (incomingVer) {
-            currentDataVersion = Math.max(currentDataVersion, incomingVer);
-          }
-          const newIssues = JSON.parse(e.newValue);
-          if (isValidRawIssueArray(newIssues)) {
-            applyRawIssues(newIssues, newTime, "live", false, false, incomingMs);
+          if (incomingVer && incomingVer < currentDataVersion) return;
+          if (incomingVer) currentDataVersion = Math.max(currentDataVersion, incomingVer);
+          const parsed = JSON.parse(e.newValue);
+          const validated = sanitizeAndDeduplicateIssues(parsed);
+          if (validated) {
+            applyRawIssues(validated, newTime, "live", false, { isFullSnapshot: true });
           }
         }
       } catch {
@@ -289,6 +355,7 @@
     el.category = document.querySelector("#category");
     el.tickets = document.querySelector("#tickets");
     el.ticketCount = document.querySelector("#ticket-count");
+    el.closedNote = document.querySelector("#closed-state-note");
     el.updated = document.querySelector("#updated");
     el.refresh = document.querySelector("#refresh-data");
     el.toggleMotion = document.querySelector("#toggle-motion");
@@ -354,14 +421,16 @@
   }
 
   function formatRelativeDate(isoString) {
-    if (!isoString) return "—";
+    if (!isoString) return null;
     try {
       const date = new Date(isoString);
-      if (isNaN(date.getTime())) return "—";
+      if (isNaN(date.getTime())) return null;
       const diffMs = Date.now() - date.getTime();
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
       const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-      if (diffDays <= 0) return "hoje";
+      if (diffHours < 1) return "agora";
+      if (diffHours < 24) return `há ${diffHours} ${diffHours === 1 ? "hora" : "horas"}`;
       if (diffDays === 1) return "ontem";
       if (diffDays < 30) return `há ${diffDays} dias`;
       if (diffDays < 365) {
@@ -371,15 +440,15 @@
       const years = Math.floor(diffDays / 365);
       return `há ${years} ${years === 1 ? "ano" : "anos"}`;
     } catch {
-      return formatDate(isoString);
+      return null;
     }
   }
 
-  // Issue Normalizer: Official `state` ("open" | "closed") is the sole truth for state
+  // Issue Normalizer: Strictly accepts only state === "open" or state === "closed"
   function normalizeIssue(raw) {
     const rawNumber = Number(raw.number);
-    const rawLabels = (raw.labels || [])
-      .map(l => (typeof l === "string" ? l : (l && l.name) || ""))
+    const rawLabels = (Array.isArray(raw.labels) ? raw.labels : [])
+      .map(l => (typeof l === "string" ? l : (l && typeof l.name === "string" ? l.name : "")))
       .filter(Boolean);
     const lowerLabels = rawLabels.map(l => l.toLowerCase());
 
@@ -404,7 +473,7 @@
     }
 
     const isOpen = raw.state === "open";
-    const isClosed = !isOpen;
+    const isClosed = raw.state === "closed";
 
     const isAdult = lowerLabels.includes("conteúdo +18") || lowerLabels.includes("content:adult") || lowerLabels.includes("+18");
     const isPriority = lowerLabels.includes("alta prioridade") || lowerLabels.includes("priority:high") || lowerLabels.includes("prioridade");
@@ -442,7 +511,7 @@
     let closed = 0;
     for (const issue of issues) {
       if (issue.isOpen) open++;
-      else closed++;
+      else if (issue.isClosed) closed++;
     }
     return {
       total: open + closed,
@@ -468,6 +537,10 @@
         btn.classList.toggle("active", isActive);
         btn.setAttribute("aria-pressed", isActive ? "true" : "false");
       });
+    }
+
+    if (el.closedNote) {
+      el.closedNote.hidden = !(hasLoadedData && filters.state === "closed");
     }
   }
 
@@ -510,7 +583,6 @@
     const searchRaw = filters.search.trim();
     const searchNorm = normalizeText(searchRaw);
 
-    // Exact numeric match only (e.g. "123" or "#123"; "123mangas" will NOT match #123)
     const numberMatch = /^\s*#?(\d+)\s*$/.exec(searchRaw);
     const exactIssueNumber = numberMatch ? Number(numberMatch[1]) : null;
 
@@ -549,7 +621,6 @@
         return b.number - a.number;
       }
 
-      // Default: most recent creation first, deterministic number tiebreaker
       const diffTime = parseTimestampMs(b.created_at) - parseTimestampMs(a.created_at);
       if (diffTime !== 0) return diffTime;
       return b.number - a.number;
@@ -569,7 +640,23 @@
     return svg;
   }
 
-  // Safe DOM Card Builder (Zero innerHTML with untrusted data)
+  function formatTemporalLabel(issue) {
+    if (filters.sort === "updated") {
+      const rel = formatRelativeDate(issue.updated_at);
+      return rel ? `Atualizada ${rel}` : "Atualizada recentemente";
+    }
+    if (issue.isClosed && issue.closed_at) {
+      const rel = formatRelativeDate(issue.closed_at);
+      if (rel) return rel === "agora" ? "Fechada agora" : `Fechada ${rel}`;
+    }
+    const relCreated = formatRelativeDate(issue.created_at);
+    if (relCreated) {
+      return relCreated === "agora" ? "Criada agora" : `Criada ${relCreated}`;
+    }
+    return "—";
+  }
+
+  // Safe DOM Card Builder
   function createTicketCard(issue) {
     const card = document.createElement("article");
     card.className = `ticket-card card-state-${issue.state}`;
@@ -578,12 +665,27 @@
     const body = document.createElement("div");
     body.className = "ticket-body";
 
-    // Level 1: Title
+    // Level 1: Title + accessible expansion for long titles
     const titleEl = document.createElement("h3");
     titleEl.className = "ticket-title";
     titleEl.title = issue.title;
     titleEl.textContent = issue.title;
     body.appendChild(titleEl);
+
+    if (issue.title.length > 95) {
+      const expandBtn = document.createElement("button");
+      expandBtn.type = "button";
+      expandBtn.className = "title-expand-btn";
+      expandBtn.setAttribute("data-issue-number", String(issue.number));
+      expandBtn.setAttribute("aria-expanded", "false");
+      expandBtn.textContent = "Ver título completo";
+      expandBtn.addEventListener("click", () => {
+        const expanded = titleEl.classList.toggle("is-expanded");
+        expandBtn.setAttribute("aria-expanded", expanded ? "true" : "false");
+        expandBtn.textContent = expanded ? "Recolher título" : "Ver título completo";
+      });
+      body.appendChild(expandBtn);
+    }
 
     // Level 2: Native State (ABERTA / FECHADA)
     const statusRow = document.createElement("div");
@@ -658,9 +760,10 @@
 
     const dateEl = document.createElement("span");
     dateEl.className = "meta-item meta-date";
-    dateEl.title = `Criada em ${formatDate(issue.created_at)} • Atualizada em ${formatDate(issue.updated_at)}`;
+    const closedSuffix = issue.closed_at ? ` • Fechada em ${formatDate(issue.closed_at)}` : "";
+    dateEl.title = `Criada em ${formatDate(issue.created_at)} • Atualizada em ${formatDate(issue.updated_at)}${closedSuffix}`;
     dateEl.appendChild(createSvgIcon("M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"));
-    dateEl.appendChild(document.createTextNode(formatRelativeDate(filters.sort === "updated" ? issue.updated_at : issue.created_at)));
+    dateEl.appendChild(document.createTextNode(formatTemporalLabel(issue)));
     metaRow.appendChild(dateEl);
 
     if (issue.comments > 0) {
@@ -681,6 +784,7 @@
 
     const link = document.createElement("a");
     link.className = "ticket-link";
+    link.setAttribute("data-issue-number", String(issue.number));
     link.href = issue.html_url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
@@ -827,10 +931,31 @@
     return `${count} ${count === 1 ? "solicitação no total" : "solicitações no total"}${scopeSuffix}`;
   }
 
+  // Capture focus inside #tickets before DOM rebuild
+  function captureFocusedTicketInfo() {
+    const active = document.activeElement;
+    if (!active || !el.tickets || !el.tickets.contains(active)) return null;
+    const issueNum = active.getAttribute("data-issue-number");
+    const cls = active.classList.contains("title-expand-btn") ? "title-expand-btn" : "ticket-link";
+    return issueNum ? { issueNum, cls } : null;
+  }
+
+  function restoreFocusedTicket(focusInfo) {
+    if (!focusInfo || !el.tickets) return;
+    const target = el.tickets.querySelector(`.${focusInfo.cls}[data-issue-number="${focusInfo.issueNum}"]`);
+    if (target && typeof target.focus === "function") {
+      target.focus({ preventScroll: true });
+    } else if (el.ticketCount) {
+      el.ticketCount.setAttribute("tabindex", "-1");
+      el.ticketCount.focus({ preventScroll: true });
+    }
+  }
+
   // Render Tickets List
   function renderTickets({ preserveScroll = false } = {}) {
     const scrollY = preserveScroll ? (window.scrollY || window.pageYOffset || 0) : 0;
     const scrollX = preserveScroll ? (window.scrollX || window.pageXOffset || 0) : 0;
+    const focusInfo = preserveScroll ? captureFocusedTicketInfo() : null;
 
     renderFilterChips();
     renderStats();
@@ -877,6 +1002,7 @@
       if (preserveScroll && (scrollY > 0 || scrollX > 0)) {
         window.scrollTo(scrollX, scrollY);
       }
+      restoreFocusedTicket(focusInfo);
       return;
     }
 
@@ -900,9 +1026,10 @@
     if (preserveScroll && (scrollY > 0 || scrollX > 0)) {
       window.scrollTo(scrollX, scrollY);
     }
+    restoreFocusedTicket(focusInfo);
   }
 
-  // URL Synchronization (with safe handling for legacy status/resolution params)
+  // URL Synchronization
   function syncToUrl() {
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([key, val]) => {
@@ -1038,7 +1165,6 @@
 
   // Setup Event Listeners
   function setupListeners() {
-    // 3 Summary Stat Buttons (Total, Abertas, Fechadas)
     if (el.statCards) {
       el.statCards.forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1053,7 +1179,6 @@
       });
     }
 
-    // Type Segmented Buttons (Todos | Mangás | Animes)
     if (el.typeButtons) {
       el.typeButtons.forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1068,7 +1193,6 @@
       });
     }
 
-    // Search input
     let searchDebounce = null;
     if (el.search) {
       el.search.addEventListener("input", e => {
@@ -1096,7 +1220,6 @@
       });
     }
 
-    // Sort & Category selectors
     ["sort", "category"].forEach(key => {
       if (el[key]) {
         el[key].addEventListener("change", e => {
@@ -1135,7 +1258,6 @@
       });
     }
 
-    // Modal listeners
     if (el.openTicket) el.openTicket.addEventListener("click", openModal);
     if (el.closeTicket) el.closeTicket.addEventListener("click", closeModal);
     if (el.modal) {
@@ -1166,7 +1288,6 @@
       window.addEventListener("nox:motion-change", syncMotionButtonUI);
     }
 
-    // Global '/' shortcut to focus search (only when not editing text or in modal)
     window.addEventListener("keydown", e => {
       if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) return;
       if (el.modal && !el.modal.hidden) return;
@@ -1185,7 +1306,7 @@
     });
   }
 
-  // Live GitHub Synchronization & Adaptive Polling
+  // Live GitHub Synchronization & Rate-Limit Budget Protection
   function getGitHubApiBase() {
     return window.__NOX_API_BASE__ || GITHUB_API_BASE;
   }
@@ -1213,7 +1334,7 @@
 
     if (remainingHeader !== null) {
       const parsedRemaining = parseInt(remainingHeader, 10);
-      if (!isNaN(parsedRemaining)) {
+      if (!isNaN(parsedRemaining) && parsedRemaining >= 0) {
         rateLimitRemaining = parsedRemaining;
       }
     }
@@ -1222,8 +1343,8 @@
     const retrySec = retryAfterHeader ? parseInt(retryAfterHeader, 10) : 0;
 
     if (res.status === 403 || res.status === 429 || rateLimitRemaining === 0) {
-      const resetAt = resetSec > 0 ? resetSec * 1000 : 0;
-      const retryAt = retrySec > 0 ? Date.now() + retrySec * 1000 : 0;
+      const resetAt = !isNaN(resetSec) && resetSec > 0 ? resetSec * 1000 : 0;
+      const retryAt = !isNaN(retrySec) && retrySec > 0 ? Date.now() + retrySec * 1000 : 0;
       rateLimitUntil = Math.max(rateLimitUntil, resetAt, retryAt, Date.now() + 60 * 1000);
       return true;
     }
@@ -1254,17 +1375,18 @@
     }, delay);
   }
 
+  // Strictly enforce rate-limit & budget BEFORE manual override
   function shouldQueryGitHubApi(manual) {
-    if (manual) return true;
     if (rateLimitUntil > Date.now()) return false;
+    if (rateLimitRemaining !== null && rateLimitRemaining <= 0) return false;
+    if (manual) return true;
 
     const minApiInterval = window.__NOX_POLL_INTERVAL__
       ? Number(window.__NOX_POLL_INTERVAL__)
       : (rateLimitRemaining !== null && rateLimitRemaining < 15 ? THROTTLED_API_INTERVAL : GITHUB_API_MIN_INTERVAL);
 
-    let storedLastApi = 0;
     const rawStored = safeStorageGet(STORAGE_LAST_API_SYNC_KEY);
-    if (rawStored) storedLastApi = Number(rawStored) || 0;
+    const storedLastApi = rawStored ? (Number(rawStored) || 0) : 0;
     const effectiveLast = Math.max(lastApiSyncTime, storedLastApi);
 
     return (Date.now() - effectiveLast) >= minApiInterval;
@@ -1273,7 +1395,7 @@
   async function fetchStaticSnapshotIfUpdated() {
     try {
       const headers = { "Accept": "application/json" };
-      if (snapshotEtag) {
+      if (snapshotEtag && hasValidatedSnapshot) {
         headers["If-None-Match"] = snapshotEtag;
       }
       const res = await fetch(DATA_URL, {
@@ -1281,22 +1403,33 @@
         headers
       });
       if (res.status === 304) {
+        if (!hasValidatedSnapshot) {
+          snapshotEtag = "";
+          return null;
+        }
         return { notModified: true };
       }
       if (!res.ok) return null;
+
+      const json = await res.json();
+      if (!json || typeof json !== "object" || !Array.isArray(json.issues)) {
+        return null;
+      }
+      const validated = sanitizeAndDeduplicateIssues(json.issues);
+      if (!validated) return null;
+
+      // Persist ETag ONLY after full JSON parsing and validation succeed
       const etag = res.headers.get("etag");
       if (etag) snapshotEtag = etag;
-      const json = await res.json();
-      if (json && Array.isArray(json.issues)) {
-        return {
-          issues: json.issues,
-          generated_at: json.generated_at || null
-        };
-      }
+      hasValidatedSnapshot = true;
+
+      return {
+        issues: validated,
+        generated_at: typeof json.generated_at === "string" ? json.generated_at : null
+      };
     } catch {
-      // ignore snapshot check error
+      return null;
     }
-    return null;
   }
 
   async function fetchLiveIssuesFromGitHub({ manual = false, isFullReconcile = false } = {}) {
@@ -1312,6 +1445,12 @@
     let incomplete = false;
 
     while (page <= maxPages) {
+      // Per-page budget check before initiating next page request
+      if (rateLimitUntil > Date.now() || (rateLimitRemaining !== null && rateLimitRemaining <= 0)) {
+        incomplete = true;
+        break;
+      }
+
       const targetUrl = `${apiBase}?state=all&per_page=100&page=${page}&sort=${sortParam}&direction=desc`;
       const headers = {
         "Accept": "application/vnd.github+json"
@@ -1330,23 +1469,35 @@
       if (res.status === 304) {
         pagesChecked++;
         if (!isFull) {
+          if (!hasLoadedData) {
+            clearStoredEtag(targetUrl);
+            incomplete = true;
+            break;
+          }
           return { notModified: true, incomplete: false };
         }
         if (Array.isArray(cachedBatch) && cachedBatch.length > 0) {
-          for (const item of cachedBatch) {
-            if (item && !item.pull_request && Number.isInteger(Number(item.number)) && Number(item.number) > 0 && !seen.has(item.number)) {
+          const validatedBatch = sanitizeAndDeduplicateIssues(cachedBatch);
+          if (!validatedBatch) {
+            clearStoredEtag(targetUrl);
+            incomplete = true;
+            break;
+          }
+          for (const item of validatedBatch) {
+            if (!seen.has(item.number)) {
               seen.add(item.number);
               all.push(item);
             }
           }
           if (cachedBatch.length < 100) break;
-          if (page >= maxPages) {
+          if (page >= maxPages || isRateLimited || rateLimitRemaining === 0) {
             incomplete = true;
             break;
           }
           page++;
           continue;
         } else {
+          clearStoredEtag(targetUrl);
           incomplete = true;
           break;
         }
@@ -1356,51 +1507,62 @@
 
       if (!res.ok) {
         if (res.status === 403 || res.status === 429 || isRateLimited) {
+          if (all.length > 0 && isFull) {
+            incomplete = true;
+            break;
+          }
           throw new Error("RATE_LIMITED");
         }
         throw new Error(`HTTP_${res.status}`);
       }
 
+      const rawBatch = await res.json();
+      if (!Array.isArray(rawBatch)) {
+        throw new Error("INVALID_PAYLOAD");
+      }
+
+      const validatedBatch = sanitizeAndDeduplicateIssues(rawBatch);
+      if (!validatedBatch) {
+        // Do NOT store ETag for invalid payload!
+        throw new Error("INVALID_PAYLOAD");
+      }
+
+      // Store ETag ONLY after full JSON validation succeeds
       pagesChecked++;
       const newEtag = res.headers.get("etag");
       if (newEtag) {
         setStoredEtag(targetUrl, newEtag);
       }
 
-      const batch = await res.json();
-      if (!Array.isArray(batch)) {
-        throw new Error("INVALID_PAYLOAD");
-      }
-
-      if (batch.length === 0) break;
+      if (rawBatch.length === 0) break;
 
       if (isFull) {
-        setStoredPageIssues(targetUrl, batch);
+        setStoredPageIssues(targetUrl, validatedBatch);
       }
 
-      for (const item of batch) {
-        if (item && !item.pull_request && Number.isInteger(Number(item.number)) && Number(item.number) > 0 && !seen.has(item.number)) {
+      for (const item of validatedBatch) {
+        if (!seen.has(item.number)) {
           seen.add(item.number);
           all.push(item);
         }
       }
 
       const linkHeader = res.headers.get("link");
-      const morePages = linkHeader ? hasNextLink(linkHeader) : batch.length >= 100;
-      if (!morePages || batch.length < 100) break;
+      const morePages = linkHeader ? hasNextLink(linkHeader) : rawBatch.length >= 100;
+      if (!morePages || rawBatch.length < 100) break;
 
-      if (page >= maxPages) {
+      if (page >= maxPages || isRateLimited || rateLimitRemaining === 0) {
         incomplete = true;
         break;
       }
       page++;
     }
 
-    if (isFull && pagesChecked > 0 && all304) {
+    if (isFull && !incomplete && pagesChecked > 0 && all304) {
       return { notModified: true, incomplete: false };
     }
 
-    if (isFull && all.length > 0) {
+    if (isFull && all.length > 0 && !incomplete) {
       persistPageIssuesStore();
     }
 
@@ -1411,10 +1573,11 @@
     if (!Array.isArray(existing) || existing.length === 0) {
       return fresh;
     }
-    const map = new Map(existing.map(i => [i.number, i]));
+    const map = new Map(existing.map(i => [Number(i.number), i]));
     for (const item of fresh) {
-      if (item && !item.pull_request && Number.isInteger(Number(item.number)) && Number(item.number) > 0) {
-        map.set(item.number, item);
+      const num = Number(item.number);
+      if (isValidIssueRecord(item)) {
+        map.set(num, { ...item, number: num });
       }
     }
     return Array.from(map.values());
@@ -1430,30 +1593,30 @@
       : "";
     const snapDate = generatedAt ? formatDate(generatedAt) : "";
     const checkedTime = lastCheckedAt
-      ? new Date(lastCheckedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+      ? new Date(lastCheckedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
       : "";
 
     if (dataSource === "live") {
-      el.updated.textContent = checkedTime
-        ? `Atualizado agora (${checkedTime})`
-        : "Atualizado agora";
-      el.updated.title = generatedAt ? `Dados sincronizados • Snapshot: ${snapDate} ${snapTime}` : "";
+      el.updated.textContent = checkedTime ? `Atualizado às ${checkedTime}` : "Atualizado agora";
+      el.updated.title = lastFullReconcileAtMs
+        ? `Última verificação: ${checkedTime} • Reconciliação completa: ${new Date(lastFullReconcileAtMs).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
+        : `Última verificação: ${checkedTime}`;
     } else if (dataSource === "published") {
       el.updated.textContent = snapTime
-        ? `Snapshot publicado: ${snapDate} às ${snapTime}`
-        : "Snapshot publicado";
+        ? `Dados disponíveis de ${snapDate} às ${snapTime}`
+        : "Dados disponíveis";
       el.updated.title = checkedTime ? `Última verificação às ${checkedTime}` : "";
     } else if (dataSource === "offline") {
       el.updated.classList.add("is-stale");
       el.updated.textContent = "Exibindo os últimos dados disponíveis (offline).";
-      el.updated.title = generatedAt ? `Cache de ${snapDate} ${snapTime}` : "";
+      el.updated.title = generatedAt ? `Dados em cache de ${snapDate} ${snapTime}` : "";
     } else if (dataSource === "rate_limited") {
       el.updated.classList.add("is-stale");
-      el.updated.textContent = "Exibindo os últimos dados disponíveis. A atualização será retomada automaticamente.";
+      el.updated.textContent = "Exibindo os últimos dados disponíveis. A atualização automática será retomada.";
       el.updated.title = "Limite temporário da API pública do GitHub atingido";
     } else if (dataSource === "stale_error") {
       el.updated.classList.add("is-stale");
-      el.updated.textContent = "Exibindo os últimos dados disponíveis. A atualização será retomada automaticamente.";
+      el.updated.textContent = "Exibindo os últimos dados disponíveis. A atualização automática será retomada.";
       el.updated.title = "Falha temporária na consulta ao vivo";
     } else if (dataSource === "error") {
       el.updated.classList.add("is-error");
@@ -1464,23 +1627,23 @@
     }
   }
 
-  function applyRawIssues(rawIssues, timestamp, dataSource = "live", broadcast = true, forceLive = false, explicitMs = null) {
-    if (!Array.isArray(rawIssues)) return false;
+  function applyRawIssues(rawIssues, timestamp, dataSource = "live", broadcast = true, options = {}) {
+    const { isFullSnapshot = false } = options;
+    const validRaw = sanitizeAndDeduplicateIssues(rawIssues);
+    if (!validRaw) return false;
 
-    const validRaw = rawIssues.filter(item => item && !item.pull_request && Number.isInteger(Number(item.number)) && Number(item.number) > 0);
-
-    const incomingMs = explicitMs || parseTimestampMs(timestamp);
-    if (!forceLive && hasLoadedData && incomingMs && currentDataTimeMs && incomingMs < currentDataTimeMs) {
-      return false;
+    const incomingSnapMs = parseTimestampMs(timestamp);
+    if (isFullSnapshot && timestamp) {
+      if (snapshotGeneratedAtMs && incomingSnapMs && incomingSnapMs < snapshotGeneratedAtMs && dataSource === "published") {
+        return false;
+      }
+      if (incomingSnapMs) snapshotGeneratedAtMs = Math.max(snapshotGeneratedAtMs, incomingSnapMs);
+      generatedAt = timestamp;
+    } else if (timestamp && !generatedAt) {
+      generatedAt = timestamp;
     }
 
     currentRawIssues = validRaw;
-    if (timestamp) generatedAt = timestamp;
-    if (incomingMs) {
-      currentDataTimeMs = Math.max(currentDataTimeMs, incomingMs);
-    } else {
-      currentDataTimeMs = Math.max(currentDataTimeMs, Date.now());
-    }
     currentDataVersion++;
     hasLoadedData = true;
 
@@ -1511,7 +1674,7 @@
           rawIssues: validRaw,
           generatedAt,
           dataSource,
-          timestampMs: currentDataTimeMs,
+          isFullSnapshot,
           version: currentDataVersion,
           signature: newSignature
         });
@@ -1539,64 +1702,79 @@
       el.refresh.classList.add("spinning");
     }
 
+    let lockAcquired = false;
     try {
-      // 1. Always perform lightweight static snapshot check (0 GitHub API quota cost)
+      // 1. Lightweight static snapshot check (~10s loop, 0 GitHub API quota cost)
       const snapResult = await fetchStaticSnapshotIfUpdated();
       if (snapResult && Array.isArray(snapResult.issues)) {
         const snapMs = parseTimestampMs(snapResult.generated_at);
-        if (!hasLoadedData || snapMs > currentDataTimeMs) {
+        if (!hasLoadedData || !snapshotGeneratedAtMs || snapMs > snapshotGeneratedAtMs) {
           lastCheckedAt = Date.now();
-          applyRawIssues(snapResult.issues, snapResult.generated_at, "published", true, false, snapMs);
+          applyRawIssues(snapResult.issues, snapResult.generated_at, "published", true, { isFullSnapshot: true });
         }
       }
 
-      // 2. Query GitHub API only when allowed by rate-limit budget (or manual / controlled test)
+      // 2. Check rate-limit & budget before any GitHub REST API query (including manual)
       if (shouldQueryGitHubApi(manual)) {
-        let storedLastReconcile = Number(safeStorageGet(STORAGE_LAST_RECONCILE_KEY) || 0);
-        const effectiveLastReconcile = Math.max(lastReconcileTime, storedLastReconcile);
-        const reconcileInterval = window.__NOX_RECONCILE_INTERVAL__ || RECONCILE_INTERVAL;
-        const isDueForReconcile = (Date.now() - effectiveLastReconcile >= reconcileInterval);
-        const hasQuotaForReconcile = (rateLimitRemaining === null || rateLimitRemaining >= 15);
-        const isFullReconcile = manual || ((isDueForReconcile && hasQuotaForReconcile) || !!window.__NOX_FORCE_RECONCILE__);
+        lockAcquired = acquireCrossTabLock();
+        if (lockAcquired || manual) {
+          const storedLastReconcile = Number(safeStorageGet(STORAGE_LAST_RECONCILE_KEY) || 0);
+          const effectiveLastReconcile = Math.max(lastReconcileTime, storedLastReconcile);
+          const reconcileInterval = window.__NOX_RECONCILE_INTERVAL__ || RECONCILE_INTERVAL;
+          const isDueForReconcile = (Date.now() - effectiveLastReconcile >= reconcileInterval);
+          const hasQuotaForReconcile = (rateLimitRemaining === null || rateLimitRemaining >= 15);
+          const isFullReconcile = manual || ((isDueForReconcile && hasQuotaForReconcile) || !!window.__NOX_FORCE_RECONCILE__);
 
-        const freshResult = await fetchLiveIssuesFromGitHub({ manual, isFullReconcile });
-        lastApiSyncTime = Date.now();
-        lastSyncTime = lastApiSyncTime;
-        lastCheckedAt = lastApiSyncTime;
-        safeStorageSet(STORAGE_LAST_API_SYNC_KEY, String(lastApiSyncTime));
-        safeStorageSet(STORAGE_LAST_SYNC_KEY, String(lastApiSyncTime));
+          const freshResult = await fetchLiveIssuesFromGitHub({ manual, isFullReconcile });
+          lastApiSyncTime = Date.now();
+          lastSyncTime = lastApiSyncTime;
+          lastCheckedAt = lastApiSyncTime;
+          safeStorageSet(STORAGE_LAST_API_SYNC_KEY, String(lastApiSyncTime));
+          safeStorageSet(STORAGE_LAST_SYNC_KEY, String(lastApiSyncTime));
 
-        if (freshResult && freshResult.notModified) {
-          if (isFullReconcile) {
-            lastReconcileTime = lastApiSyncTime;
-            safeStorageSet(STORAGE_LAST_RECONCILE_KEY, String(lastApiSyncTime));
-          }
-          if (hasLoadedData) {
-            updateStatusText("live");
-          }
-        } else if (freshResult && Array.isArray(freshResult.issues)) {
-          // Never overwrite full catalog with an incomplete reconciliation!
-          const canReplaceCatalog = isFullReconcile && !freshResult.incomplete;
-          const merged = canReplaceCatalog
-            ? freshResult.issues
-            : mergeRawIssues(currentRawIssues, freshResult.issues);
+          if (freshResult && freshResult.notModified && !freshResult.incomplete) {
+            if (isFullReconcile) {
+              lastReconcileTime = lastApiSyncTime;
+              lastFullReconcileAtMs = lastApiSyncTime;
+              safeStorageSet(STORAGE_LAST_RECONCILE_KEY, String(lastApiSyncTime));
+            }
+            if (hasLoadedData) {
+              updateStatusText("live");
+            }
+          } else if (freshResult && Array.isArray(freshResult.issues)) {
+            const canReplaceCatalog = isFullReconcile && !freshResult.incomplete;
+            const merged = canReplaceCatalog
+              ? freshResult.issues
+              : mergeRawIssues(currentRawIssues, freshResult.issues);
 
-          applyRawIssues(merged, new Date().toISOString(), "live", true, manual);
+            // Note: Only mark isFullSnapshot=true when full reconciliation completed cleanly
+            applyRawIssues(
+              merged,
+              canReplaceCatalog ? new Date().toISOString() : generatedAt,
+              freshResult.incomplete && rateLimitUntil > Date.now() ? "rate_limited" : "live",
+              true,
+              { isFullSnapshot: canReplaceCatalog }
+            );
 
-          if (canReplaceCatalog) {
-            lastReconcileTime = lastApiSyncTime;
-            safeStorageSet(STORAGE_LAST_RECONCILE_KEY, String(lastApiSyncTime));
+            if (canReplaceCatalog) {
+              lastReconcileTime = lastApiSyncTime;
+              lastFullReconcileAtMs = lastApiSyncTime;
+              safeStorageSet(STORAGE_LAST_RECONCILE_KEY, String(lastApiSyncTime));
+            }
           }
         }
       } else {
-        // Still check if another tab updated cache recently
+        if (rateLimitUntil > Date.now() && hasLoadedData) {
+          updateStatusText("rate_limited");
+        }
         const cachedStr = safeStorageGet(CACHE_KEY);
         const cachedTime = safeStorageGet(CACHE_TIME_KEY);
         const cachedSig = safeStorageGet(CACHE_SIG_KEY);
         if (cachedStr && cachedSig && cachedSig !== currentSignature) {
-          const cachedJson = JSON.parse(cachedStr);
-          if (isValidRawIssueArray(cachedJson)) {
-            applyRawIssues(cachedJson, cachedTime, "live", false, false, parseTimestampMs(cachedTime));
+          const parsed = JSON.parse(cachedStr);
+          const validated = sanitizeAndDeduplicateIssues(parsed);
+          if (validated) {
+            applyRawIssues(validated, cachedTime, "live", false, { isFullSnapshot: false });
           }
         }
       }
@@ -1608,6 +1786,7 @@
         updateStatusText(dataSource);
       }
     } finally {
+      if (lockAcquired) releaseCrossTabLock();
       isFetching = false;
       window.__NOX_IS_FETCHING__ = false;
       if (manual && el.refresh) {
@@ -1647,7 +1826,7 @@
     let rawIssues = null;
     let dataSource = "published";
 
-    if (forceLive) {
+    if (forceLive && shouldQueryGitHubApi(true)) {
       try {
         const res = await fetchLiveIssuesFromGitHub({ manual: true });
         if (res && Array.isArray(res.issues) && !res.incomplete) {
@@ -1657,6 +1836,7 @@
           lastApiSyncTime = lastCheckedAt;
           lastSyncTime = lastCheckedAt;
           lastReconcileTime = lastCheckedAt;
+          lastFullReconcileAtMs = lastCheckedAt;
           dataSource = "live";
           safeStorageSet(STORAGE_LAST_API_SYNC_KEY, String(lastCheckedAt));
           safeStorageSet(STORAGE_LAST_SYNC_KEY, String(lastCheckedAt));
@@ -1676,7 +1856,8 @@
         cachedTime = safeStorageGet(CACHE_TIME_KEY);
         if (cachedStr) {
           const parsed = JSON.parse(cachedStr);
-          if (isValidRawIssueArray(parsed)) cachedIssues = parsed;
+          const validated = sanitizeAndDeduplicateIssues(parsed);
+          if (validated) cachedIssues = validated;
         }
       } catch {
         // ignore
@@ -1688,10 +1869,13 @@
           headers: { "Accept": "application/json" }
         });
         if (res.ok) {
-          const etag = res.headers.get("etag");
-          if (etag) snapshotEtag = etag;
           const json = await res.json();
-          if (json && Array.isArray(json.issues)) {
+          const validated = json && Array.isArray(json.issues) ? sanitizeAndDeduplicateIssues(json.issues) : null;
+          if (validated) {
+            const etag = res.headers.get("etag");
+            if (etag) snapshotEtag = etag;
+            hasValidatedSnapshot = true;
+
             const staticTime = parseTimestampMs(json.generated_at);
             const cacheTimeVal = parseTimestampMs(cachedTime);
 
@@ -1700,8 +1884,8 @@
               generatedAt = cachedTime;
               dataSource = "live";
             } else {
-              rawIssues = json.issues;
-              generatedAt = json.generated_at || new Date().toISOString();
+              rawIssues = validated;
+              generatedAt = typeof json.generated_at === "string" ? json.generated_at : new Date().toISOString();
               dataSource = "published";
             }
           }
@@ -1717,8 +1901,9 @@
         const cachedTime = safeStorageGet(CACHE_TIME_KEY);
         if (cached) {
           const parsed = JSON.parse(cached);
-          if (isValidRawIssueArray(parsed)) {
-            rawIssues = parsed;
+          const validated = sanitizeAndDeduplicateIssues(parsed);
+          if (validated) {
+            rawIssues = validated;
             generatedAt = cachedTime || generatedAt;
             dataSource = "offline";
           }
@@ -1730,7 +1915,7 @@
 
     if (Array.isArray(rawIssues)) {
       lastCheckedAt = lastCheckedAt || Date.now();
-      applyRawIssues(rawIssues, generatedAt, dataSource, false, forceLive);
+      applyRawIssues(rawIssues, generatedAt, dataSource, false, { isFullSnapshot: true });
     } else {
       hasLoadedData = false;
       updateStatusText("error");
@@ -1743,7 +1928,7 @@
     scheduleNextPoll(nextPollDelay());
   }
 
-  // Periodic relative status text refresh
+  // Periodic relative status text refresh (visual only; #updated has no aria-live)
   setInterval(() => {
     if (hasLoadedData && activeDataSource === "live" && lastCheckedAt > 0 && el.updated) {
       const diffSec = Math.floor((Date.now() - lastCheckedAt) / 1000);

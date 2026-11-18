@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="styles.css?v=3.0.0" />
+    <link rel="stylesheet" href="styles.css?v=3.1.0" />
     <title>Project Nox Tracker — Acompanhamento Oficial</title>
   </head>
   <body>
@@ -218,6 +218,20 @@
           </div>
         </div>
 
+        <p id="closed-state-note" class="closed-state-note" hidden>
+          Uma solicitação fechada não significa necessariamente que foi concluída. Consulte a discussão no GitHub para conhecer o motivo do encerramento.
+        </p>
+
+        <noscript>
+          <div class="empty-state noscript-notice">
+            <h3>JavaScript necessário</h3>
+            <p>
+              O Tracker precisa de JavaScript para exibir as solicitações. Você também pode consultá-las diretamente na
+              <a href="https://github.com/ProjectNox-org/project-nox-requests/issues" target="_blank" rel="noopener noreferrer">Central de Solicitações do GitHub</a>.
+            </p>
+          </div>
+        </noscript>
+
         <!-- Tickets Cards Grid -->
         <section id="tickets" class="tickets-grid" aria-label="Lista de solicitações do Project Nox"></section>
 
@@ -334,7 +348,7 @@
       </div>
 
     <!-- Scripts -->
-    <script src="particles.js?v=3.0.0" defer></script>
-    <script src="app.js?v=3.0.0" defer></script>
+    <script src="particles.js?v=3.1.0" defer></script>
+    <script src="app.js?v=3.1.0" defer></script>
   </body>
 </html>

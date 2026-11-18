@@ -126,6 +126,12 @@ async function runCoreTests(browserType, browserName, baseUrl) {
       const href125 = await page.locator('.ticket-card[data-number="125"] .ticket-link').getAttribute("href");
       assert.equal(href125, "https://github.com/ProjectNox-org/project-nox-requests/issues/125");
 
+      // Long title expansion button (#127)
+      const expandBtn127 = page.locator('.ticket-card[data-number="127"] .title-expand-btn');
+      assert.equal(await expandBtn127.count(), 1);
+      await expandBtn127.click();
+      assert.equal(await expandBtn127.getAttribute("aria-expanded"), "true");
+
       // Assert numeric search exact match: "123mangas" must NOT include #123
       await page.locator("#search").fill("123mangas");
       await page.waitForTimeout(200);
@@ -138,11 +144,13 @@ async function runCoreTests(browserType, browserName, baseUrl) {
       assert.equal(await page.locator('.ticket-card[data-number="123"]').count(), 1);
       await page.locator("#clear-search").click();
 
-      // Closed tab shows #126 as FECHADA without "Sem classificação"
+      // Closed tab shows #126 as FECHADA, displays #closed-state-note, and uses closed_at or created_at safely
       await page.locator('[data-filter-stat="closed"]').click();
+      assert.equal(await page.locator("#closed-state-note").isVisible(), true, "Nota de fechadas deve aparecer");
       assert.equal(await page.locator(".ticket-card").count(), 1);
       const card126Text = await page.locator('.ticket-card[data-number="126"]').textContent();
       assert.ok(card126Text.includes("FECHADA"));
+      assert.ok(card126Text.includes("Fechada"));
       assert.ok(!card126Text.includes("Sem classificação"));
 
       // Type filter scopes stats
@@ -166,8 +174,8 @@ async function runCoreTests(browserType, browserName, baseUrl) {
       await page.locator("#toggle-motion").click();
       assert.equal(await page.locator("#toggle-motion").getAttribute("aria-pressed"), "false");
 
-      // Responsive overflow check across breakpoints
-      for (const width of [320, 360, 375, 390, 412, 480, 768, 1024, 1440, 1920]) {
+      // Responsive overflow check across all breakpoints
+      for (const width of [320, 360, 375, 390, 412, 480, 680, 768, 820, 1024, 1280, 1440, 1600, 1920, 2560]) {
         await page.setViewportSize({ width, height: 844 });
         const hasOverflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
         assert.equal(hasOverflow, false, `Overflow horizontal detectado em ${width}px (${browserName})`);
@@ -238,14 +246,85 @@ async function runCoreTests(browserType, browserName, baseUrl) {
       await page.waitForTimeout(500);
       assert.equal(await page.locator('[data-stat="total"]').textContent(), "3");
 
-      // Phase 3: 429 Rate Limit preserves valid data and shows stale notice
+      // Phase 3: 429 Rate Limit preserves valid data and BLOCKS manual refresh from hitting API
       phase = 3;
       await page.waitForFunction(() => document.querySelector("#updated")?.classList.contains("is-stale"), null, { timeout: 5000 });
       assert.equal(await page.locator('[data-stat="total"]').textContent(), "3");
-      assert.ok(apiCalls >= 3);
+      const callsBeforeManual = apiCalls;
+      await page.locator("#refresh-data").click();
+      await page.waitForTimeout(300);
+      assert.equal(apiCalls, callsBeforeManual, "Atualização manual NÃO pode chamar API REST durante rate limit ativo");
 
       await context.close();
-      console.log(`✓ [${browserName}] Sincronização (nova, fechamento, reabertura, edição, 304, 429 rate-limit) OK`);
+      console.log(`✓ [${browserName}] Sincronização (nova, fechamento, reabertura, edição, 304, 429 + bloqueio manual) OK`);
+    }
+
+    // 2b. Integridade estrita (estados inválidos, labels inválidas, JSON malformado, foco preservado)
+    {
+      const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+      const page = await context.newPage();
+      let mode = "valid";
+
+      await page.addInitScript(() => {
+        window.__NOX_POLL_INTERVAL__ = 400;
+      });
+
+      await page.route("**/data/issues.json*", route => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            generated_at: "2026-11-17T22:00:00Z",
+            issues: [makeIssue(501, { state: "open" }), makeIssue(502, { state: "closed" })]
+          })
+        });
+      });
+
+      await page.route("https://api.github.com/repos/ProjectNox-org/project-nox-requests/issues*", route => {
+        if (mode === "valid") {
+          route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            headers: { "x-ratelimit-remaining": "50" },
+            body: JSON.stringify([makeIssue(501, { state: "open" }), makeIssue(502, { state: "closed" })])
+          });
+        } else if (mode === "invalid_state") {
+          route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            headers: { "x-ratelimit-remaining": "49", etag: '"bad-etag"' },
+            body: JSON.stringify([{ number: 501, title: "Bad", state: "unknown" }])
+          });
+        } else if (mode === "focus_update") {
+          route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            headers: { "x-ratelimit-remaining": "48" },
+            body: JSON.stringify([makeIssue(501, { title: "Título Atualizado 501", state: "open" }), makeIssue(502, { state: "closed" })])
+          });
+        }
+      });
+
+      await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+      await page.waitForFunction(() => document.querySelector('[data-stat="total"]')?.textContent === "2", null, { timeout: 5000 });
+
+      // Focus link on #501
+      await page.locator('.ticket-link[data-issue-number="501"]').focus();
+      assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("data-issue-number")), "501");
+      mode = "invalid_state";
+      await page.waitForTimeout(550);
+      // Catalog must NOT be overwritten by invalid state payload
+      assert.equal(await page.locator('[data-stat="total"]').textContent(), "2");
+
+      // Valid update while #501 link is focused must preserve focus on #501
+      await page.locator('.ticket-link[data-issue-number="501"]').focus();
+      mode = "focus_update";
+      await page.waitForFunction(() => document.querySelector('.ticket-card[data-number="501"] .ticket-title')?.textContent?.includes("Atualizado"), null, { timeout: 5000 });
+      const focusedNum = await page.evaluate(() => document.activeElement?.getAttribute("data-issue-number"));
+      assert.equal(focusedNum, "501", "Foco deve ser preservado na issue #501 após atualização automática");
+
+      await context.close();
+      console.log(`✓ [${browserName}] Integridade (rejeição de estado inválido) e preservação de foco OK`);
     }
 
     // 3. Paginação completa da API (501+ e 5000 issues simuladas)
@@ -340,42 +419,42 @@ async function captureRealDataScreenshots(baseUrl) {
       await page.goto(baseUrl, { waitUntil: "networkidle" });
       await page.waitForTimeout(400);
 
-      await page.screenshot({ path: path.join(AUDIT_DIR, `after-${name}-desktop-1440.png`), fullPage: true });
+      await page.screenshot({ path: path.join(AUDIT_DIR, `etapa2-${name}-desktop-1440.png`), fullPage: true });
 
       if (name === "chromium") {
         await page.setViewportSize({ width: 1920, height: 1080 });
         await page.waitForTimeout(200);
-        await page.screenshot({ path: path.join(AUDIT_DIR, "after-chromium-desktop-1920.png"), fullPage: false });
+        await page.screenshot({ path: path.join(AUDIT_DIR, "etapa2-chromium-desktop-1920.png"), fullPage: false });
+
+        await page.setViewportSize({ width: 2560, height: 1440 });
+        await page.waitForTimeout(200);
+        await page.screenshot({ path: path.join(AUDIT_DIR, "etapa2-chromium-desktop-2560.png"), fullPage: false });
 
         await page.setViewportSize({ width: 1440, height: 900 });
+        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        await page.waitForTimeout(200);
+        await page.screenshot({ path: path.join(AUDIT_DIR, "etapa2-chromium-bottom-1440.png"), fullPage: false });
+        await page.evaluate(() => window.scrollTo(0, 0));
+
         await page.locator('[data-filter-stat="closed"]').click();
         await page.waitForTimeout(200);
-        await page.screenshot({ path: path.join(AUDIT_DIR, "after-closed-list-1440.png"), fullPage: false });
+        await page.screenshot({ path: path.join(AUDIT_DIR, "etapa2-closed-list-1440.png"), fullPage: false });
 
-        await page.locator("#search").fill("termo_inexistente_xyz_999");
-        await page.waitForTimeout(250);
-        await page.screenshot({ path: path.join(AUDIT_DIR, "after-empty-state-1440.png"), fullPage: false });
         await page.locator("#clear-filters").click();
-
-        await page.locator("#open-ticket").click();
-        await page.waitForTimeout(200);
-        await page.screenshot({ path: path.join(AUDIT_DIR, "after-modal-1440.png"), fullPage: false });
-        await page.keyboard.press("Escape");
-
         await page.locator("#toggle-motion").click();
         await page.waitForTimeout(200);
-        await page.screenshot({ path: path.join(AUDIT_DIR, "after-paused-motion-1440.png"), fullPage: false });
+        await page.screenshot({ path: path.join(AUDIT_DIR, "etapa2-paused-motion-1440.png"), fullPage: false });
         await page.locator("#toggle-motion").click();
       }
 
       await page.setViewportSize({ width: 390, height: 844 });
       await page.waitForTimeout(250);
-      await page.screenshot({ path: path.join(AUDIT_DIR, `after-${name}-mobile-390.png`), fullPage: true });
+      await page.screenshot({ path: path.join(AUDIT_DIR, `etapa2-${name}-mobile-390.png`), fullPage: true });
 
       if (name === "chromium") {
         await page.setViewportSize({ width: 320, height: 640 });
         await page.waitForTimeout(250);
-        await page.screenshot({ path: path.join(AUDIT_DIR, "after-chromium-mobile-320.png"), fullPage: false });
+        await page.screenshot({ path: path.join(AUDIT_DIR, "etapa2-chromium-mobile-320.png"), fullPage: false });
       }
       await context.close();
     } finally {

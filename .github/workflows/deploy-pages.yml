@@ -24,6 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Validar sintaxe e testes unitários
+        run: |
+          node --check app.js
+          node --check particles.js
+          python3 -m py_compile scripts/update_issues.py
+          python3 -m pip install --quiet pytest
+          python3 -m pytest tests/test_tracker.py
       - uses: actions/configure-pages@v5
       - name: Preparar arquivos estáticos
         run: |

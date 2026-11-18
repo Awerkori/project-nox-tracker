@@ -14,10 +14,14 @@ Tests:
 """
 
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
+from unittest.mock import patch
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR / "scripts"))
+import update_issues  # noqa: E402
 DATA_FILE = BASE_DIR / "data/issues.json"
 
 
@@ -179,6 +183,86 @@ def test_real_dataset_and_ticket_ordering():
         b = sorted_by_recent[idx + 1]
         assert (a.get("created_at") or "") >= (b.get("created_at") or ""), "Ordenação por created_at violada!"
     print(f"✓ Todos os {len(sorted_by_recent)} tickets abertos ordenados estritamente por created_at DESC!")
+
+
+def test_update_issues_production_script_dedup_pr_idempotency(tmp_path):
+    """Testa diretamente scripts/update_issues.py com paginação, PRs, deduplicação e idempotência."""
+    out_file = tmp_path / "issues.json"
+    page1 = [
+        {
+            "number": 10,
+            "title": "Issue 10",
+            "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/10",
+            "state": "open",
+            "state_reason": None,
+            "created_at": "2026-10-01T10:00:00Z",
+            "updated_at": "2026-10-01T10:00:00Z",
+            "closed_at": None,
+            "comments": 1,
+            "labels": [{"name": "type:manga", "color": "ffffff"}],
+            "reactions": {"total_count": 2, "+1": 2},
+            "user": {"login": "alice"},
+        },
+        {
+            "number": 999,
+            "title": "PR ignorado",
+            "pull_request": {"url": "https://api.github.com/..."},
+            "state": "open",
+            "created_at": "2026-10-02T10:00:00Z",
+            "labels": [],
+            "user": {"login": "bot"},
+        },
+        {
+            "number": 10,
+            "title": "Issue 10 duplicada",
+            "state": "open",
+            "created_at": "2026-10-01T10:00:00Z",
+            "labels": [],
+            "user": {"login": "alice"},
+        },
+    ]
+
+    with patch.object(update_issues, "OUTPUT", out_file), \
+         patch.object(update_issues, "get_page", side_effect=[page1]):
+        update_issues.main()
+
+    first_payload = json.loads(out_file.read_text(encoding="utf-8"))
+    assert len(first_payload["issues"]) == 1
+    assert first_payload["issues"][0]["number"] == 10
+    first_ts = first_payload["generated_at"]
+
+    # Segunda execução sem mudanças deve preservar generated_at (idempotência)
+    with patch.object(update_issues, "OUTPUT", out_file), \
+         patch.object(update_issues, "get_page", side_effect=[page1]):
+        update_issues.main()
+
+    second_payload = json.loads(out_file.read_text(encoding="utf-8"))
+    assert second_payload["generated_at"] == first_ts
+
+
+def test_update_issues_aborts_on_page_limit(tmp_path):
+    """Garante que update_issues.py aborta em vez de publicar inventário truncado ao exceder 100 páginas."""
+    out_file = tmp_path / "issues.json"
+    full_batch = [
+        {
+            "number": i,
+            "title": f"Issue {i}",
+            "state": "open",
+            "created_at": "2026-10-01T10:00:00Z",
+            "labels": [],
+            "user": {"login": "tester"},
+        }
+        for i in range(1, 101)
+    ]
+
+    with patch.object(update_issues, "OUTPUT", out_file), \
+         patch.object(update_issues, "get_page", return_value=full_batch):
+        try:
+            update_issues.main()
+            assert False, "Deveria ter abortado ao exceder 100 páginas"
+        except RuntimeError as exc:
+            assert "100 páginas" in str(exc)
+    assert not out_file.exists()
 
 
 if __name__ == "__main__":

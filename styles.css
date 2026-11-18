@@ -4,31 +4,31 @@
    ========================================================================== */
 
 :root {
-  /* Surface & Void Colors */
-  --bg-void: #06070c;
-  --bg-void-deep: #030306;
-  --bg-surface: #0b0d17;
-  --bg-surface-elevated: #111424;
-  --bg-card: rgba(13, 15, 27, 0.88);
-  --bg-card-hover: rgba(19, 23, 40, 0.96);
-  --bg-glass: rgba(11, 13, 23, 0.86);
-  --bg-input: #0e101d;
+  /* Surface & Void Colors (Cosmic Purple-Undertone Palette) */
+  --bg-void: #07050d;
+  --bg-void-deep: #090611;
+  --bg-surface: #0e0a19;
+  --bg-surface-elevated: #151025;
+  --bg-card: rgba(18, 14, 30, 0.88);
+  --bg-card-hover: rgba(26, 20, 44, 0.94);
+  --bg-glass: rgba(12, 9, 22, 0.86);
+  --bg-input: #100c1d;
 
   /* Brand Accent Colors */
   --nox-purple: #b59af5;
   --nox-purple-light: #d8b4fe;
   --nox-purple-dark: #7c3aed;
-  --nox-purple-glow: rgba(181, 154, 245, 0.20);
+  --nox-purple-glow: rgba(181, 154, 245, 0.24);
   --nox-gold: #c9aa73;
   --nox-gold-light: #e5bd61;
   --nox-gold-glow: rgba(201, 170, 115, 0.20);
 
   /* Borders & Dividers */
-  --border-subtle: rgba(181, 154, 245, 0.10);
-  --border-card: rgba(181, 154, 245, 0.16);
-  --border-hover: rgba(201, 170, 115, 0.38);
-  --border-active: rgba(181, 154, 245, 0.55);
-  --border-input: rgba(181, 154, 245, 0.20);
+  --border-subtle: rgba(167, 139, 250, 0.12);
+  --border-card: rgba(167, 139, 250, 0.18);
+  --border-hover: rgba(201, 170, 115, 0.40);
+  --border-active: rgba(181, 154, 245, 0.58);
+  --border-input: rgba(167, 139, 250, 0.22);
 
   /* Semantic State Colors (Open = Green, Closed = Neutral Slate, Error = Red) */
   --state-open: #34d399;
@@ -124,51 +124,56 @@ body.modal-open {
 .particle-system {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  contain: strict;
+  background: linear-gradient(145deg, #090611 0%, #07050d 48%, #0d0916 100%);
 }
 
 .ambient-mesh {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 18% 12%, rgba(124, 58, 237, 0.14) 0%, transparent 45%),
-    radial-gradient(circle at 82% 18%, rgba(201, 170, 115, 0.08) 0%, transparent 42%),
-    radial-gradient(circle at 50% 85%, rgba(79, 70, 229, 0.09) 0%, transparent 50%),
-    linear-gradient(180deg, var(--bg-void) 0%, var(--bg-void-deep) 100%);
+    radial-gradient(ellipse 68% 54% at 14% 16%, rgba(103, 51, 168, 0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 64% 58% at 86% 24%, rgba(73, 33, 133, 0.24) 0%, transparent 65%),
+    radial-gradient(ellipse 75% 60% at 50% 52%, rgba(124, 58, 237, 0.13) 0%, transparent 70%),
+    radial-gradient(ellipse 68% 58% at 18% 84%, rgba(92, 43, 154, 0.20) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 56% at 85% 88%, rgba(67, 31, 119, 0.20) 0%, transparent 65%);
 }
 
 .ambient-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.35;
+  opacity: 0.75;
+  pointer-events: none;
 }
 
 .glow-top {
-  width: 520px;
-  height: 320px;
-  top: -120px;
+  width: min(1000px, 120vw);
+  height: 520px;
+  top: -160px;
   left: 50%;
   transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.25), transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.12) 0%, rgba(99, 102, 241, 0.05) 42%, transparent 72%);
 }
 
 .glow-side {
-  width: 380px;
-  height: 380px;
-  top: 26%;
-  right: -140px;
-  background: radial-gradient(circle, rgba(201, 170, 115, 0.14), transparent 70%);
+  width: 680px;
+  height: 680px;
+  top: 28%;
+  right: -180px;
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.10) 0%, rgba(79, 70, 229, 0.04) 48%, transparent 74%);
 }
 
 .glow-bottom-left {
-  width: 360px;
-  height: 360px;
-  bottom: -120px;
-  left: -120px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.16), transparent 70%);
+  width: 680px;
+  height: 680px;
+  bottom: -160px;
+  left: -140px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.10) 0%, rgba(48, 23, 75, 0.05) 52%, transparent 74%);
 }
 
 .particle-canvas {
@@ -176,12 +181,13 @@ body.modal-open {
   inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 .night-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 55%, rgba(3, 3, 6, 0.65) 100%);
+  background: radial-gradient(ellipse at center, transparent 54%, rgba(4, 3, 9, 0.52) 100%);
 }
 
 .app-content {
@@ -205,7 +211,7 @@ body.modal-open {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 24px;
-  background: rgba(6, 7, 12, 0.88);
+  background: rgba(9, 6, 17, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
@@ -913,6 +919,22 @@ main#main-content {
   }
 }
 
+.closed-state-note {
+  margin: -6px 0 14px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(20, 15, 34, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.noscript-notice a {
+  color: var(--nox-purple-light);
+  text-decoration: underline;
+}
+
 /* ==========================================================================
    TICKETS GRID & CARDS
    ========================================================================== */
@@ -960,6 +982,30 @@ main#main-content {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.ticket-title.is-expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+.title-expand-btn {
+  align-self: flex-start;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--nox-purple-light);
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.title-expand-btn:hover {
+  color: #ffffff;
 }
 
 .ticket-status-row {
@@ -1353,7 +1399,7 @@ main#main-content {
 
 .site-footer {
   border-top: 1px solid var(--border-subtle);
-  background: rgba(6, 7, 12, 0.85);
+  background: rgba(9, 6, 17, 0.88);
   padding: 18px 24px;
 }
 
@@ -1398,8 +1444,7 @@ main#main-content {
    REDUCED MOTION & PAUSED ANIMATIONS
    ========================================================================== */
 
-.animations-paused .particle-canvas,
-.animations-paused .ambient-glow {
+.animations-paused .particle-canvas {
   display: none;
 }
 
@@ -1416,8 +1461,7 @@ main#main-content {
     scroll-behavior: auto;
   }
 
-  .particle-canvas,
-  .ambient-glow {
+  .particle-canvas {
     display: none;
   }
 

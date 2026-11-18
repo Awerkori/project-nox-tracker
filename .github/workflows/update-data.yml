@@ -33,6 +33,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/update_issues.py
 
+      - name: Validar integridade do snapshot e testes
+        run: |
+          python3 -m pip install --quiet pytest
+          python3 -m pytest tests/test_tracker.py
+
       - name: Verificar alterações nos dados
         id: check_diff
         run: |
