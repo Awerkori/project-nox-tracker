@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-18T02:22:29.352889+00:00",
+  "generated_at": "2026-11-19T01:17:56.444739+00:00",
   "repository": "ProjectNox-org/project-nox-requests",
   "issues": [
     {
@@ -102,12 +102,12 @@
       "number": 152,
       "title": "[Problema na extensão]: Cerise scan — Cerise scan reformulou o site",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/152",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-11-15T13:55:43Z",
-      "updated_at": "2026-11-15T13:55:52Z",
-      "closed_at": null,
-      "comments": 0,
+      "updated_at": "2026-11-19T01:06:30Z",
+      "closed_at": "2026-11-19T00:55:23Z",
+      "comments": 2,
       "labels": [
         {
           "name": "Problema na extensão",
