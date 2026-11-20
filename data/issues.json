@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T16:28:44.904338+00:00",
+  "generated_at": "2026-11-20T22:47:52.638994+00:00",
   "repository": "ProjectNox-org/project-nox-requests",
   "issues": [
     {
@@ -9,9 +9,9 @@
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-20T16:24:09Z",
-      "updated_at": "2026-11-20T16:24:20Z",
+      "updated_at": "2026-11-20T16:31:07Z",
       "closed_at": null,
-      "comments": 0,
+      "comments": 1,
       "labels": [
         {
           "name": "Problema na extensão",
