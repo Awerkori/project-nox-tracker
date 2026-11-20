@@ -1,7 +1,71 @@
 {
-  "generated_at": "2026-11-19T01:17:56.444739+00:00",
+  "generated_at": "2026-11-20T16:28:44.904338+00:00",
   "repository": "ProjectNox-org/project-nox-requests",
   "issues": [
+    {
+      "number": 157,
+      "title": "[Problema na extensão]: Manhuarm — Manga log-in murim capítulos errados",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/157",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-20T16:24:09Z",
+      "updated_at": "2026-11-20T16:24:20Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Mangá",
+          "color": "3b82f6"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "LUCASGYNBR"
+      }
+    },
+    {
+      "number": 156,
+      "title": "[Problema na extensão]: Animes Digital — Animes Digital Não Reproduz",
+      "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/156",
+      "state": "open",
+      "state_reason": null,
+      "created_at": "2026-11-20T08:15:13Z",
+      "updated_at": "2026-11-20T08:15:23Z",
+      "closed_at": null,
+      "comments": 0,
+      "labels": [
+        {
+          "name": "Problema na extensão",
+          "color": "ef4444"
+        },
+        {
+          "name": "Anime",
+          "color": "6366f1"
+        },
+        {
+          "name": "Em análise",
+          "color": "eab308"
+        }
+      ],
+      "reactions": {
+        "total_count": 0,
+        "+1": 0
+      },
+      "author": {
+        "login": "vituhas"
+      }
+    },
     {
       "number": 155,
       "title": "[Nova extensão]: Manga Leap",
@@ -721,9 +785,9 @@
       "state": "open",
       "state_reason": null,
       "created_at": "2026-11-07T21:01:53Z",
-      "updated_at": "2026-11-07T21:02:03Z",
+      "updated_at": "2026-11-20T13:52:05Z",
       "closed_at": null,
-      "comments": 0,
+      "comments": 1,
       "labels": [
         {
           "name": "Problema na extensão",
