@@ -20,6 +20,7 @@ Verificado diretamente nos scripts, testes e workflows do repositório:
 .
 ├── index.html                        # Página principal da interface
 ├── styles.css                        # Estilos e responsividade
+├── duplicate-guard.js                # Motor client-side de prevenção de duplicatas no modal
 ├── app.js                            # Lógica de busca, filtros, paginação e sincronização
 ├── particles.js                      # Fundo em Canvas (3 camadas) e controle de movimento
 ├── favicon.ico                       # Ícone do site
@@ -32,6 +33,8 @@ Verificado diretamente nos scripts, testes e workflows do repositório:
 │   └── update_issues.py              # Gerador e validador do snapshot data/issues.json
 ├── tests/
 │   ├── test_tracker.py               # Suíte unitária e de consistência em Python/pytest
+│   ├── test_duplicate_guard_ui.mjs   # Suíte unitária do módulo duplicate-guard.js
+│   ├── e2e_duplicate_guard.mjs       # Suíte E2E do modal de prevenção (Chromium e Firefox)
 │   └── e2e_comprehensive.mjs         # Suíte E2E em Node.js + Playwright (Chromium e Firefox)
 └── .github/workflows/
     ├── deploy-pages.yml              # Validação, testes e deploy no GitHub Pages
@@ -43,7 +46,8 @@ Verificado diretamente nos scripts, testes e workflows do repositório:
 - **Geração do snapshot (`scripts/update_issues.py`):** consulta até `100` páginas (`per_page=100`) em `ProjectNox-org/project-nox-requests`, ignora Pull Requests, remove duplicatas da paginação, ordena por `created_at` decrescente (desempate por `number` decrescente), preserva `generated_at` quando não há mudança nas *Issues* e aborta a escrita se houver queda superior a `50%` no volume ou se o limite de `100` páginas for atingido.
 - **Ciclo no navegador (`app.js`):** verifica `data/issues.json` a cada `10s` (`CHECK_INTERVAL`) usando `If-None-Match` (ETag) apenas com a aba visível (sem consumir cota da API REST do GitHub). Também realiza checagens na API REST respeitando intervalo adaptativo (`65s` normal via `GITHUB_API_MIN_INTERVAL`, `180s` via `THROTTLED_API_INTERVAL` quando `X-RateLimit-Remaining < 15`), reconciliação periódica (`RECONCILE_INTERVAL` de 10 minutos, teto `MAX_SAFE_PAGES = 100`) e pausa automática até `X-RateLimit-Reset` / `Retry-After` em respostas `403`/`429`.
 - **Consistência entre abas e validação:** `mergeRawIssues` evita regressões temporais comparando `updated_at`, `closed_at` e `created_at`; ETags só são persistidas após validar que `state` é estritamente `"open"` ou `"closed"`; a coordenação entre abas ocorre via `BroadcastChannel` e `localStorage` (lock `FETCH_LOCK_TTL` de `15s`).
-- **Interface, segurança e acessibilidade (`index.html`, `styles.css`, `particles.js`):** listagem progressiva de `24` cartões por bloco (`PAGE_SIZE`), renderização segura via `createElement` e `textContent` com validação estrita de URLs, preservação de foco e de títulos expandidos durante atualizações em segundo plano, detecção de truncamento com `ResizeObserver`, animações em Canvas com suporte a `prefers-reduced-motion` e suspensão automática com aba oculta, além de bloco `<noscript>` apontando para as *Issues* no GitHub.
+- **Interface, segurança e acessibilidade (`index.html`, `styles.css`, `particles.js`, `duplicate-guard.js`):** listagem progressiva de `24` cartões por bloco (`PAGE_SIZE`), renderização segura via `createElement` e `textContent` com validação estrita de URLs, preservação de foco e de títulos expandidos durante atualizações em segundo plano, detecção de truncamento com `ResizeObserver`, animações em Canvas com suporte a `prefers-reduced-motion` e suspensão automática com aba oculta, além de bloco `<noscript>` apontando para as *Issues* no GitHub.
+- **Prevenção de duplicatas no modal (`duplicate-guard.js`):** ao clicar em **Abrir Solicitação**, o usuário pode pesquisar demandas semelhantes antes de ir para o formulário do GitHub. O módulo normaliza acentuação, compacta espaços (`MangaLivre` vs `Manga Livre`), extrai domínio de URLs coladas, aplica tolerância leve a erros de digitação e reconhece números `#N`. Como o Tracker opera sobre um snapshot estático + cache ao vivo limitado pela cota pública do GitHub, resultados vazios exibem aviso claro dessa limitação e link de pesquisa direta no GitHub — complementando (sem substituir) o detector automático de pós-criação em `project-nox-requests` e as sugestões nativas do próprio GitHub ao criar Issues.
 
 ## Obtenção do código-fonte
 
@@ -100,6 +104,10 @@ Execute a partir da raiz do repositório:
 # Validação de sintaxe JavaScript (sem dependências externas, offline)
 node --check app.js
 node --check particles.js
+node --check duplicate-guard.js
+
+# Testes unitários do módulo de prevenção (Node >= 18, offline)
+node --test tests/test_duplicate_guard_ui.mjs
 
 # Compilação/sintaxe Python (sem dependências externas, offline)
 python3 -m py_compile scripts/update_issues.py scripts/dev_server.py
@@ -144,7 +152,7 @@ O repositório utiliza dois workflows em `.github/workflows/`:
 - **`.github/workflows/deploy-pages.yml` (`Publicar no GitHub Pages`):**
   - **Gatilhos:** `push` na branch `main` (exceto alterações exclusivas em `data/issues.json`) e `workflow_dispatch`.
   - **Etapas:** executa `node --check app.js`, `node --check particles.js`, `python3 -m py_compile scripts/update_issues.py`, instala e roda `pytest tests/test_tracker.py`, instala Playwright + Chromium/Firefox em `/tmp/pw-runner` e roda `tests/e2e_comprehensive.mjs --no-screenshots`.
-  - **Saída publicada (`_site/`):** copia **somente** `index.html`, `styles.css`, `app.js`, `particles.js`, `favicon.ico`, `assets/` e `data/` para `_site/` e publica via GitHub Pages. Arquivos como `README.md`, `docs/`, `scripts/`, `tests/` e `.github/` não são copiados para o site público.
+  - **Saída publicada (`_site/`):** copia **somente** `index.html`, `styles.css`, `app.js`, `particles.js`, `duplicate-guard.js`, `favicon.ico`, `assets/` e `data/` para `_site/` e publica via GitHub Pages. Arquivos como `README.md`, `docs/`, `scripts/`, `tests/` e `.github/` não são copiados para o site público.
 - **`.github/workflows/update-data.yml` (`Atualizar dados do tracker`):**
   - **Gatilhos:** `schedule` (`cron: "7,22,37,52 * * * *"`), `workflow_dispatch` e `repository_dispatch: [issues-updated]` (atualmente `ProjectNox-org/project-nox-requests` não dispara esse evento).
   - **Etapas:** executa `python3 scripts/update_issues.py` usando `secrets.GITHUB_TOKEN`, valida com `pytest tests/test_tracker.py` e, apenas quando `data/issues.json` muda, realiza commit como `github-actions[bot]` (`chore: update tracker data`) e republica `_site/` no GitHub Pages.
