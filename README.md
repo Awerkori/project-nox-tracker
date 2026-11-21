@@ -1,65 +1,99 @@
-# Project Nox · Tracker
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ProjectNox-org/.github/main/assets/brand/nox-emblem.webp" alt="Emblema oficial do Project Nox" width="96" />
+</p>
 
-Painel web operacional e público do **Project Nox** para acompanhar solicitações, correções e melhorias das extensões de Mangá e Anime (**Mihon e forks** e **Aniyomi e forks**).
+<h1 align="center">Project Nox · Tracker</h1>
 
-🌐 **Acesse online:** [projectnox-org.github.io/project-nox-tracker](https://projectnox-org.github.io/project-nox-tracker/)
+<p align="center">
+  Painel público para acompanhar solicitações, correções e melhorias das extensões do <strong>Project Nox</strong>.
+</p>
 
----
+> [!IMPORTANT]
+> [**Acessar o Project Nox Tracker**](https://projectnox-org.github.io/project-nox-tracker/)
+>
+> Este painel serve para **consultar e acompanhar solicitações** — ele não instala extensões diretamente nos aplicativos. Para consultar sem interagir, **não é necessário ter conta no GitHub**. Para abrir um novo pedido ou votar com `👍`, é necessário entrar com uma conta gratuita no GitHub.
 
-## 🎯 Finalidade e Fonte de Verdade
+## O que é o Tracker?
 
-O **Project Nox Tracker** é uma ferramenta operacional para a comunidade encontrar solicitações, verificar seu estado atual e participar no GitHub em poucos segundos.
+O **Project Nox Tracker** reúne em uma interface web simples as demandas registradas na [Central de Pedidos (`project-nox-requests`)](https://github.com/ProjectNox-org/project-nox-requests):
 
-- **Fonte oficial das solicitações:** [ProjectNox-org/project-nox-requests](https://github.com/ProjectNox-org/project-nox-requests).
-- **Estados oficiais (`state`):** Apenas `ABERTA` (`open`) e `FECHADA` (`closed`), obtidos diretamente do campo oficial `state` da issue no GitHub.
-- **Independência de labels de andamento:** O Project Nox não utiliza regularmente labels de andamento ou resolução (como "Em análise", "Concluído" ou "Recusado"). O Tracker não infere essas classificações nem substitui o estado oficial do GitHub por labels.
-- **Resumo de Demandas:** Exibe exatamente três indicadores dinâmicos (`Total`, `Abertas`, `Fechadas`) com garantia matemática `Total = Abertas + Fechadas` (pull requests são excluídos).
+- **Fonte oficial:** todas as solicitações exibidas vêm das *Issues* oficiais de `ProjectNox-org/project-nox-requests` (Pull Requests são ignorados).
+- **Estados oficiais:** apenas **Abertas** (`open`) e **Fechadas** (`closed`), refletindo diretamente o estado oficial no GitHub — o Tracker não inventa etiquetas próprias de andamento. Uma solicitação fechada não significa necessariamente que foi concluída; consulte a discussão da *Issue* no GitHub para ver o motivo.
+- **Resumo numérico:** os indicadores **Total**, **Abertas** e **Fechadas** mantêm sempre a relação `Total = Abertas + Fechadas`.
 
----
+Para instalar extensões no seu aplicativo, utilize os catálogos oficiais de distribuição: [Extensões de Mangá](https://github.com/ProjectNox-org/manga-extensoes) e [Extensões de Anime](https://github.com/ProjectNox-org/anime-extensoes).
 
-## 🔍 Funcionalidades da Interface
+## Como utilizar
 
-- **Indicadores Interativos:** Clique em `Total`, `Abertas` ou `Fechadas` para alternar o estado exibido (inicia em `Abertas` por padrão).
-- **Pesquisa:** Busca por título, extensão, autor ou número exato da issue (`#152` ou `152`), com normalização de acentos e atalho `/`.
-- **Filtros e Ordenação:**
-  - Tipo: `Todos | Mangás | Animes` (escopando também os números do resumo).
-  - Categoria: `Nova extensão`, `Problema na extensão`, `Mudança de domínio`, `Fonte indisponível`, `Sugestão`.
-  - Ordenação: `Mais recentes` (padrão, com desempate determinístico por número), `Atualizados recentemente`, `Mais votados` (reações `👍` / `+1`) e `Mais antigos`.
-- **Votos Positivos:** Exibe a contagem real de reações `+1` (`👍`) do GitHub e direciona para a issue oficial para reagir (requer conta gratuita no GitHub).
-- **Listagem Progressiva:** Renderiza 24 solicitações por vez com botão `Mostrar mais`, mantendo busca, filtros, ordenação e contagens sobre todo o inventário.
-- **Controle de Movimento & Atmosfera Cósmica:** Fundo em 3 camadas (base `#07050d`/`#090611`/`#0d0916`, 5 gradientes radiais roxos com reflexo prateado sutil e neve cósmica em Canvas otimizado, com caches de renderização e redução de alocações durante a animação, em 3 camadas de profundidade e densidade adaptativa). Suporta interação por mouse, toque passivo, inclinação opcional via `DeviceOrientationEvent` quando suportada pelo navegador, `prefers-reduced-motion` e botão `Pausar animações` / `Retomar animações`.
+1. Acesse [**projectnox-org.github.io/project-nox-tracker**](https://projectnox-org.github.io/project-nox-tracker/) no navegador do computador ou celular.
+2. Use a barra de pesquisa para buscar por nome da extensão, título, autor ou número exato da solicitação (ex.: `#152` ou `152`; atalho `/` no teclado).
+3. Se quiser, filtre por **Mangás** ou **Animes** e escolha uma categoria.
+4. Clique em **Total**, **Abertas** ou **Fechadas** para alternar o estado exibido (inicia em **Abertas**).
+5. Toque em uma solicitação para abrir a página correspondente no GitHub, ler os detalhes ou votar com `👍`.
+6. Se ainda não existir pedido semelhante, clique em **Abrir Solicitação** no topo do painel ou acesse diretamente a [Central de Pedidos](https://github.com/ProjectNox-org/project-nox-requests).
 
----
+## Funcionalidades
 
-## ⚙️ Sincronização, Cache e Limites da API
+- **Indicadores interativos:** alternam entre `Total`, `Abertas` e `Fechadas` respeitando o filtro de tipo ativo.
+- **Pesquisa rápida:** busca por título/extensão, autor ou número exato com normalização de acentos e botão para limpar.
+- **Filtros por tipo e categoria:** `Todos | Mangás | Animes` e categorias `Nova extensão`, `Problema na extensão`, `Mudança de domínio`, `Fonte indisponível` e `Sugestão`.
+- **Ordenação:** `Mais recentes` (padrão), `Atualizados recentemente`, `Mais votados` (reações `👍` / `+1` do GitHub) e `Mais antigos`.
+- **Listagem progressiva:** exibe 24 solicitações por bloco com botão **Mostrar mais**, mantendo pesquisa, filtros e totais sobre todo o conjunto carregado.
+- **Controle de movimento:** botão **Pausar animações** / **Retomar animações**, suporte a `prefers-reduced-motion` e suspensão automática com a aba em segundo plano.
 
-O Tracker é uma SPA estática hospedada no GitHub Pages:
+## Como os dados são atualizados
 
-1. **Snapshot Estático (`data/issues.json`):** Gerado pelo script `scripts/update_issues.py` via workflow `.github/workflows/update-data.yml` (agendado a cada ~15 minutos, `workflow_dispatch` e `repository_dispatch: issues-updated`). O script é idempotente: preserva `generated_at` quando não há mudanças reais, aborta se atingir o teto de 100 páginas com inventário incompleto e tem sua integridade validada por `pytest` antes do deploy.
-2. **Ciclo de Verificação de 10 segundos (`CHECK_INTERVAL = 10000ms`):** Enquanto a aba está visível, o navegador verifica a cada ~10 segundos se há novo snapshot publicado em `data/issues.json` (usando `If-None-Match`/ETag, sem consumir cota da API REST do GitHub).
-3. **Consultas à API REST do GitHub & Orçamento por Página:** Como a API pública não autenticada do GitHub limita requisições a **60 por hora por IP**, o Tracker aplica intervalo mínimo adaptativo (`65s` em uso normal, `180s` quando `X-RateLimit-Remaining < 15`), verifica o orçamento restante **antes de cada página** da paginação (até 100 páginas), suspende novas chamadas — inclusive manuais — até `X-RateLimit-Reset` / `Retry-After` em respostas `403`/`429` ou saldo zero, e realiza recuperação controlada automática após a expiração do bloqueio.
-4. **Integridade, ETags & Sincronização entre Abas:** Apenas registros com `state === "open"` ou `"closed"` são aceitos; `mergeRawIssues` previne regressões temporais comparando `updated_at`/`closed_at`/`created_at`; ETags só são gravadas após validação completa do JSON; e atualizações são compartilhadas entre abas via `BroadcastChannel` + `localStorage` com trava temporária renovável para evitar reconciliações simultâneas duplicadas.
-5. **Segurança & Acessibilidade:** Construção de cards e chips via DOM (`textContent`, `createElement`), validação estrita de URLs, preservação de foco e de títulos expandidos durante atualizações em background, expansão inteligente baseada em truncamento real (`ResizeObserver`), e aviso `<noscript>`.
+O Tracker exibe os dados a partir de um arquivo estático atualizado periodicamente no repositório (`data/issues.json`) e também pode consultar atualizações no navegador enquanto a página está visível:
 
-> **Nota sobre latência e eventos externos:** O ciclo de verificação no navegador roda a cada ~10 segundos, mas a visibilidade de mudanças feitas no GitHub depende da janela segura da API pública ou do workflow agendado. O workflow `update-data.yml` já aceita `repository_dispatch: [issues-updated]`, mas o repositório `project-nox-requests` não possui disparo configurado (uma integração futura exigiria permissão `contents: write` via GitHub App/PAT no repositório de origem para eventos `issues`/`issue_comment`; reações `+1` não disparam eventos de Actions no GitHub).
+- **Atualização automática do snapshot:** um workflow agendado verifica as *Issues* da Central de Pedidos cerca de quatro vezes por hora (a cada ~15 minutos) e republica o site quando há alterações.
+- **Verificação no navegador:** enquanto a aba está aberta e visível, o Tracker checa periodicamente se há um novo snapshot publicado e respeita intervalos seguros para consultas à API pública do GitHub.
+- **Limitações de latência:** uma edição ou voto feito no GitHub não aparece garantidamente em poucos segundos — a visibilidade depende da execução do workflow, da publicação no GitHub Pages, da disponibilidade e do limite de requisições da API pública (60 req/h por IP sem autenticação) e de a aba permanecer visível.
 
----
+## Arquitetura técnica
 
-## 💻 Execução Local e Testes
+O projeto é uma aplicação web estática hospedada no GitHub Pages:
+
+- **Geração de snapshot (`scripts/update_issues.py`):** consulta até 100 páginas de *Issues* em `.github/workflows/update-data.yml` (`cron: "7,22,37,52 * * * *"`, `workflow_dispatch` e `repository_dispatch: [issues-updated]`), aplica ordenação determinística, preserva `generated_at` quando não há alterações e aborta a escrita se detectar perda superior a 50% ou atingir o limite de 100 páginas. *(Embora `update-data.yml` aceite `repository_dispatch`, `project-nox-requests` não possui disparo configurado para esse evento.)*
+- **Ciclo no cliente (`app.js`):** verifica `data/issues.json` a cada `10s` (`CHECK_INTERVAL`) via `If-None-Match`/ETag quando a aba está visível (sem consumir cota da API REST) e realiza consultas à API do GitHub com intervalo adaptativo (`65s` normal, `180s` quando `X-RateLimit-Remaining < 15`), checagem de saldo por página e pausa até `X-RateLimit-Reset` / `Retry-After` em respostas `403`/`429`.
+- **Consistência e sincronização entre abas:** `mergeRawIssues` previne regressões temporais comparando `updated_at`/`closed_at`/`created_at`, ETags só são persistidas após validação do JSON (`state` estritamente `"open"` ou `"closed"`) e atualizações são coordenadas entre abas via `BroadcastChannel` e `localStorage`.
+- **Interface, segurança e acessibilidade (`index.html`, `styles.css`, `particles.js`):** construção via DOM (`createElement`/`textContent`) com validação estrita de URLs, preservação de foco e de títulos expandidos durante atualizações em segundo plano, detecção de truncamento com `ResizeObserver`, fundo em Canvas de 3 camadas (`particles.js`) com pausa e `prefers-reduced-motion`, e aviso `<noscript>` apontando para as *Issues* no GitHub.
+
+## Desenvolvimento local e testes
 
 ```bash
-# 1. Atualizar os dados de issues localmente (opcional: export GITHUB_TOKEN=...)
+# 1. Atualizar snapshot localmente (opcional: export GITHUB_TOKEN=...)
 python3 scripts/update_issues.py
 
-# 2. Iniciar servidor estático local
-python3 -m http.server 8000
+# 2. Subir servidor local (porta 8088 sem cache, ou http.server na 8000)
+python3 scripts/dev_server.py
 
-# 3. Executar testes unitários
+# 3. Validar sintaxe e executar testes unitários
+node --check app.js && node --check particles.js
+python3 -m py_compile scripts/update_issues.py
 python3 -m pytest tests/test_tracker.py
 ```
 
----
+Para executar a suíte E2E em Chromium e Firefox (requer Playwright instalado, como configurado em `.github/workflows/deploy-pages.yml`):
 
-## ⚖️ Licença e Copyright
+```bash
+node tests/e2e_comprehensive.mjs --no-screenshots
+```
 
-Licenciado sob **GNU Affero General Public License v3.0 (`AGPL-3.0-only`)**. Consulte [LICENSE](LICENSE) e [NOTICE](NOTICE).
+## Projetos relacionados
+
+- [**Project Nox · Central de Pedidos**](https://github.com/ProjectNox-org/project-nox-requests) — Repositório oficial para abrir solicitações e relatar problemas.
+- [**Project Nox · Extensões de Mangá**](https://github.com/ProjectNox-org/manga-extensoes) — Catálogo oficial de extensões para Mihon e forks.
+- [**Project Nox · Extensões de Anime**](https://github.com/ProjectNox-org/anime-extensoes) — Catálogo oficial de extensões para Aniyomi, Anikku e forks.
+
+## Créditos
+
+Desenvolvido e mantido por **Project Nox Contributors & Awerkori**, com pipeline automatizado no GitHub Actions e interface em padrões web abertos (veja [`NOTICE`](NOTICE)).
+
+## Licenciamento e informações legais
+
+Licenciado sob a **GNU Affero General Public License v3.0** (`AGPL-3.0-only`). Consulte [`LICENSE`](LICENSE) e [`NOTICE`](NOTICE) para o texto integral da licença, cláusula de interação remota de rede (Seção 13) e proteção de identidade e marca (Seção 7(e) — sem autorização de uso dos nomes ou logotipos "Project Nox" e "Awerkori" para sugerir endosso oficial).
+
+```text
+Copyright (C) 2026 Project Nox Contributors & Awerkori
+Licensed under the GNU Affero General Public License, Version 3.0 (AGPL-3.0-only).
+```
