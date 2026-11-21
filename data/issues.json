@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-11-20T22:47:52.638994+00:00",
+  "generated_at": "2026-11-21T06:38:33.858995+00:00",
   "repository": "ProjectNox-org/project-nox-requests",
   "issues": [
     {
       "number": 157,
       "title": "[Problema na extensão]: Manhuarm — Manga log-in murim capítulos errados",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/157",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-11-20T16:24:09Z",
-      "updated_at": "2026-11-20T16:31:07Z",
-      "closed_at": null,
-      "comments": 1,
+      "updated_at": "2026-11-21T05:21:53Z",
+      "closed_at": "2026-11-21T05:21:50Z",
+      "comments": 2,
       "labels": [
         {
           "name": "Problema na extensão",
@@ -22,8 +22,8 @@
           "color": "3b82f6"
         },
         {
-          "name": "Em análise",
-          "color": "eab308"
+          "name": "Concluído",
+          "color": "10b981"
         }
       ],
       "reactions": {
@@ -102,11 +102,11 @@
       "number": 154,
       "title": "[Problema na extensão]: Xxxyaoi — Bloqueio",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/154",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "duplicate",
       "created_at": "2026-11-17T22:43:20Z",
-      "updated_at": "2026-11-17T22:43:34Z",
-      "closed_at": null,
+      "updated_at": "2026-11-21T05:30:00Z",
+      "closed_at": "2026-11-21T05:30:00Z",
       "comments": 0,
       "labels": [
         {
@@ -258,11 +258,11 @@
       "number": 149,
       "title": "[Nova extensão]: Wacht anime hentai",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/149",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "duplicate",
       "created_at": "2026-11-12T10:46:33Z",
-      "updated_at": "2026-11-12T10:46:44Z",
-      "closed_at": null,
+      "updated_at": "2026-11-21T05:29:13Z",
+      "closed_at": "2026-11-21T05:29:13Z",
       "comments": 0,
       "labels": [
         {
@@ -446,12 +446,12 @@
       "number": 143,
       "title": "[Nova extensão]: hentaihaven",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/143",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-11-10T03:22:49Z",
-      "updated_at": "2026-11-10T03:28:00Z",
-      "closed_at": null,
-      "comments": 2,
+      "updated_at": "2026-11-21T06:14:19Z",
+      "closed_at": "2026-11-21T06:14:19Z",
+      "comments": 4,
       "labels": [
         {
           "name": "Anime",
@@ -654,11 +654,11 @@
       "number": 137,
       "title": "[Mudança de domínio]: RedeToons",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/137",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "duplicate",
       "created_at": "2026-11-09T19:53:46Z",
-      "updated_at": "2026-11-09T19:53:57Z",
-      "closed_at": null,
+      "updated_at": "2026-11-21T06:38:30Z",
+      "closed_at": "2026-11-21T05:28:48Z",
       "comments": 0,
       "labels": [
         {
@@ -670,8 +670,8 @@
           "color": "06b6d4"
         },
         {
-          "name": "Em análise",
-          "color": "eab308"
+          "name": "Duplicado",
+          "color": "475569"
         }
       ],
       "reactions": {
@@ -945,7 +945,7 @@
       "state": "closed",
       "state_reason": "duplicate",
       "created_at": "2026-11-03T20:55:50Z",
-      "updated_at": "2026-11-10T03:24:27Z",
+      "updated_at": "2026-11-21T06:38:27Z",
       "closed_at": "2026-11-10T03:24:22Z",
       "comments": 0,
       "labels": [
@@ -956,10 +956,6 @@
         {
           "name": "Mangá",
           "color": "3b82f6"
-        },
-        {
-          "name": "Em análise",
-          "color": "eab308"
         },
         {
           "name": "Concluído",
@@ -978,11 +974,11 @@
       "number": 126,
       "title": "[Nova extensão]: Saímo tv",
       "html_url": "https://github.com/ProjectNox-org/project-nox-requests/issues/126",
-      "state": "open",
-      "state_reason": null,
+      "state": "closed",
+      "state_reason": "completed",
       "created_at": "2026-11-03T10:54:58Z",
-      "updated_at": "2026-11-03T10:55:08Z",
-      "closed_at": null,
+      "updated_at": "2026-11-21T05:27:45Z",
+      "closed_at": "2026-11-21T05:27:45Z",
       "comments": 0,
       "labels": [
         {
@@ -994,8 +990,8 @@
           "color": "8b5cf6"
         },
         {
-          "name": "Em análise",
-          "color": "eab308"
+          "name": "Concluído",
+          "color": "10b981"
         }
       ],
       "reactions": {
