@@ -29,7 +29,7 @@ Para instalar extensões no seu aplicativo, utilize os catálogos oficiais de di
 2. Use a barra de pesquisa para buscar por nome da extensão, título, autor ou número exato da solicitação (ex.: `#152` ou `152`; atalho `/` no teclado).
 3. Se quiser, filtre por **Mangás** ou **Animes** e escolha uma categoria.
 4. Clique em **Total**, **Abertas** ou **Fechadas** para alternar o estado exibido (inicia em **Abertas**).
-5. Toque em uma solicitação para abrir a página correspondente no GitHub, ler os detalhes ou votar com `👍`.
+5. Para consultar os detalhes ou votar com `👍`, utilize o botão **Ver e votar no GitHub** (ou **Ver solicitação no GitHub**, nas encerradas) disponível no cartão da solicitação.
 6. Se ainda não existir pedido semelhante, clique em **Abrir Solicitação** no topo do painel ou acesse diretamente a [Central de Pedidos](https://github.com/ProjectNox-org/project-nox-requests).
 
 ## Funcionalidades
@@ -45,7 +45,7 @@ Para instalar extensões no seu aplicativo, utilize os catálogos oficiais de di
 
 O Tracker exibe os dados a partir de um arquivo estático atualizado periodicamente no repositório (`data/issues.json`) e também pode consultar atualizações no navegador enquanto a página está visível:
 
-- **Atualização automática do snapshot:** um workflow agendado verifica as *Issues* da Central de Pedidos cerca de quatro vezes por hora (a cada ~15 minutos) e republica o site quando há alterações.
+- **Atualização automática do snapshot:** um workflow agendado no GitHub Actions verifica as *Issues* da Central de Pedidos cerca de quatro vezes por hora (a cada ~15 minutos) e republica o site quando há alterações. Como a Central de Pedidos não possui disparo automático configurado para notificar o Tracker de imediato (`repository_dispatch`), a atualização automática do arquivo estático segue esse agendamento periódico.
 - **Verificação no navegador:** enquanto a aba está aberta e visível, o Tracker checa periodicamente se há um novo snapshot publicado e respeita intervalos seguros para consultas à API pública do GitHub.
 - **Limitações de latência:** uma edição ou voto feito no GitHub não aparece garantidamente em poucos segundos — a visibilidade depende da execução do workflow, da publicação no GitHub Pages, da disponibilidade e do limite de requisições da API pública (60 req/h por IP sem autenticação) e de a aba permanecer visível.
 
@@ -53,37 +53,22 @@ O Tracker exibe os dados a partir de um arquivo estático atualizado periodicame
 
 O projeto é uma aplicação web estática hospedada no GitHub Pages:
 
-- **Geração de snapshot (`scripts/update_issues.py`):** consulta até 100 páginas de *Issues* em `.github/workflows/update-data.yml` (`cron: "7,22,37,52 * * * *"`, `workflow_dispatch` e `repository_dispatch: [issues-updated]`), aplica ordenação determinística, preserva `generated_at` quando não há alterações e aborta a escrita se detectar perda superior a 50% ou atingir o limite de 100 páginas. *(Embora `update-data.yml` aceite `repository_dispatch`, `project-nox-requests` não possui disparo configurado para esse evento.)*
-- **Ciclo no cliente (`app.js`):** verifica `data/issues.json` a cada `10s` (`CHECK_INTERVAL`) via `If-None-Match`/ETag quando a aba está visível (sem consumir cota da API REST) e realiza consultas à API do GitHub com intervalo adaptativo (`65s` normal, `180s` quando `X-RateLimit-Remaining < 15`), checagem de saldo por página e pausa até `X-RateLimit-Reset` / `Retry-After` em respostas `403`/`429`.
-- **Consistência e sincronização entre abas:** `mergeRawIssues` previne regressões temporais comparando `updated_at`/`closed_at`/`created_at`, ETags só são persistidas após validação do JSON (`state` estritamente `"open"` ou `"closed"`) e atualizações são coordenadas entre abas via `BroadcastChannel` e `localStorage`.
-- **Interface, segurança e acessibilidade (`index.html`, `styles.css`, `particles.js`):** construção via DOM (`createElement`/`textContent`) com validação estrita de URLs, preservação de foco e de títulos expandidos durante atualizações em segundo plano, detecção de truncamento com `ResizeObserver`, fundo em Canvas de 3 camadas (`particles.js`) com pausa e `prefers-reduced-motion`, e aviso `<noscript>` apontando para as *Issues* no GitHub.
-
-## Desenvolvimento local e testes
-
-```bash
-# 1. Atualizar snapshot localmente (opcional: export GITHUB_TOKEN=...)
-python3 scripts/update_issues.py
-
-# 2. Subir servidor local (porta 8088 sem cache, ou http.server na 8000)
-python3 scripts/dev_server.py
-
-# 3. Validar sintaxe e executar testes unitários
-node --check app.js && node --check particles.js
-python3 -m py_compile scripts/update_issues.py
-python3 -m pytest tests/test_tracker.py
-```
-
-Para executar a suíte E2E em Chromium e Firefox (requer Playwright instalado, como configurado em `.github/workflows/deploy-pages.yml`):
-
-```bash
-node tests/e2e_comprehensive.mjs --no-screenshots
-```
+- **Origem oficial:** todas as solicitações têm origem nas *Issues* do repositório `ProjectNox-org/project-nox-requests`.
+- **Snapshot estático:** um script Python (`scripts/update_issues.py`) coleta, deduplica, valida e salva o inventário em `data/issues.json`.
+- **Automação contínua:** workflows do GitHub Actions executam a sincronização agendada, as validações e a publicação automática do site.
+- **Publicação no GitHub Pages:** apenas os arquivos estáticos da interface e dos dados são publicados para os visitantes.
+- **Atualização no navegador:** o painel verifica atualizações publicadas e realiza consultas complementares à API do GitHub respeitando limites de requisições e pausas automáticas.
+- **Segurança, consistência e acessibilidade:** a interface utiliza manipulação segura do DOM, sincronização consistente entre abas, controle de animações e aviso `<noscript>`.
 
 ## Projetos relacionados
 
 - [**Project Nox · Central de Pedidos**](https://github.com/ProjectNox-org/project-nox-requests) — Repositório oficial para abrir solicitações e relatar problemas.
 - [**Project Nox · Extensões de Mangá**](https://github.com/ProjectNox-org/manga-extensoes) — Catálogo oficial de extensões para Mihon e forks.
 - [**Project Nox · Extensões de Anime**](https://github.com/ProjectNox-org/anime-extensoes) — Catálogo oficial de extensões para Aniyomi, Anikku e forks.
+
+## Desenvolvimento
+
+Para executar o Tracker localmente, testar atualizações de dados, rodar as validações ou consultar os detalhes técnicos internos, veja o [Guia de Desenvolvimento](docs/DEVELOPMENT.md).
 
 ## Créditos
 
