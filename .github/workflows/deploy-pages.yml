@@ -28,6 +28,8 @@ jobs:
         run: |
           node --check app.js
           node --check particles.js
+          node --check duplicate-guard.js
+          node --test tests/test_duplicate_guard_ui.mjs
           python3 -m py_compile scripts/update_issues.py
           python3 -m pip install --quiet pytest
           python3 -m pytest tests/test_tracker.py
@@ -36,11 +38,12 @@ jobs:
           npm install --prefix /tmp/pw-runner --no-save playwright
           /tmp/pw-runner/node_modules/.bin/playwright install chromium firefox
           NODE_PATH=/tmp/pw-runner/node_modules node tests/e2e_comprehensive.mjs --no-screenshots
+          NODE_PATH=/tmp/pw-runner/node_modules node tests/e2e_duplicate_guard.mjs --no-screenshots
       - uses: actions/configure-pages@v5
       - name: Preparar arquivos estáticos
         run: |
           mkdir _site
-          cp index.html styles.css app.js particles.js favicon.ico _site/
+          cp index.html styles.css app.js particles.js duplicate-guard.js favicon.ico _site/
           cp -R assets data _site/
       - uses: actions/upload-pages-artifact@v3
         with:

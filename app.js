@@ -462,6 +462,11 @@
     el.openTicket = document.querySelector("#open-ticket");
     el.closeTicket = document.querySelector("#close-ticket");
     el.dialog = document.querySelector(".modal-dialog");
+    el.dupGuardInput = document.querySelector("#dup-guard-input");
+    el.dupGuardClear = document.querySelector("#dup-guard-clear");
+    el.dupGuardResults = document.querySelector("#dup-guard-results");
+    el.dupGuardNote = document.querySelector("#dup-guard-snapshot-note");
+    el.dupGuardCatButtons = document.querySelectorAll(".dup-guard-cat-btn[data-guard-category]");
 
     // Summary indicators (3 cards)
     el.statTotal = document.querySelector('[data-stat="total"]');
@@ -579,6 +584,7 @@
       title: String(raw.title || `Solicitação #${rawNumber}`),
       html_url: buildSafeIssueUrl(rawNumber, raw.html_url),
       state: isOpen ? "open" : "closed",
+      state_reason: raw.state_reason || null,
       isOpen,
       isClosed,
       type,
@@ -1207,6 +1213,183 @@
     renderTickets();
   }
 
+  let modalGuardCategory = "all";
+  let modalGuardTimer = null;
+
+  function formatGuardSnapshotNotice() {
+    if (!hasLoadedData) {
+      return "Carregando dados do Tracker… A busca local pode estar incompleta no momento.";
+    }
+    if (activeDataSource === "live") {
+      return "Pesquisa sobre os dados carregados do Tracker (pode haver atraso curto em tickets abertos nos últimos segundos).";
+    }
+    const timeText = generatedAt
+      ? `${formatDate(generatedAt)} às ${new Date(generatedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
+      : "snapshot publicado";
+    return `Pesquisa sobre o snapshot disponível (${timeText}). Tickets muito recentes podem ainda estar no GitHub.`;
+  }
+
+  function renderDuplicateGuard() {
+    if (!el.dupGuardResults || !el.dupGuardInput) return;
+    const rawQuery = el.dupGuardInput.value || "";
+    if (el.dupGuardClear) {
+      el.dupGuardClear.hidden = !rawQuery.trim();
+    }
+
+    const guardApi = window.NoxDuplicateGuard;
+    if (!guardApi || typeof guardApi.findSimilarIssues !== "function") {
+      el.dupGuardResults.hidden = true;
+      el.dupGuardResults.replaceChildren();
+      return;
+    }
+
+    const searchRes = guardApi.findSimilarIssues(rawQuery, allIssues, {
+      category: modalGuardCategory,
+      limit: 5
+    });
+
+    if (searchRes.tooShort) {
+      if (el.dupGuardNote) el.dupGuardNote.hidden = true;
+      el.dupGuardResults.hidden = true;
+      el.dupGuardResults.replaceChildren();
+      return;
+    }
+
+    if (el.dupGuardNote) {
+      el.dupGuardNote.textContent = formatGuardSnapshotNotice();
+      el.dupGuardNote.hidden = false;
+    }
+
+    const frag = document.createDocumentFragment();
+    if (searchRes.results.length === 0) {
+      const emptyBox = document.createElement("div");
+      emptyBox.className = "dup-guard-empty";
+
+      const msg = document.createElement("p");
+      msg.className = "dup-guard-empty-title";
+      msg.textContent = "Nenhuma solicitação parecida encontrada nos dados carregados do Tracker.";
+      emptyBox.appendChild(msg);
+
+      const hint = document.createElement("p");
+      hint.className = "dup-guard-empty-hint";
+      hint.textContent = "Isso não garante que o pedido ainda não exista (o snapshot pode levar alguns minutos para atualizar). Se preferir, confira direto no GitHub antes de abrir:";
+      emptyBox.appendChild(hint);
+
+      const ghLink = document.createElement("a");
+      ghLink.className = "dup-guard-gh-search";
+      ghLink.href = searchRes.githubSearchUrl;
+      ghLink.target = "_blank";
+      ghLink.rel = "noopener noreferrer";
+      ghLink.textContent = "Pesquisar no GitHub →";
+      emptyBox.appendChild(ghLink);
+
+      frag.appendChild(emptyBox);
+      el.dupGuardResults.replaceChildren(frag);
+      el.dupGuardResults.hidden = false;
+      return;
+    }
+
+    const summary = document.createElement("div");
+    summary.className = "dup-guard-results-header";
+    const countSpan = document.createElement("span");
+    countSpan.textContent = `${searchRes.results.length} ${searchRes.results.length === 1 ? "solicitação parecida encontrada" : "solicitações parecidas encontradas"}`;
+    summary.appendChild(countSpan);
+
+    const ghAllLink = document.createElement("a");
+    ghAllLink.className = "dup-guard-gh-search-inline";
+    ghAllLink.href = searchRes.githubSearchUrl;
+    ghAllLink.target = "_blank";
+    ghAllLink.rel = "noopener noreferrer";
+    ghAllLink.textContent = "Ver tudo no GitHub";
+    summary.appendChild(ghAllLink);
+    frag.appendChild(summary);
+
+    const listEl = document.createElement("div");
+    listEl.className = "dup-guard-list";
+
+    for (const item of searchRes.results) {
+      const issue = item.issue;
+      const row = document.createElement("div");
+      row.className = `dup-guard-item ${issue.isOpen ? "is-open" : "is-closed"}`;
+      row.setAttribute("data-guard-issue", String(issue.number));
+
+      const topRow = document.createElement("div");
+      topRow.className = "dup-guard-item-top";
+
+      const stateBadge = document.createElement("span");
+      stateBadge.className = `dup-guard-state ${issue.isOpen ? "state-open" : "state-closed"}`;
+      stateBadge.textContent = issue.isOpen ? "ABERTA" : "FECHADA";
+      topRow.appendChild(stateBadge);
+
+      if (item.resolutionLabel) {
+        const resBadge = document.createElement("span");
+        resBadge.className = "dup-guard-resolution";
+        resBadge.textContent = item.resolutionLabel;
+        topRow.appendChild(resBadge);
+      }
+
+      const numBadge = document.createElement("span");
+      numBadge.className = "dup-guard-num";
+      numBadge.textContent = `#${issue.number}`;
+      topRow.appendChild(numBadge);
+
+      const votesBadge = document.createElement("span");
+      votesBadge.className = `dup-guard-votes${issue.upvotes > 0 ? " has-votes" : ""}`;
+      votesBadge.textContent = `👍 ${issue.upvotes}`;
+      topRow.appendChild(votesBadge);
+
+      row.appendChild(topRow);
+
+      const titleEl = document.createElement("div");
+      titleEl.className = "dup-guard-item-title";
+      titleEl.textContent = issue.title;
+      row.appendChild(titleEl);
+
+      const metaBottom = document.createElement("div");
+      metaBottom.className = "dup-guard-item-bottom";
+
+      const tagsText = document.createElement("span");
+      tagsText.className = "dup-guard-item-meta";
+      const typeLabel = issue.type === "manga" ? "Mangá" : issue.type === "anime" ? "Anime" : "";
+      const parts = [typeLabel, issue.kindLabel, item.matchReason].filter(Boolean);
+      tagsText.textContent = parts.join(" · ");
+      metaBottom.appendChild(tagsText);
+
+      const actionLink = document.createElement("a");
+      actionLink.className = "dup-guard-item-link";
+      actionLink.href = buildSafeIssueUrl(issue.number, issue.html_url);
+      actionLink.target = "_blank";
+      actionLink.rel = "noopener noreferrer";
+      actionLink.textContent = issue.isOpen ? "Ver e votar 👍 no GitHub" : "Ver no GitHub";
+      metaBottom.appendChild(actionLink);
+
+      row.appendChild(metaBottom);
+      listEl.appendChild(row);
+    }
+
+    frag.appendChild(listEl);
+    el.dupGuardResults.replaceChildren(frag);
+    el.dupGuardResults.hidden = false;
+  }
+
+  function resetDuplicateGuardState() {
+    modalGuardCategory = "all";
+    if (el.dupGuardInput) el.dupGuardInput.value = "";
+    if (el.dupGuardClear) el.dupGuardClear.hidden = true;
+    if (el.dupGuardNote) el.dupGuardNote.hidden = true;
+    if (el.dupGuardResults) {
+      el.dupGuardResults.hidden = true;
+      el.dupGuardResults.replaceChildren();
+    }
+    if (el.dupGuardCatButtons) {
+      el.dupGuardCatButtons.forEach(btn => {
+        const isAll = btn.getAttribute("data-guard-category") === "all";
+        btn.classList.toggle("active", isAll);
+        btn.setAttribute("aria-pressed", isAll ? "true" : "false");
+      });
+    }
+  }
+
   // Modal Management
   function openModal() {
     if (!el.modal) return;
@@ -1218,6 +1401,7 @@
       appContent.setAttribute("aria-hidden", "true");
       appContent.inert = true;
     }
+    renderDuplicateGuard();
     if (el.dialog) el.dialog.focus();
   }
 
@@ -1230,6 +1414,7 @@
       appContent.removeAttribute("aria-hidden");
       appContent.inert = false;
     }
+    resetDuplicateGuardState();
     if (lastFocus && typeof lastFocus.focus === "function") {
       lastFocus.focus();
     }
@@ -1243,7 +1428,10 @@
       return;
     }
     if (e.key === "Tab") {
-      const focusables = el.dialog.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      const candidates = el.dialog.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      const focusables = Array.from(candidates).filter(node => !node.closest("[hidden]") && node.offsetParent !== null);
       if (focusables.length === 0) return;
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
@@ -1378,6 +1566,36 @@
 
     if (el.openTicket) el.openTicket.addEventListener("click", openModal);
     if (el.closeTicket) el.closeTicket.addEventListener("click", closeModal);
+    if (el.dupGuardInput) {
+      el.dupGuardInput.addEventListener("input", () => {
+        if (el.dupGuardClear) el.dupGuardClear.hidden = !el.dupGuardInput.value.trim();
+        clearTimeout(modalGuardTimer);
+        modalGuardTimer = setTimeout(renderDuplicateGuard, 90);
+      });
+    }
+    if (el.dupGuardClear) {
+      el.dupGuardClear.addEventListener("click", () => {
+        if (el.dupGuardInput) {
+          el.dupGuardInput.value = "";
+          el.dupGuardInput.focus();
+        }
+        renderDuplicateGuard();
+      });
+    }
+    if (el.dupGuardCatButtons) {
+      el.dupGuardCatButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const cat = btn.getAttribute("data-guard-category") || "all";
+          modalGuardCategory = cat;
+          el.dupGuardCatButtons.forEach(b => {
+            const active = b.getAttribute("data-guard-category") === cat;
+            b.classList.toggle("active", active);
+            b.setAttribute("aria-pressed", active ? "true" : "false");
+          });
+          renderDuplicateGuard();
+        });
+      });
+    }
     if (el.modal) {
       el.modal.addEventListener("click", e => {
         if (e.target.hasAttribute("data-close-modal") || e.target === el.modal) {
@@ -1857,6 +2075,9 @@
       allIssues = normalized;
       currentSignature = newSignature;
       renderTickets({ preserveScroll: true });
+      if (el.modal && !el.modal.hidden) {
+        renderDuplicateGuard();
+      }
     }
 
     updateStatusText(dataSource);
