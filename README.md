@@ -30,9 +30,11 @@ Para instalar extensões no seu aplicativo, utilize os catálogos oficiais de di
 3. Se quiser, filtre por **Mangás** ou **Animes** e escolha uma categoria.
 4. Clique em **Total**, **Abertas** ou **Fechadas** para alternar o estado exibido (inicia em **Abertas**).
 5. Para consultar os detalhes ou votar com `👍`, utilize o botão **Ver e votar no GitHub** (ou **Ver solicitação no GitHub**, nas encerradas) disponível no cartão da solicitação.
-6. Se ainda não existir pedido semelhante, clique em **Abrir Solicitação** no topo do painel ou acesse diretamente a [Central de Pedidos](https://github.com/ProjectNox-org/project-nox-requests).
+6. Ao clicar em **Abrir Solicitação**, utilize a busca rápida integrada do **Nox Duplicate Guard** para verificar se já existe pedido semelhante; se ainda não existir, escolha uma categoria para abrir o formulário oficial na [Central de Pedidos](https://github.com/ProjectNox-org/project-nox-requests).
 
 ## Funcionalidades
+
+- **Prevenção de duplicatas no modal (Nox Duplicate Guard):** antes de redirecionar para o GitHub, o modal **Abrir Solicitação** oferece busca inteligente (tolerante a acentos, espaços, URLs e variações de escrita) com filtros por categoria, contagem de votos `👍` e aviso de atualização do snapshot.
 
 - **Indicadores interativos:** alternam entre `Total`, `Abertas` e `Fechadas` respeitando o filtro de tipo ativo.
 - **Pesquisa rápida:** busca por título/extensão, autor ou número exato com normalização de acentos e botão para limpar.

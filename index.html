@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="styles.css?v=3.2.0" />
+    <link rel="stylesheet" href="styles.css?v=3.3.0" />
     <title>Project Nox Tracker — Acompanhamento Oficial</title>
   </head>
   <body>
@@ -280,6 +280,45 @@
           </div>
 
           <div class="modal-body">
+            <section class="dup-guard-panel" aria-label="Verificação rápida de solicitações existentes">
+              <div class="dup-guard-header">
+                <label class="dup-guard-title" for="dup-guard-input">Verifique antes de abrir um pedido</label>
+                <span class="dup-guard-badge">Duplicate Guard</span>
+              </div>
+              <p class="dup-guard-subtitle">
+                Digite o nome da extensão, fonte, URL ou problema para conferir se já existe um ticket parecido e votar 👍 nele.
+              </p>
+
+              <div class="dup-guard-search-wrap">
+                <svg class="dup-guard-search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input
+                  id="dup-guard-input"
+                  class="dup-guard-input"
+                  type="search"
+                  placeholder="Ex.: Bakai, Manga Livre, watchanimehentai.com ou #132..."
+                  autocomplete="off"
+                  maxlength="200"
+                />
+                <button id="dup-guard-clear" class="dup-guard-clear-btn" type="button" aria-label="Limpar pesquisa prévia" hidden>×</button>
+              </div>
+
+              <div class="dup-guard-cats" role="group" aria-label="Filtrar verificação por categoria">
+                <button class="dup-guard-cat-btn active" type="button" data-guard-category="all" aria-pressed="true">Todas</button>
+                <button class="dup-guard-cat-btn" type="button" data-guard-category="new-extension" aria-pressed="false">Nova extensão</button>
+                <button class="dup-guard-cat-btn" type="button" data-guard-category="bug" aria-pressed="false">Problema</button>
+                <button class="dup-guard-cat-btn" type="button" data-guard-category="domain" aria-pressed="false">Domínio</button>
+                <button class="dup-guard-cat-btn" type="button" data-guard-category="dead-source" aria-pressed="false">Indisponível</button>
+                <button class="dup-guard-cat-btn" type="button" data-guard-category="enhancement" aria-pressed="false">Sugestão</button>
+              </div>
+
+              <p id="dup-guard-snapshot-note" class="dup-guard-snapshot-note" hidden></p>
+              <div id="dup-guard-results" class="dup-guard-results" aria-live="polite" hidden></div>
+            </section>
+
+            <div class="dup-guard-divider">
+              <span>Não encontrou o mesmo caso? Escolha a categoria para continuar no GitHub:</span>
+            </div>
+
             <div class="template-list">
               <a class="template-option" href="https://github.com/ProjectNox-org/project-nox-requests/issues/new?template=01_request_extension.yml" target="_blank" rel="noopener noreferrer">
                 <span class="template-icon" aria-hidden="true">🌐</span>
@@ -348,6 +387,7 @@
 
     <!-- Scripts -->
     <script src="particles.js?v=3.2.0" defer></script>
-    <script src="app.js?v=3.2.0" defer></script>
+    <script src="duplicate-guard.js?v=1.0.0" defer></script>
+    <script src="app.js?v=3.3.0" defer></script>
   </body>
 </html>
